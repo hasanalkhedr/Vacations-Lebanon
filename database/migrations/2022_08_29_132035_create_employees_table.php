@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone_number')->unique();
             $table->integer('nb_of_days')->default(15);
-            $table->foreignId('department_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('department_id')->nullable()->constrained()->onUpdate('CASCADE')->onDelete('SET NULL');
             $table->timestamps();
             $table->softDeletes();
         });

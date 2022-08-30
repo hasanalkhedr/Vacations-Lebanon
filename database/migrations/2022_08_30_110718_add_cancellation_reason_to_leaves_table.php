@@ -14,8 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('leaves', function (Blueprint $table) {
-            $table->foreignId('leave_type_id')->after('to')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->foreignId('processing_office_role')->after('leave_status')->constrained('roles')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->string('cancellation_reason')->nullable()->after('processing_office_role');
         });
     }
 
@@ -27,8 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('leaves', function (Blueprint $table) {
-                $table->dropConstrainedForeignId('leave_type_id');
-                $table->dropConstrainedForeignId('processing_office_role');
-            });
+            $table->dropColumn('cancellation_reason');
+        });
     }
 };
