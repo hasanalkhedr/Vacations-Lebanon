@@ -47,7 +47,7 @@ class Employee extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function leave() {
+    public function leaves() {
         return $this->hasMany(Leave::class);
     }
 }

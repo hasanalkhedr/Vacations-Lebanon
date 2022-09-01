@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('departments_supervisors', function (Blueprint $table) {
-            $table->renameColumn('employee_id','supervisor_id');
+        Schema::table('departments', function (Blueprint $table) {
+            $table->foreignId('manager_id')->nullable()->constrained('employees')->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('departments_supervisors', function (Blueprint $table) {
-            $table->renameColumn('supervisor_id','employee_id');
+        Schema::table('departments', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('manager_id');
         });
     }
 };
