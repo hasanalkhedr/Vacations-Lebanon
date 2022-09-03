@@ -68,6 +68,19 @@ class EmployeeController
         return redirect()->route('employees.login');
     }
 
+    public function index() {
+        return view('employees.index', [
+            'employees' => Employee::all()
+        ]);
+    }
+
+    public function show(Employee $employee) // Show single movie
+    {
+        return view('employees.show', [
+            'employee' => $employee
+        ]);
+    }
+
     public function home() {
         return view('employees.logout');
     }

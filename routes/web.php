@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Employees\EmployeeController;
+use App\Http\Controllers\Departments\DepartmentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,11 +23,18 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
     Route::post('/authenticate', 'authenticate')->middleware('guest')->name('authenticate');
     Route::post('/logout', 'logout')->middleware('auth')->name('logout');
     Route::get('/home', 'home')->middleware('auth')->name('home');
-    Route::get('/create', 'create')->middleware('auth')->name('create');
-    Route::post('/store', 'store')->middleware('auth')->name('store');
+
+    Route::group(['prefix' => 'employees', 'middleware' => 'role:human_resource'], function () {
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/', 'index')->name('index');
+        Route::get('/{employee}', 'show')->name('show');
+    });
 });
 
-Route::group(['middleware' => 'auth', 'controller' => \App\Http\Controllers\Departments\DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
+Route::group(['middleware' => 'role:human_resource', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
+    Route::get('/', 'index')->name('index');
+    Route::get('/{department}', 'show')->name('show');
 });

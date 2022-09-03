@@ -22,4 +22,19 @@ class DepartmentController extends Controller
         $department->save();
         return redirect()->route('employees.home');
     }
+
+    public function index() {
+        return view('departments.index', [
+            'departments' => Department::all()
+        ]);
+    }
+
+    public function show(Department $department) // Show single movie
+    {
+        $employees = Employee::where('department_id', $department->id)->get();
+        return view('departments.show', [
+            'department' => $department,
+            'employees' => $employees
+        ]);
+    }
 }
