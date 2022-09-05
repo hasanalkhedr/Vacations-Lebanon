@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Employees;
 
 use App\Http\Requests\EmployeesRequests\AuthenticateEmployeeRequest;
 use App\Http\Requests\EmployeesRequests\StoreEmployeeRequest;
+use App\Http\Requests\EmployeesRequests\UpdateEmployeePasswordRequest;
+use App\Http\Requests\EmployeesRequests\UpdateEmployeeProfileRequest;
 use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -31,6 +33,9 @@ class EmployeeController
             } else {
                 return response()->json(['status' => 'OK', 'employee' => $employee, 'role' => 'sg']);
             }
+        }
+        else {
+            return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');
         }
     }
 
@@ -70,7 +75,7 @@ class EmployeeController
 
     public function index() {
         return view('employees.index', [
-            'employees' => Employee::all()
+            'employees' => Employee::whereNot('id', auth()->id())->get()
         ]);
     }
 
@@ -80,6 +85,44 @@ class EmployeeController
             'employee' => $employee
         ]);
     }
+
+    public function editProfile(Employee $employee)
+    {
+        $departments = Department::all();
+        $roles = Role::all();
+        return view('employees.edit-profile', ['employee' => $employee, 'departments' => $departments, 'roles' => $roles]);
+    }
+
+    public function updateProfile(UpdateEmployeeProfileRequest $request, Employee $employee)
+    {
+        $validated = $request->validated();
+        $employee->update($validated);
+        $employee->roles()->sync([$validated['role_id']]);
+        return redirect()->route('employees.show', ['employee' => $employee]);
+    }
+
+    public function editPassword(Employee $employee)
+    {
+        $departments = Department::all();
+        $roles = Role::all();
+        return view('employees.edit-password', ['employee' => $employee]);
+    }
+
+    public function updatePassword(UpdateEmployeePasswordRequest $request, Employee $employee)
+    {
+        $validated = $request->validated();
+        if(Hash::check($validated['current_password'], $employee->password)) {
+            $employee->update(['password' => Hash::make($validated['new_password'])]);
+            return redirect()->route('employees.show', ['employee' => $employee]);
+        }
+    }
+
+    public function destroy(Employee $employee)
+    {
+        $employee->delete();
+        return redirect()->route('employees.index');
+    }
+
 
     public function home() {
         return view('employees.logout');

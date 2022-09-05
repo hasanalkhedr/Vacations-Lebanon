@@ -9,6 +9,7 @@
 </head>
 <body>
     <h1>{{ $department->name }}</h1>
+    <h2>{{ $manager->first_name }} {{ $manager->last_name }}</h2>
     <ul>
         @foreach($employees as $employee)
             <li>{{$employee->first_name}} {{$employee->last_name}}</li>

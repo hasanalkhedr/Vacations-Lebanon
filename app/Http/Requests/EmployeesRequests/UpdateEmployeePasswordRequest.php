@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\DepartmentRequest;
+namespace App\Http\Requests\EmployeesRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreDepartmentRequest extends FormRequest
+class UpdateEmployeePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +25,8 @@ class StoreDepartmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required']
+            'current_password' => 'required',
+            'new_password' => ['required', 'confirmed', 'min:6'],
         ];
     }
 }

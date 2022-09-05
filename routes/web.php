@@ -29,6 +29,11 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
         Route::post('/store', 'store')->name('store');
         Route::get('/', 'index')->name('index');
         Route::get('/{employee}', 'show')->name('show');
+        Route::get('/editprofile/{employee}', 'editProfile')->name('editProfile');
+        Route::put('/updateprofile/{employee}', 'updateProfile')->name('updateProfile');
+        Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
+        Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
+        Route::delete('/{employee}', 'destroy')->name('destroy');
     });
 });
 
@@ -37,4 +42,7 @@ Route::group(['middleware' => 'role:human_resource', 'controller' => DepartmentC
     Route::post('/store', 'store')->name('store');
     Route::get('/', 'index')->name('index');
     Route::get('/{department}', 'show')->name('show');
+    Route::get('/edit/{department}', 'edit')->name('edit');
+    Route::put('/update/{department}', 'update')->name('update');
+    Route::delete('/{department}', 'destroy')->name('destroy');
 });

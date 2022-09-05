@@ -3,22 +3,20 @@
 namespace App\Http\Controllers\Departments;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DepartmentRequest\StoreDepartmentRequest;
+use App\Http\Requests\DepartmentRequests\StoreDepartmentRequest;
+use App\Http\Requests\DepartmentRequests\UpdateDepartmentRequest;
 use App\Models\Department;
 use App\Models\Employee;
 
 class DepartmentController extends Controller
 {
     public function create() {
-        $employees = Employee::where('department_id', NULL)->role('employee')->get();
-        return view('departments.create', ['employees' => $employees]);
+        return view('departments.create');
     }
 
     public function store(StoreDepartmentRequest $request) {
-        dd($request);
         $validate = $request->validated();
         $department = Department::create($validate);
-        $department['manager_id'] = $request['id'];
         $department->save();
         return redirect()->route('employees.home');
     }
@@ -32,9 +30,30 @@ class DepartmentController extends Controller
     public function show(Department $department) // Show single movie
     {
         $employees = Employee::where('department_id', $department->id)->get();
+        $manager = Employee::where('id', $department->manager_id)->first();
         return view('departments.show', [
             'department' => $department,
-            'employees' => $employees
+            'employees' => $employees,
+            'manager' => $manager
         ]);
+    }
+
+    public function edit(Department $department)
+    {
+        $employees = Employee::where('department_id', $department->id)->get();
+        return view('departments.edit', ['department' => $department, 'employees' => $employees]);
+    }
+
+    public function update(UpdateDepartmentRequest $request, Department $department)
+    {
+        $validated = $request->validated();
+        $department->update($validated);
+        return redirect()->route('departments.show', ['department' => $department]);
+    }
+
+    public function destroy(Department $department)
+    {
+        $department->delete();
+        return redirect()->route('departments.index');
     }
 }

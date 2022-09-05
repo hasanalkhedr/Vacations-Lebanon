@@ -18,14 +18,6 @@
             name="name"
             value="{{ old('name') }}"
         />
-{{--        <select name='id'>--}}
-{{--            <option value="" disabled>Choose Supervisor</option>--}}
-{{--            @if(count($employees))--}}
-{{--                @foreach ($employees as $employee)--}}
-{{--                    <option value="{{ $employee->id }}">{{ $employee->first_name }} {{ $employee->last_name }}</option>--}}
-{{--                @endforeach--}}
-{{--            @endif--}}
-{{--        </select>--}}
     </div>
 
 </form>

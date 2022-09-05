@@ -10,6 +10,11 @@
 <body>
 @foreach ($departments as $department)
     <p>{{ $department->name }}</p>
+    <form method="POST" action="{{ route('departments.destroy', ['department' => $department->id]) }}">
+        @csrf
+        @method('DELETE')
+        <button>Delete</button>
+    </form>
 @endforeach
 </body>
 </html>

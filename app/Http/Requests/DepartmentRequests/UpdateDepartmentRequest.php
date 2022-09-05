@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\EmployeesRequests;
+namespace App\Http\Requests\DepartmentRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class AuthenticateEmployeeRequest extends FormRequest
+class UpdateDepartmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,8 @@ class AuthenticateEmployeeRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'name' => ['required', Rule::unique('departments', 'name')->ignore($this->department)],
+            'manager_id' => ['required']
         ];
     }
 }
