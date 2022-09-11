@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('leaves', function (Blueprint $table) {
-            $table->string('cancellation_reason')->nullable()->after('processing_officer_role');
+            $table->boolean('travelling')->after('to')->default(false);
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('leaves', function (Blueprint $table) {
-            $table->dropColumn('cancellation_reason');
+            $table->dropColumn('travelling');
         });
     }
 };

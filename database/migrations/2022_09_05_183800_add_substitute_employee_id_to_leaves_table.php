@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('leaves', function (Blueprint $table) {
-            $table->string('cancellation_reason')->nullable()->after('processing_officer_role');
+            $table->foreignId('substitute_employee_id')->after('date_of_submission')->nullable()->constrained('employees')->onUpdate('CASCADE')->onDelete('SET NULL');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('leaves', function (Blueprint $table) {
-            $table->dropColumn('cancellation_reason');
+            $table->dropConstrainedForeignId('substitute_employee_id');
         });
     }
 };

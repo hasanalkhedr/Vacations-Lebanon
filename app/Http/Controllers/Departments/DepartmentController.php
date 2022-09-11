@@ -29,19 +29,17 @@ class DepartmentController extends Controller
 
     public function show(Department $department) // Show single movie
     {
-        $employees = Employee::where('department_id', $department->id)->get();
         $manager = Employee::where('id', $department->manager_id)->first();
         return view('departments.show', [
             'department' => $department,
-            'employees' => $employees,
+            'employees' => $department->employees,
             'manager' => $manager
         ]);
     }
 
     public function edit(Department $department)
     {
-        $employees = Employee::where('department_id', $department->id)->get();
-        return view('departments.edit', ['department' => $department, 'employees' => $employees]);
+        return view('departments.edit', ['department' => $department, 'employees' => $department->employees]);
     }
 
     public function update(UpdateDepartmentRequest $request, Department $department)

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Leave extends Model
+class LeaveType extends Model
 {
     use HasFactory;
 
@@ -15,17 +15,8 @@ class Leave extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'employee_id',
-        'from',
-        'to',
-        'travelling',
-        'leave_type_id',
-        'attachment_path',
-        'date_of_submission',
-        'substitute_employee_id	',
-        'leave_status',
-        'processing_office_role',
-        'cancellation_reason',
+        'name',
+        'description',
     ];
 
     /**
@@ -45,8 +36,4 @@ class Leave extends Model
     protected $casts = [
         //
     ];
-
-    public function employee() {
-        return $this->belongsTo(Employee::class);
-    }
 }

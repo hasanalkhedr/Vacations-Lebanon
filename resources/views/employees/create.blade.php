@@ -53,15 +53,7 @@
             name="nb_of_days"
             value="{{ old('nb_of_days') }}"
         />
-        <select name='department_id'>
-            <option value="" disabled>Choose Department</option>
-            @if(count($departments))
-                @foreach ($departments as $department)
-                    <option value="{{ $department->id }}">{{ $department->name }}</option>
-                @endforeach
-            @endif
-        </select>
-        <select name='role_id'>
+        <select name='role_id' id="role_id" onchange="enableOrDisableDepartment(this);">
             <option value="" disabled>Choose Role</option>
 
             @if(count($roles))
@@ -72,8 +64,30 @@
                 @endforeach
             @endif
         </select>
+        <select name='department_id' id="department_id">
+            <option value="" disabled>Choose Department</option>
+            <option value="">None</option>
+            @if(count($departments))
+                @foreach ($departments as $department)
+                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                @endforeach
+            @endif
+        </select>
     </div>
     <button>Submit</button>
 </form>
+
+<script type="text/javascript">
+    function enableOrDisableDepartment(that) {
+        var select = document.getElementById('role_id');
+        var role = select.options[select.selectedIndex].text;
+        if (role == "employee") {
+            document.getElementById("department_id").disabled = false;
+        } else {
+            document.getElementById("department_id").disabled = true;
+        }
+    }
+</script>
+
 </body>
 </html>

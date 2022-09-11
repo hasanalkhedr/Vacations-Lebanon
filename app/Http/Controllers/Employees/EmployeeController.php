@@ -55,14 +55,16 @@ class EmployeeController
             'phone_number' => $validated['phone_number'],
             'nb_of_days' => $validated['nb_of_days'],
         ]);
-        if($request['department_id']) {
+        $role = Role::findById($request['role_id']);
+        if($role->name != 'employee'){
+            $employee['department_id'] = NULL;
+        }
+        else {
             $employee['department_id'] = $request['department_id'];
         }
         $employee->save();
-        if($request['role_id']) {
-            $role = Role::findById($request['role_id']);
-            $employee->roles()->save($role);
-        }
+
+        $employee->roles()->save($role);
         return redirect()->route('employees.home');
     }
 
@@ -96,16 +98,33 @@ class EmployeeController
     public function updateProfile(UpdateEmployeeProfileRequest $request, Employee $employee)
     {
         $validated = $request->validated();
-        $employee->update($validated);
+        $employee->update([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'phone_number' => $validated['phone_number'],
+            'nb_of_days' => $validated['nb_of_days'],
+        ]);
+        $role = Role::findById($request['role_id']);
         $employee->roles()->sync([$validated['role_id']]);
+        if($role->name != 'employee'){
+            $employee['department_id'] = NULL;
+        }
+        else {
+            $employee['department_id'] = $request['department_id'];
+        }
+        $employee->save();
         return redirect()->route('employees.show', ['employee' => $employee]);
     }
 
     public function editPassword(Employee $employee)
     {
-        $departments = Department::all();
-        $roles = Role::all();
-        return view('employees.edit-password', ['employee' => $employee]);
+        if(auth()->user()->roles()->first()->name == 'human_resource' || auth()->user()->id == $employee->id) {
+            return view('employees.edit-password', ['employee' => $employee]);
+        }
+        else {
+            return back();
+        }
     }
 
     public function updatePassword(UpdateEmployeePasswordRequest $request, Employee $employee)
@@ -114,6 +133,9 @@ class EmployeeController
         if(Hash::check($validated['current_password'], $employee->password)) {
             $employee->update(['password' => Hash::make($validated['new_password'])]);
             return redirect()->route('employees.show', ['employee' => $employee]);
+        }
+        else {
+            return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('new_password');
         }
     }
 

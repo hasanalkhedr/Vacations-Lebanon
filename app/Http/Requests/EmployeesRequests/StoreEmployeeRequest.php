@@ -31,7 +31,7 @@ class StoreEmployeeRequest extends FormRequest
             'password' => ['required', 'confirmed', 'min:6'],
             'phone_number' => ['required'],
             'nb_of_days' => ['required'],
-            'department_id' => ['required']
+            'role_id' => ['required']
         ];
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('leaves', function (Blueprint $table) {
             $table->foreignId('leave_type_id')->after('to')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->foreignId('processing_office_role')->after('leave_status')->constrained('roles')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('processing_officer_role')->nullable()->after('leave_status')->constrained('roles')->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 
@@ -28,7 +28,7 @@ return new class extends Migration
     {
         Schema::table('leaves', function (Blueprint $table) {
                 $table->dropConstrainedForeignId('leave_type_id');
-                $table->dropConstrainedForeignId('processing_office_role');
+                $table->dropConstrainedForeignId('processing_officer_role');
             });
     }
 };

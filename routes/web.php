@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Employees\EmployeeController;
 use App\Http\Controllers\Departments\DepartmentController;
+use \App\Http\Controllers\Leaves\LeaveController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,9 +32,12 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
         Route::get('/{employee}', 'show')->name('show');
         Route::get('/editprofile/{employee}', 'editProfile')->name('editProfile');
         Route::put('/updateprofile/{employee}', 'updateProfile')->name('updateProfile');
+        Route::delete('/{employee}', 'destroy')->name('destroy');
+    });
+
+    Route::group(['prefix' => 'employees', 'middleware' => 'role:human_resource|employee'], function () {
         Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
         Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
-        Route::delete('/{employee}', 'destroy')->name('destroy');
     });
 });
 
@@ -46,3 +50,18 @@ Route::group(['middleware' => 'role:human_resource', 'controller' => DepartmentC
     Route::put('/update/{department}', 'update')->name('update');
     Route::delete('/{department}', 'destroy')->name('destroy');
 });
+
+Route::group(['middleware' => 'role:employee|supervisor|human_resource|sg', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
+    Route::get('/create', 'create')->name('create');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/', 'index')->name('index');
+});
+
+Route::group(['middleware' => 'role:supervisor|human_resource|sg', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
+    Route::post('/accept', 'accept')->name('accept');
+});
+
+
+Route::any('{url}', function () {
+    return redirect('/home');
+})->where('url', '.*');
