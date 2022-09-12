@@ -4,16 +4,20 @@ namespace App\Http\Controllers\Leaves;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LeaveRequests\StoreLeaveRequest;
-use App\Jobs\SendLeaveRequestEmailJob;
+use App\Jobs\SendLeaveRequestIncomingEmailJob;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Leave;
 use App\Models\LeaveType;
 use Spatie\Permission\Models\Role;
 use App\Services\LeaveService;
+use Illuminate\Http\Request;
 
 class LeaveController extends Controller
 {
+    const PENDING_STATUS = 0;
+
+
     public function create() {
         $employee = auth()->user();
         $leave_types = LeaveType::all();
@@ -58,16 +62,41 @@ class LeaveController extends Controller
         $leave->save();
 
         $processing_officers = Employee::role('human_resource')->get();
-        $email = new LeaveService();
-        $email->sendEmailToProcessingOfficers($processing_officers);
+        $leave_service = new LeaveService();
+        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers);
         return redirect()->route('employees.home');
     }
 
 
     public function index() {
         $employee_role = auth()->user()->roles()->first()->id;
-        $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', 0)->get();
+        $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->get();
         return view('leaves.index', ['leaves' => $leaves]);
     }
 
+    public function show(Leave $leave) {
+        {
+            return view('leaves.show', [
+                'leave' => $leave
+            ]);
+        }
+    }
+
+    public function accept(Leave $leave) {
+        $leave_service = new LeaveService();
+        $leave_service->checkProcessingOfficerandElevateRequest($leave);
+        return redirect()->route('leaves.index');
+    }
+
+    public function reject(Request $request, Leave $leave) {
+        $leave_service = new LeaveService();
+        $leave_service->rejectLeaveRequest($request, $leave);
+        return redirect()->route('leaves.index');
+    }
+
+//    public function downloadAttachment(Leave $leave) {
+//        $leave_service = new LeaveService();
+//        $leave_service->downloadAttachment($leave);
+//        return redirect()->route('leaves.index');
+//    }
 }

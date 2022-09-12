@@ -49,4 +49,12 @@ class Leave extends Model
     public function employee() {
         return $this->belongsTo(Employee::class);
     }
+
+    public function leave_type() {
+        return $this->belongsTo(LeaveType::class);
+    }
+
+    public function substitute_employee() {
+        return $this->belongsTo(Employee::class);
+    }
 }

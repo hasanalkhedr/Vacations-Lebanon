@@ -27,7 +27,7 @@ class DepartmentController extends Controller
         ]);
     }
 
-    public function show(Department $department) // Show single movie
+    public function show(Department $department)
     {
         $manager = Employee::where('id', $department->manager_id)->first();
         return view('departments.show', [

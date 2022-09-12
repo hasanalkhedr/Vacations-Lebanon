@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendLeaveRequestEmail extends Mailable
+class SendLeaveRequestIncomingEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,6 +29,6 @@ class SendLeaveRequestEmail extends Mailable
     public function build()
     {
         return $this->subject('Leave Request')
-            ->view('emails.leave-request');
+            ->view('emails.incoming-leave-request');
     }
 }

@@ -36,4 +36,8 @@ class LeaveType extends Model
     protected $casts = [
         //
     ];
+
+    public function leaves() {
+        return $this->hasMany(Leave::class);
+    }
 }

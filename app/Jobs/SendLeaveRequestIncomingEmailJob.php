@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\SendLeaveRequestEmail;
+use App\Mail\SendLeaveRequestIncomingEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,20 +11,20 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendLeaveRequestEmailJob implements ShouldQueue
+class SendLeaveRequestIncomingEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $employees_email;
+    protected $employee_email;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($employees_email)
+    public function __construct($employee_email)
     {
-        $this->employees_email = $employees_email;
+        $this->employee_email= $employee_email;
     }
 
     /**
@@ -34,7 +34,7 @@ class SendLeaveRequestEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        $email = new SendLeaveRequestEmail();
-        Mail::to($this->employees_email)->send($email);
+        $email = new SendLeaveRequestIncomingEmail();
+        Mail::to($this->employee_email)->send($email);
     }
 }

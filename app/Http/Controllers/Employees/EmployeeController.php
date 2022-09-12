@@ -8,6 +8,7 @@ use App\Http\Requests\EmployeesRequests\UpdateEmployeePasswordRequest;
 use App\Http\Requests\EmployeesRequests\UpdateEmployeeProfileRequest;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Services\EmployeeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -76,12 +77,13 @@ class EmployeeController
     }
 
     public function index() {
+        $employees = new EmployeeService();
         return view('employees.index', [
-            'employees' => Employee::whereNot('id', auth()->id())->get()
+            'employees' => $employees->getAppropriateEmployees()
         ]);
     }
 
-    public function show(Employee $employee) // Show single movie
+    public function show(Employee $employee)
     {
         return view('employees.show', [
             'employee' => $employee
