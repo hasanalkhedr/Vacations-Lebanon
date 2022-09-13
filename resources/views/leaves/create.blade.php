@@ -22,6 +22,7 @@
         @csrf
         <label for="from">From</label>
         <input
+            onchange="setMinDate()"
             type="date"
             name="from"
             min={{ $today->addDay() }}
@@ -73,6 +74,13 @@
             document.getElementById("reason").selectedIndex = 1;
         }
     }
+    function setMinDate() {
+        document.getElementById("fromInput").onchange = function () {
+            var input = document.getElementById("toInput");
+            input.setAttribute("min", this.value);
+        }
+    }
+
 </script>
 </body>
 </html>
