@@ -16,4 +16,5 @@ class EmployeeService
             return Employee::whereNot('id', auth()->id())->where('department_id', $loggedInUser->department_id)->get();
         }
     }
+
 }

@@ -25,19 +25,19 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
     Route::post('/logout', 'logout')->middleware('auth')->name('logout');
     Route::get('/home', 'home')->middleware('disable_back')->middleware('auth')->name('home');
 
-    Route::group(['prefix' => 'employees', 'middleware' => 'auth'], function () {
+    Route::group(['prefix' => 'employees', 'middleware' => 'role:human_resource'], function () {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
-        Route::get('/', 'index')->name('index');
-        Route::get('/{employee}', 'show')->name('show');
         Route::get('/editprofile/{employee}', 'editProfile')->name('editProfile');
         Route::put('/updateprofile/{employee}', 'updateProfile')->name('updateProfile');
+        Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
+        Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
         Route::delete('/{employee}', 'destroy')->name('destroy');
     });
 
-    Route::group(['prefix' => 'employees', 'middleware' => 'role:human_resource|employee'], function () {
-        Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
-        Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
+    Route::group(['prefix' => 'employees', 'middleware' => 'role:supervisor|human_resource|sg'], function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{employee}', 'show')->name('show');
     });
 });
 

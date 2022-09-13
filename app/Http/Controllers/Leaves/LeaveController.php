@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Leaves;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LeaveRequests\StoreLeaveRequest;
-use App\Jobs\SendLeaveRequestIncomingEmailJob;
-use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Leave;
 use App\Models\LeaveType;

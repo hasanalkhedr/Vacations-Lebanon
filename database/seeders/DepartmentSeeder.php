@@ -21,7 +21,7 @@ class DepartmentSeeder extends Seeder
             'AGENCE COMPTABLE',
             'AUDIOVISUEL',
             'CAMPUS FRANCE',
-            'COMMUnICATION',
+            'COMMUNICATION',
             'COURS DE LANGUE',
             'CULTUREL',
             'LINGUISTIQUE',

@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Create Leave Request</title>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 </head>
 <body>
 <h3>Today's Date: {{ $today->format('l d/m/y') }}</h3>
@@ -22,15 +23,17 @@
         @csrf
         <label for="from">From</label>
         <input
-            onchange="setMinDate()"
+            class="fromInput"
             type="date"
             name="from"
             min={{ $today->addDay() }}
         />
         <label for="to">To</label>
         <input
+            class="toInput"
             type="date"
             name="to"
+            min={{ $today->addDay() }}
         />
         <p>Travelling</p>
         <input type="radio" name="travelling" value=1>
@@ -38,7 +41,7 @@
         <input type="radio" name="travelling" value=0>
         <label for="css">No</label>
 
-        <select name='leave_type_id' onchange="enableOrDisableReason(this);">
+        <select name='leave_type_id'>
             <option value="" disabled>Choose Leave Type</option>
             @if(count($leave_types))
                 @foreach ($leave_types as $leave_type)
@@ -55,7 +58,7 @@
         />
         <select name='substitute_employee_id'>
             <option value="" disabled>Choose Substitute Employee</option>
-            <option value="">None</option>
+            <option value="">No Replacement</option>
             @if(count($substitutes))
                 @foreach ($substitutes as $substitute)
                     <option value="{{ $substitute->id }}">{{ $substitute->first_name }} {{ $substitute->last_name }}</option>
@@ -66,20 +69,15 @@
     </form>
 
 <script type="text/javascript">
-    function enableOrDisableReason(that) {
-        if (that.value == 8) {
-            document.getElementById("reason").disabled = false;
-        } else {
-            document.getElementById("reason").disabled = true;
-            document.getElementById("reason").selectedIndex = 1;
+    $('.fromInput').change(function(){
+        let fromDate = $('.fromInput').val();
+        let toDate = $('.toInput').val();
+        if(fromDate>toDate) {
+            $(".toInput").attr("min", fromDate);
+            $(".toInput").val(fromDate);
+            toDate = $('.toInput').val();
         }
-    }
-    function setMinDate() {
-        document.getElementById("fromInput").onchange = function () {
-            var input = document.getElementById("toInput");
-            input.setAttribute("min", this.value);
-        }
-    }
+    });
 
 </script>
 </body>

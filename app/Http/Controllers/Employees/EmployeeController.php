@@ -85,9 +85,25 @@ class EmployeeController
 
     public function show(Employee $employee)
     {
-        return view('employees.show', [
-            'employee' => $employee
-        ]);
+        $loggedInUser = auth()->user();
+        $loggedInUserRoleName = $loggedInUser->roles()->first()->name;
+        if($loggedInUserRoleName == "supervisor") {
+            if($employee->department->id == $loggedInUser->department->id)
+                return view('employees.show', [
+                    'employee' => $employee
+                ]);
+        }
+        if($loggedInUserRoleName == "human_resource" || $loggedInUserRoleName == "sg") {
+            return view('employees.show', [
+                'employee' => $employee
+            ]);
+        }
+        if($loggedInUser == $employee) {
+            return view('employees.show', [
+                'employee' => $employee
+            ]);
+        }
+        return back();
     }
 
     public function editProfile(Employee $employee)

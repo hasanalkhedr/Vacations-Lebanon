@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Jobs\SendLeaveRequestAcceptedEmailJob;
 use App\Jobs\SendLeaveRequestIncomingEmailJob;
 use App\Jobs\SendLeaveRequestRejectedEmailJob;
-use App\Mail\SendLeaveRequestAcceptedEmail;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
