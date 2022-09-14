@@ -19,22 +19,9 @@
 </head>
 
 <body>
-<nav class="fixed z-30 w-full bg-white border-b-2 border-indigo-600 flex justify-between">
-    <div class="px-6 py-3 text-xl font-bold text-blue-800">
-        {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
-    </div>
-    <div class="px-6 py-3 text-xl font-bold text-black">
-        <form method="POST" action="{{ route('employees.logout') }}">
-            @csrf
-            <button type="submit">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </button>
-        </form>
-    </div>
-</nav>
-<div class="pt-12 lg:flex">
-    <div class="flex flex-col w-full px-4 py-8 overflow-y-auto border-b lg:border-r lg:h-screen lg:w-64">
-        <div class="flex flex-col justify-between mt-6">
+<div class="lg:flex ">
+    <div class="pt-12 flex flex-col w-full px-4 overflow-y-auto lg:h-screen lg:w-64 bg-gray-100 rounded ">
+        <div class="flex flex-col justify-between">
             <aside class="fixed">
                 <ul>
                     @unless(auth()->user()->roles()->first()->name == "employee" || auth()->user()->roles()->first()->name == "supervisor")
@@ -71,13 +58,25 @@
 
         </div>
     </div>
-    <div class="w-full h-full overflow-y-auto">
+    <div class="pt-12 w-full h-full overflow-y-auto">
+        <nav class="w-full bg-white border-b-2 border-indigo-600 flex justify-between">
+            <div class="px-6 py-3 text-xl font-bold text-blue-800">
+                {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+            </div>
+            <div class="px-6 py-3 text-xl font-bold text-black">
+                <form method="POST" action="{{ route('employees.logout') }}">
+                    @csrf
+                    <button type="submit">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </nav>
         <div>
             {{ $slot }}
         </div>
     </div>
 </div>
-
 <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
 </body>
 

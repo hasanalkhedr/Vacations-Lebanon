@@ -10,10 +10,10 @@ class EmployeeService
         $loggedInUser = auth()->user();
         $loggedInUserRoleName = $loggedInUser->roles()->first()->name;
         if($loggedInUserRoleName == 'human_resource' || $loggedInUserRoleName == 'sg') {
-            return Employee::whereNot('id', auth()->id())->get();
+            return Employee::whereNot('id', auth()->id())->search(request(['search']))->paginate(10);
         }
         else {
-            return Employee::whereNot('id', auth()->id())->where('department_id', $loggedInUser->department_id)->get();
+            return Employee::whereNot('id', auth()->id())->where('department_id', $loggedInUser->department_id)->search(request(['search']))->paginate(10);
         }
     }
 
