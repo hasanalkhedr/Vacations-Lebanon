@@ -14,14 +14,20 @@
         @csrf
         <h1 class="text-center text-3xl">Sign In</h1>
         <div class="flex flex-col space-y-2">
-            <label class="text-sm font-light" for="email">Email</label>
+            <label class="text-sm" for="email">Email</label>
             <input class="w-96 px-3 py-2 rounded-md border border-slate-400" type="email" placeholder="Your Email"
                    name="email" id="email">
+            @error('email')
+            <p class="text-red-500 text-xs mt-1"></p>{{ $message }}
+            @enderror
         </div>
         <div class="flex flex-col space-y-2">
-            <label class="text-sm font-light" for="password">Password</label>
+            <label class="text-sm" for="password">Password</label>
             <input class="w-96 px-3 py-2 rounded-md border border-slate-400" type="password"
                    placeholder="Your Password" name="password" id="password">
+            @error('password')
+            <p class="text-red-500 text-xs mt-1"></p>{{ $message }}
+            @enderror
         </div>
 
         <button class="w-full px-10 py-2 bg-blue-600 text-white rounded-md

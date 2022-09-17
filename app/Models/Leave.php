@@ -46,6 +46,16 @@ class Leave extends Model
         //
     ];
 
+    public function scopeSearch($query, array $filters)
+    {
+        if ($filters['search'] ?? false) {
+            $query->whereHas('employee', function ($q) {
+                    $q->where('first_name', 'like', '%' . request('search') . '%')
+                        ->orwhere('last_name', 'like', '%' . request('search') . '%');
+                });;
+        };
+    }
+
     public function employee() {
         return $this->belongsTo(Employee::class);
     }

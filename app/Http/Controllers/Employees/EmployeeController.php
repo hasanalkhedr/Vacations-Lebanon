@@ -28,7 +28,7 @@ class EmployeeController
             if ($employee->hasRole('employee')) {
                 return response()->json(['status' => 'OK', 'employee' => $employee, 'role' => 'employee']);
             } elseif ($employee->hasRole('human_resource')) {
-                return redirect()->route('departments.create');
+                return redirect()->route('departments.index');
             } elseif ($employee->hasRole('supervisor')) {
                 return response()->json(['status' => 'OK', 'employee' => $employee, 'role' => 'supervisor']);
             } else {
@@ -66,7 +66,7 @@ class EmployeeController
         $employee->save();
 
         $employee->roles()->save($role);
-        return redirect()->route('employees.home');
+        return redirect()->route('employees.index');
     }
 
     public function logout(Request $request) {
@@ -78,8 +78,12 @@ class EmployeeController
 
     public function index() {
         $employees = new EmployeeService();
+        $departments = Department::all();
+        $roles = Role::all();
         return view('employees.index', [
-            'employees' => $employees->getAppropriateEmployees()
+            'employees' => $employees->getAppropriateEmployees(),
+            'departments' => $departments,
+            'roles' => $roles
         ]);
     }
 
@@ -132,7 +136,7 @@ class EmployeeController
             $employee['department_id'] = $request['department_id'];
         }
         $employee->save();
-        return redirect()->route('employees.show', ['employee' => $employee]);
+        return redirect()->route('employees.index');
     }
 
     public function editPassword(Employee $employee)

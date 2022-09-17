@@ -48,7 +48,11 @@
             @if(count($roles))
                 @foreach ($roles as $role)
                     @unless($role->id == \Spatie\Permission\Models\Role::findByName('supervisor')->id)
-                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                        @if($role->id == $employee->roles()->first()->id)
+                            <option value="{{ $role->id }}" selected>{{ $role->name }}</option>
+                        @else
+                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                        @endif
                     @endunless
                 @endforeach
             @endif

@@ -36,11 +36,22 @@ class Department extends Model
         //
     ];
 
+    public function scopeSearch($query, array $filters)
+    {
+        if ($filters['search'] ?? false) {
+            $query->where('name', 'like', '%' . request('search') . '%')
+                ->orwhereHas('manager', function ($q) {
+                    $q->where('first_name', 'like', '%' . request('search') . '%')
+                        ->orwhere('last_name', 'like', '%' . request('search') . '%');
+                });;
+        };
+    }
+
     public function employees() {
         return $this->hasMany(Employee::class);
     }
 
     public function manager() {
-        return $this->hasOne(Employee::class);
+        return $this->hasOne(Employee::class, 'id' , 'manager_id');
     }
 }

@@ -18,12 +18,12 @@ class DepartmentController extends Controller
         $validate = $request->validated();
         $department = Department::create($validate);
         $department->save();
-        return redirect()->route('employees.home');
+        return redirect()->route('departments.index');
     }
 
     public function index() {
         return view('departments.index', [
-            'departments' => Department::all()
+            'departments' => Department::search(request(['search']))->paginate(10)
         ]);
     }
 
@@ -46,7 +46,7 @@ class DepartmentController extends Controller
     {
         $validated = $request->validated();
         $department->update($validated);
-        return redirect()->route('departments.show', ['department' => $department]);
+        return redirect()->route('departments.index');
     }
 
     public function destroy(Department $department)

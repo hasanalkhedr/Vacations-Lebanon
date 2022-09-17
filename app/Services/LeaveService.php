@@ -37,7 +37,8 @@ class LeaveService
             case ('human_resource'):
                 $role_supervisor = Role::findByName('supervisor');
                 $leave->processing_officer_role = $role_supervisor->id;
-                $processing_officers = Employee::role('supervisor')->get();
+                $supervisor_id = $leave->employee->department->manager->id;
+                $processing_officers = Employee::where('id', $supervisor_id)->get();
                 break;
             case ('supervisor'):
                 $role_sg = Role::findByName('sg');
@@ -49,7 +50,7 @@ class LeaveService
                 break;
         }
         $leave->save();
-        $this->sendEmailToInvolvedEmployees($leave);
+        $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
     }
 
     public function rejectLeaveRequest($request, $leave) {

@@ -67,9 +67,28 @@ class LeaveController extends Controller
 
 
     public function index() {
-        $employee_role = auth()->user()->roles()->first()->id;
-        $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->get();
-        return view('leaves.index', ['leaves' => $leaves]);
+        $employee=auth()->user();
+        $leave_types = LeaveType::all();
+        $today = now();
+        $employee_role = $employee->roles()->first()->id;
+        $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+        if($employee->roles()->first()->name == 'human_resource') {
+            $substitutes = Employee::role('human_resource')->get()->except($employee->id);
+        }
+        elseif ($employee->roles()->first()->name == 'sg'){
+            $substitutes = Employee::role('sg')->get()->except($employee->id);
+        }
+        else{
+            $substitutes = Employee::where('department_id', $employee->department_id)->get()->except($employee->id);
+        }
+        return view('leaves.index', [
+            'leaves' => $leaves,
+            'employee' => $employee,
+            'leave_types' => $leave_types,
+            'today' => $today,
+            'department' => $employee->department,
+            'substitutes' => $substitutes
+        ]);
     }
 
     public function show(Leave $leave) {
