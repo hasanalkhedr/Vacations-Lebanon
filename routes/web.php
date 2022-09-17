@@ -44,11 +44,14 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
 Route::group(['middleware' => 'role:human_resource', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
-    Route::get('/', 'index')->name('index');
     Route::get('/{department}', 'show')->name('show');
     Route::get('/edit/{department}', 'edit')->name('edit');
     Route::put('/update/{department}', 'update')->name('update');
     Route::delete('/{department}', 'destroy')->name('destroy');
+});
+
+Route::group(['middleware' => 'auth', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
+    Route::get('/', 'index')->name('index');
 });
 
 Route::group(['middleware' => 'role:employee|supervisor|human_resource|sg', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
