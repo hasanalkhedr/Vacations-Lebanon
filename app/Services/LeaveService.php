@@ -47,6 +47,7 @@ class LeaveService
                 break;
             case ('sg'):
                 $leave->leave_status = self::ACCEPTED_STATUS;
+                $processing_officers = NULL;
                 break;
         }
         $leave->save();

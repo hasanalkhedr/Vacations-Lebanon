@@ -25,15 +25,7 @@ class EmployeeController
         if (auth()->attempt($validated)) {
             $employee = auth()->user();
             $request->session()->regenerate();
-            if ($employee->hasRole('employee')) {
-                return response()->json(['status' => 'OK', 'employee' => $employee, 'role' => 'employee']);
-            } elseif ($employee->hasRole('human_resource')) {
-                return redirect()->route('departments.index');
-            } elseif ($employee->hasRole('supervisor')) {
-                return response()->json(['status' => 'OK', 'employee' => $employee, 'role' => 'supervisor']);
-            } else {
-                return response()->json(['status' => 'OK', 'employee' => $employee, 'role' => 'sg']);
-            }
+            return redirect()->route('departments.index');
         }
         else {
             return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');

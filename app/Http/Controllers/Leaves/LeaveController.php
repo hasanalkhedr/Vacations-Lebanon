@@ -71,7 +71,14 @@ class LeaveController extends Controller
         $leave_types = LeaveType::all();
         $today = now();
         $employee_role = $employee->roles()->first()->id;
-        $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+        if($employee_role == "supervisor"){
+            $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+        }
+        else {
+            $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+
+        }
+
         if($employee->roles()->first()->name == 'human_resource') {
             $substitutes = Employee::role('human_resource')->get()->except($employee->id);
         }
