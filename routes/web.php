@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('leaves.index');
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
     Route::get('/login', 'login')->middleware('disable_back')->middleware('guest')->name('login');

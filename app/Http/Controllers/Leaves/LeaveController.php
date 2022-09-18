@@ -91,7 +91,6 @@ class LeaveController extends Controller
         }
         else {
             $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
-
         }
 
         if($employee->roles()->first()->name == 'human_resource') {
