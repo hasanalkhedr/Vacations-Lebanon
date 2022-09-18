@@ -46,6 +46,7 @@ class LeaveService
                 $processing_officers = Employee::role('sg')->get();
                 break;
             case ('sg'):
+                $this->updateNbOfDaysOff($leave);
                 $leave->leave_status = self::ACCEPTED_STATUS;
                 $processing_officers = NULL;
                 break;
@@ -66,5 +67,13 @@ class LeaveService
 //    public function downloadAttachment($leave) {
 //        Storage::download('/public/' . $leave->attachment_path);
 //    }
+
+    public function updateNbOfDaysOff($leave) {
+        $employee = $leave->employee;
+        $nb_of_days_off = (new \DateTime($leave->from))->diff(new \DateTime($leave->to))->days + 1;
+        $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
+        $employee->save();
+        dd($employee);
+    }
 
 }
