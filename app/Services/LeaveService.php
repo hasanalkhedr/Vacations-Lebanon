@@ -31,14 +31,21 @@ class LeaveService
     }
 
     public function checkProcessingOfficerandElevateRequest($leave) {
+        $employee = $leave->employee;
         $processing_officer_role = $leave->processing_officer_role;
         $role = Role::findById($processing_officer_role);
         switch ($role->name){
             case ('human_resource'):
-                $role_supervisor = Role::findByName('supervisor');
-                $leave->processing_officer_role = $role_supervisor->id;
-                $supervisor_id = $leave->employee->department->manager->id;
-                $processing_officers = Employee::where('id', $supervisor_id)->get();
+                if($employee->roles()->first()->name == "employee"){
+                    $officer_role = Role::findByName('supervisor');
+                    $supervisor_id = $leave->employee->department->manager->id;
+                    $processing_officers = Employee::where('id', $supervisor_id)->get();
+                }
+                else {
+                    $officer_role = Role::findByName('sg');
+                    $processing_officers = Employee::role('sg')->get();
+                }
+                $leave->processing_officer_role = $officer_role->id;
                 break;
             case ('supervisor'):
                 $role_sg = Role::findByName('sg');
@@ -46,8 +53,7 @@ class LeaveService
                 $processing_officers = Employee::role('sg')->get();
                 break;
             case ('sg'):
-                $this->updateNbOfDaysOff($leave);
-                $leave->leave_status = self::ACCEPTED_STATUS;
+                $this->acceptLeave($leave);
                 $processing_officers = NULL;
                 break;
         }
@@ -73,7 +79,12 @@ class LeaveService
         $nb_of_days_off = (new \DateTime($leave->from))->diff(new \DateTime($leave->to))->days + 1;
         $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
         $employee->save();
-        dd($employee);
+    }
+
+    public function acceptLeave($leave) {
+        $this->updateNbOfDaysOff($leave);
+        $leave->leave_status = self::ACCEPTED_STATUS;
+        $leave->save();
     }
 
 }

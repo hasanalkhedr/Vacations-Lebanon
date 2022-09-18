@@ -55,14 +55,29 @@ class LeaveController extends Controller
         if($request['substitute_employee_id']) {
             $leave->substitute_employee_id = $request['substitute_employee_id'];
         }
-        $role = Role::findByName('human_resource');
-        $leave->processing_officer_role = $role->id;
-        $leave->save();
-
-        $processing_officers = Employee::role('human_resource')->get();
         $leave_service = new LeaveService();
+        $leave_employee_role = $leave->employee->roles()->first()->name;
+        if($leave_employee_role == "employee" || $leave_employee_role == "supervisor") {
+            $role = Role::findByName('human_resource');
+            $processing_officers = Employee::role('human_resource')->get();
+            $leave->processing_officer_role = $role->id;
+            $leave->save();
+        }
+        elseif($leave_employee_role == "human_resource") {
+            $role = Role::findByName('sg');
+            $processing_officers = Employee::role('sg')->get();
+            $leave->processing_officer_role = $role->id;
+            $leave->save();
+        }
+        else {
+            $role = Role::findByName('sg');
+            $leave->processing_officer_role = $role->id;
+            $leave->save();
+            $processing_officers = NULL;
+            $leave_service->acceptLeave($leave);
+        }
         $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers);
-        return redirect()->route('employees.home');
+        return redirect()->route('leaves.index');
     }
 
 

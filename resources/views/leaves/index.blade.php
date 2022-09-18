@@ -42,14 +42,23 @@
                             {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                         </td>
                         <td class="py-4 px-6 border-b">
-                            {{$leave->employee->department->name}}
+                            @if($leave->employee->department)
+                                {{$leave->employee->department->name}}
+                            @else
+                                -
+                            @endif
                         </td>
                         <td class="py-4 px-6 border-b">
-                            @if($leave->employee->id == $leave->employee->department->manager->id)
-                                -
+                            @if($leave->employee->department)
+                                @if($leave->employee->id == $leave->employee->department->manager->id)
+                                    -
+                                @else
+                                    {{$leave->employee->department->manager->first_name}} {{$leave->employee->department->manager->last_name}}
+                                @endif
                             @else
-                                {{$leave->employee->department->manager->first_name}} {{$leave->employee->department->manager->last_name}}
-                             @endif
+                                -
+                            @endif
+
                         </td>
                         <td class="py-4 px-6 text-right border-b">
                             <button class="font-medium text-green-600 dark:text-green-500 hover:underline" type="button"
