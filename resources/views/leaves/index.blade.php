@@ -1,13 +1,16 @@
 <x-sidebar>
     @section('title', 'Leave Requests')
-    <nav class="flex justify-between px-6 py-3 text-lg text-black font-bold">
-        <div>
-            Leaves
+    @push('head')
+        <script src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
+    @endpush
+    <nav class="flex justify-between items-center p-2 text-black font-bold">
+        <div class="text-lg">
+            Leave Requests
         </div>
         <div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
                     data-modal-toggle="createModal">
-                Submit Leave
+                Submit Leave Request
             </button>
         </div>
     </nav>
@@ -244,29 +247,36 @@
                     <div class="p-6">
                         <form method="POST" action="{{ route('leaves.store') }}">
                             @csrf
-                            <div class="grid md:grid-cols-2 md:gap-6">
-                                <div class="relative z-0 mb-6 w-full group">
-                                    <input type="date" name="from"
-                                           class="fromInput block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                           required min={{ $today->addDay() }}/>
-                                    <label for="from"
-                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">From</label>
-                                    @error('from')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div class="relative z-0 mb-6 w-full group">
-                                    <input type="date" name="to"
-                                           class="toInput block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                           required min={{ $today->addDay() }}/>
-                                    <label for="to"
-                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">To</label>
-                                    @error('to')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
                             <div class="relative z-0 mb-6 w-full group">
+                                <label for="leave_duration_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Leave Duration</label>
+                                <select name="leave_duration_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="" disabled>Choose Leave Duration</option>
+                                    @if(count($leave_durations))
+                                        @foreach ($leave_durations as $leave_duration)
+                                            <option value="{{ $leave_duration->id }}">{{ $leave_duration->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div class="w-full">
+{{--                                <div date-rangepicker class="flex items-center">--}}
+{{--                                    <div class="relative">--}}
+{{--                                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">--}}
+{{--                                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>--}}
+{{--                                        </div>--}}
+{{--                                        <input name="from" id="from" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">--}}
+{{--                                    </div>--}}
+{{--                                    <span class="mx-4 text-gray-500">to</span>--}}
+{{--                                    <div class="relative">--}}
+{{--                                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">--}}
+{{--                                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>--}}
+{{--                                        </div>--}}
+{{--                                        <input name="to" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+                                <input type="text" id="rangeDate" placeholder="Please select Date Range" data-input>
+                            </div>
+                            <div class="relative z-0 mt-2 mb-6 w-full group">
                                 <p>Travelling</p>
                                 <div class="flex flex-row">
                                     <input type="radio" name="travelling" value=1>
@@ -300,7 +310,7 @@
                                 @enderror
                             </div>
                             <div class="relative z-0 mb-6 w-full group">
-                                <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
+                                <label for="substitute_employee_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                     Substitute</label>
                                 <select name="substitute_employee_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     <option value="" disabled>Choose Substitute Employee</option>
@@ -311,7 +321,6 @@
                                         @endforeach
                                     @endif
                                 </select>
-
                             </div>
                             <div
                                 class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
@@ -406,7 +415,21 @@
                 toDate = $('.toInput').val();
             }
         });
-
     </script>
 
+    <script type="text/javascript">
+        $("#rangeDate").flatpickr({
+            mode: 'range',
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            disable: [
+                function(date) {
+                    return (date.getDay() === 0 || date.getDay() === 6);
+                }
+            ],
+            locale: {
+                firstDayOfWeek: 1
+            }
+        });
+    </script>
 </x-sidebar>

@@ -16,6 +16,7 @@ class Leave extends Model
      */
     protected $fillable = [
         'employee_id',
+        'leave_duration_id',
         'from',
         'to',
         'travelling',
@@ -62,6 +63,10 @@ class Leave extends Model
 
     public function leave_type() {
         return $this->belongsTo(LeaveType::class);
+    }
+
+    public function leave_duration() {
+        return $this->belongsTo(LeaveDuration::class);
     }
 
     public function substitute_employee() {

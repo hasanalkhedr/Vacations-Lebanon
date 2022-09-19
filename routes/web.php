@@ -20,9 +20,9 @@ Route::get('/', function () {
     return redirect()->route('leaves.index');
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
-    Route::get('/login', 'login')->middleware('disable_back')->middleware('guest')->name('login');
+//    Route::get('/login', 'login')->middleware('disable_back')->middleware('guest')->name('login');
     Route::post('/authenticate', 'authenticate')->middleware('guest')->name('authenticate');
-    Route::post('/logout', 'logout')->middleware('auth')->name('logout');
+//    Route::post('/logout', 'logout')->middleware('auth')->name('logout');
     Route::get('/home', 'home')->middleware('disable_back')->middleware('auth')->name('home');
 
     Route::group(['prefix' => 'employees', 'middleware' => 'role:human_resource'], function () {
@@ -66,6 +66,9 @@ Route::group(['middleware' => 'role:supervisor|human_resource|sg', 'controller' 
     Route::post('/accept/{leave}', 'accept')->name('accept');
     Route::post('/reject/{leave}', 'reject')->name('reject');
 });
+
+
+Auth::routes();
 
 
 Route::any('{url}', function () {

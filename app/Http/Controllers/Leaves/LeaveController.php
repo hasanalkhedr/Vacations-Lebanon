@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LeaveRequests\StoreLeaveRequest;
 use App\Models\Employee;
 use App\Models\Leave;
+use App\Models\LeaveDuration;
 use App\Models\LeaveType;
 use Spatie\Permission\Models\Role;
 use App\Services\LeaveService;
@@ -43,6 +44,7 @@ class LeaveController extends Controller
         $validated = $request->validated();
         $leave = Leave::create([
             'employee_id' => auth()->user()->id,
+            'leave_duration_id' => $validated['leave_duration_id'],
             'from' => $validated['from'],
             'to' => $validated['to'],
             'travelling' => $validated['travelling'],
@@ -83,6 +85,7 @@ class LeaveController extends Controller
 
     public function index() {
         $employee=auth()->user();
+        $leave_durations = LeaveDuration::all();
         $leave_types = LeaveType::all();
         $today = now();
         $employee_role = $employee->roles()->first()->id;
@@ -105,6 +108,7 @@ class LeaveController extends Controller
         return view('leaves.index', [
             'leaves' => $leaves,
             'employee' => $employee,
+            'leave_durations' => $leave_durations,
             'leave_types' => $leave_types,
             'today' => $today,
             'department' => $employee->department,

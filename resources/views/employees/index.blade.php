@@ -1,11 +1,11 @@
 <x-sidebar>
     @section('title', 'Employees')
-    <nav class="flex justify-between px-6 py-3 text-lg text-black font-bold">
-        <div>
+    <nav class="flex justify-between items-center p-2 text-black font-bold">
+        <div class="text-lg">
             Users
         </div>
         <div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
                     data-modal-toggle="createModal">
                 Add User
             </button>

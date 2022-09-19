@@ -24,6 +24,7 @@ class StoreLeaveRequest extends FormRequest
     public function rules()
     {
         return [
+            'leave_duration_id' => ['required'],
             'from' => ['required', 'date'],
             'to' => ['required', 'date'],
             'travelling' => ['required'],

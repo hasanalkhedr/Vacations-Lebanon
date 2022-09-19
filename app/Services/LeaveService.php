@@ -77,6 +77,10 @@ class LeaveService
     public function updateNbOfDaysOff($leave) {
         $employee = $leave->employee;
         $nb_of_days_off = (new \DateTime($leave->from))->diff(new \DateTime($leave->to))->days + 1;
+        $leave_duration_name = $leave->leave_duration->name;
+        if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
+            $nb_of_days_off = $nb_of_days_off / 2;
+        }
         $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
         $employee->save();
     }

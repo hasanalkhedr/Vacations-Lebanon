@@ -1,19 +1,19 @@
 <x-sidebar>
     @section('title', 'Departments')
-    <nav class="flex justify-between p-2 text-lg text-black font-bold">
-        <div>
+    <nav class="flex justify-between items-center p-2 text-black font-bold">
+        <div class="text-lg">
             Departments
         </div>
         <div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
                     data-modal-toggle="createModal">
                 Add Department
             </button>
         </div>
     </nav>
     @include('partials.searches._search-departments')
-    <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+    <div class="mx-2 overflow-x-auto relative shadow-md sm:rounded-lg">
+        <table x-data="data()" class=" w-full text-sm text-left text-gray-500 dark:text-gray-400"
                x-data="departmentData">
             @unless($departments->isEmpty())
             <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -276,7 +276,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="mt-6 p-4">
@@ -336,4 +335,4 @@
         }
 
     </script>
-</x-sidebar>>
+</x-sidebar>
