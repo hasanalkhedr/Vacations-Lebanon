@@ -6,6 +6,7 @@ use App\Jobs\SendLeaveRequestAcceptedEmailJob;
 use App\Jobs\SendLeaveRequestIncomingEmailJob;
 use App\Jobs\SendLeaveRequestRejectedEmailJob;
 use App\Models\Employee;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
@@ -76,7 +77,14 @@ class LeaveService
 
     public function updateNbOfDaysOff($leave) {
         $employee = $leave->employee;
-        $nb_of_days_off = (new \DateTime($leave->from))->diff(new \DateTime($leave->to))->days + 1;
+        $period = CarbonPeriod::create($leave->from, $leave->to);
+        $nb_of_days_off = 0;
+        foreach ($period as $date) {
+            if(!$this->isWeekend($date)){
+                $nb_of_days_off = $nb_of_days_off + 1;
+            }
+        }
+        $nb_of_days_off = $nb_of_days_off - 1;
         $leave_duration_name = $leave->leave_duration->name;
         if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
             $nb_of_days_off = $nb_of_days_off / 2;
@@ -89,6 +97,10 @@ class LeaveService
         $this->updateNbOfDaysOff($leave);
         $leave->leave_status = self::ACCEPTED_STATUS;
         $leave->save();
+    }
+
+    function isWeekend($date) {
+        return (date('N', strtotime($date)) == 0 || date('N', strtotime($date)) == 6);
     }
 
 }

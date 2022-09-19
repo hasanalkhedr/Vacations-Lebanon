@@ -8,13 +8,14 @@
             Leave Requests
         </div>
         <div>
+            <a href="{{ url(route('leaves.create')) }}">
             <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
-                    data-modal-toggle="createModal">
+                    >
                 Submit Leave Request
             </button>
+            </a>
         </div>
     </nav>
-
     @include('partials.searches._search-leaves')
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="leaveData">
@@ -258,30 +259,29 @@
                                     @endif
                                 </select>
                             </div>
-                            <div class="w-full">
-{{--                                <div date-rangepicker class="flex items-center">--}}
-{{--                                    <div class="relative">--}}
-{{--                                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">--}}
-{{--                                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>--}}
-{{--                                        </div>--}}
-{{--                                        <input name="from" id="from" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">--}}
-{{--                                    </div>--}}
-{{--                                    <span class="mx-4 text-gray-500">to</span>--}}
-{{--                                    <div class="relative">--}}
-{{--                                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">--}}
-{{--                                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>--}}
-{{--                                        </div>--}}
-{{--                                        <input name="to" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-                                <input type="text" id="rangeDate" placeholder="Please select Date Range" data-input>
+                            <div class="grid md:grid-cols-2 md:gap-6">
+                                <div class="relative z-0 w-full group flex flex-col">
+                                    <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
+                                    <input type="text" name="from" id="fromDate" placeholder="Please select Date Range" data-input>
+                                    @error('from')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="relative z-0 mb-6 w-full group flex flex-col">
+                                    <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
+                                    <input type="text" name="to" id="toDate" placeholder="Please select Date Range" data-input>
+                                    @error('to')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
-                            <div class="relative z-0 mt-2 mb-6 w-full group">
+
+                            <div class="relative z-0 mb-6 w-full group">
                                 <p>Travelling</p>
-                                <div class="flex flex-row">
+                                <div class="mt-2 flex flex-row">
                                     <input type="radio" name="travelling" value=1>
                                     <label for="html" class="mx-2">Yes</label><br>
-                                    <input type="radio" name="travelling" value=0>
+                                    <input type="radio" name="travelling" value=0 checked>
                                     <label for="css" class="mx-2">No</label>
                                 </div>
                                 @error('travelling')
@@ -304,7 +304,7 @@
                                 <input type="file" name="attachment_path"
                                        class="block pt-2.5 px-0 w-full text-sm text-gray-900 bg-transparent appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
                                 <label for="attachment_path"
-                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label>
+                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Attachment</label>
                                 @error('attachment_path')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -322,6 +322,21 @@
                                     @endif
                                 </select>
                             </div>
+
+                            <div class="relative z-0 mb-6 w-full group">
+                                <label for="substitute_employee_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
+                                    Substitute</label>
+                                <select name="substitute_employee_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="" disabled>Choose Substitute Employee</option>
+                                    <option value="">No Replacement</option>
+                                    @if(count($substitutes))
+                                        @foreach ($substitutes as $substitute)
+                                            <option value="{{ $substitute->id }}">{{ $substitute->first_name }} {{ $substitute->last_name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+
                             <div
                                 class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
                                 <div>
@@ -406,20 +421,34 @@
     </script>
 
     <script type="text/javascript">
-        $('.fromInput').change(function(){
-            let fromDate = $('.fromInput').val();
-            let toDate = $('.toInput').val();
+        $('#fromDate').change(function(){
+            let fromDate = $('#fromDate').val();
+            let toDate = $('#toDate').val();
             if(fromDate>toDate) {
-                $(".toInput").attr("min", fromDate);
-                $(".toInput").val(fromDate);
-                toDate = $('.toInput').val();
+                $("#toDate").val(fromDate);
+                toDate = $('#toDate').val();
             }
         });
     </script>
 
     <script type="text/javascript">
-        $("#rangeDate").flatpickr({
-            mode: 'range',
+        let frompicker = $("#fromDate").flatpickr({
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            disable: [
+                function(date) {
+                    return (date.getDay() === 0 || date.getDay() === 6);
+                }
+            ],
+            locale: {
+                firstDayOfWeek: 1
+            },
+            onClose: function(selectedDates, dateStr, instance) {
+                topicker.set('minDate', dateStr);
+            },
+        });
+
+        let topicker = $("#toDate").flatpickr({
             minDate: "today",
             dateFormat: "Y-m-d",
             disable: [
@@ -431,5 +460,6 @@
                 firstDayOfWeek: 1
             }
         });
+
     </script>
 </x-sidebar>

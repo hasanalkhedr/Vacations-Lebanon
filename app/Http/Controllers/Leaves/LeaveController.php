@@ -8,6 +8,8 @@ use App\Models\Employee;
 use App\Models\Leave;
 use App\Models\LeaveDuration;
 use App\Models\LeaveType;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Spatie\Permission\Models\Role;
 use App\Services\LeaveService;
 use Illuminate\Http\Request;
@@ -19,6 +21,7 @@ class LeaveController extends Controller
 
     public function create() {
         $employee = auth()->user();
+        $leave_durations = LeaveDuration::all();
         $leave_types = LeaveType::all();
         $today = now();
         if($employee->roles()->first()->name == 'human_resource') {
@@ -32,11 +35,11 @@ class LeaveController extends Controller
         }
         return view('leaves.create',[
             'employee' => $employee,
+            'leave_durations' => $leave_durations,
             'leave_types' => $leave_types,
             'today' => $today,
             'department' => $employee->department,
             'substitutes' => $substitutes,
-
         ]);
     }
 
