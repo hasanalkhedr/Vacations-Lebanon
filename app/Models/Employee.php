@@ -23,6 +23,7 @@ class Employee extends Authenticatable
         'password',
         'phone_number',
         'nb_of_days',
+        'confessionnels',
         'department_id'
     ];
 

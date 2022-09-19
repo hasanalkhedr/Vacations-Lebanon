@@ -5,7 +5,7 @@
     @endpush
     <nav class="flex justify-between items-center p-2 text-black font-bold">
         <div class="text-lg">
-            Leave Requests
+            Incoming Leave Requests
         </div>
         <div>
             <a href="{{ url(route('leaves.create')) }}">
@@ -17,7 +17,7 @@
         </div>
     </nav>
     @include('partials.searches._search-leaves')
-    <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+    <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="leaveData">
             @unless($leaves->isEmpty())
                 <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -42,17 +42,17 @@
                 <tbody x-ref="tbody">
                 @foreach ($leaves as $leave)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                         </td>
-                        <td class="py-4 px-6 border-b">
+                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             @if($leave->employee->department)
                                 {{$leave->employee->department->name}}
                             @else
                                 -
                             @endif
                         </td>
-                        <td class="py-4 px-6 border-b">
+                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             @if($leave->employee->department)
                                 @if($leave->employee->id == $leave->employee->department->manager->id)
                                     -

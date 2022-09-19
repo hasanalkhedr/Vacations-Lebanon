@@ -40,10 +40,10 @@
             <tbody x-ref="tbody">
                 @foreach ($employees as $employee)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('employees.show', ['employee' => $employee->id])) }}'">
                             {{ $employee->first_name }} {{ $employee->last_name }}
                         </td>
-                        <td class="py-4 px-6 border-b">
+                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url('employees.show', ['employee' => $employee->id]) }}'">
                             @if($employee->department == NULL)
                                 <div class="font-bold">
                                     -
@@ -52,13 +52,13 @@
                                 {{$employee->department->name}}
                             @endif
                         </td>
-                        <td class="py-4 px-6 border-b">
+                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('employees.show', ['employee' => $employee->id])) }}'">
                             {{ $employee->roles()->first()->name }}
                         </td>
                         @if(auth()->user()->roles()->first()->name == "human_resource")
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline" type="button"
-                                        data-modal-toggle="editModal-{{$employee->id}}">
+                                        data-modal-toggle="editProfileModal-{{$employee->id}}">
                                     Edit
                                 </button>
                             </td>
@@ -135,7 +135,7 @@
                             </div>
                         </div>
 
-                        <div id="editModal-{{$employee->id}}" tabindex="-1" aria-hidden="true"
+                        <div id="editProfileModal-{{$employee->id}}" tabindex="-1" aria-hidden="true"
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
                                 <!-- Modal content -->
@@ -149,7 +149,7 @@
                                         <div>
                                             <button type="button"
                                                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                                    data-modal-toggle="editModal-{{$employee->id}}">
+                                                    data-modal-toggle="editProfileModal-{{$employee->id}}">
                                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
                                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd"
@@ -213,7 +213,7 @@
                                                 <label for="role_id"
                                                        class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                                     role</label>
-                                                <select name="role_id"
+                                                <select name="role_id" id="role_id" onchange="enableOrDisableDepartment(this)"
                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                                     <option value="" disabled>Choose Role</option>
                                                     @if(count($roles))
@@ -234,8 +234,8 @@
                                             <div class="relative z-0 mb-6 w-full group">
                                                 <label for="department_id"
                                                        class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                                    role</label>
-                                                <select name="department_id"
+                                                    Department</label>
+                                                <select name="department_id" id="department_id"
                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                                     <option value="" disabled>Choose Department</option>
                                                     @if(count($departments))
@@ -249,7 +249,7 @@
                                             <div
                                                 class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
                                                 <div>
-                                                    <button data-modal-toggle="editModal-{{$employee->id}}"
+                                                    <button data-modal-toggle="editProfileModal-{{$employee->id}}"
                                                             type="button"
                                                             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                                                         Cancel
@@ -258,7 +258,7 @@
                                                 <div>
                                                     <button
                                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        data-modal-toggle="editModal-{{$employee->id}}">Edit
+                                                        data-modal-toggle="editProfileModal-{{$employee->id}}">Edit
                                                     </button>
                                                 </div>
                                             </div>
@@ -267,6 +267,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </tr>
                 @endforeach
             @else
@@ -308,7 +309,7 @@
                         <form method="POST" action="{{ route('employees.store') }}">
                             @csrf
                             <div class="grid md:grid-cols-2 md:gap-6">
-                                <div class="relative z-0 mb-6 w-full group">
+                                <div class="relative z-0 mb-4 w-full group">
                                     <input type="text" name="first_name"
                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder="" required/>
@@ -319,7 +320,7 @@
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
-                                <div class="relative z-0 mb-6 w-full group">
+                                <div class="relative z-0 mb-4 w-full group">
                                     <input type="text" name="last_name"
                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder="" required/>
@@ -331,7 +332,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="relative z-0 mb-6 w-full group">
+                            <div class="relative z-0 mb-4 w-full group">
                                 <input type="email" name="email"
                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        placeholder="" required/>
@@ -341,7 +342,7 @@
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="relative z-0 mb-6 w-full group">
+                            <div class="relative z-0 mb-4 w-full group">
                                 <input type="password" name="password"
                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        placeholder="" required/>
@@ -351,7 +352,7 @@
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="relative z-0 mb-6 w-full group">
+                            <div class="relative z-0 mb-4 w-full group">
                                 <input type="password" name="password_confirmation"
                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        placeholder="" required/>
@@ -362,19 +363,19 @@
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <div class="relative z-0 mb-4 w-full group">
+                                <input type="text" name="phone_number"
+                                       class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                       placeholder="" required/>
+                                <label for="phone_number"
+                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Phone
+                                    number</label>
+                                @error('phone_number')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div class="grid md:grid-cols-2 md:gap-6">
-                                <div class="relative z-0 mb-6 w-full group">
-                                    <input type="text" name="phone_number"
-                                           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                           placeholder="" required/>
-                                    <label for="phone_number"
-                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Phone
-                                        number</label>
-                                    @error('phone_number')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div class="relative z-0 mb-6 w-full group">
+                                <div class="relative z-0 mb-4 w-full group">
                                     <input type="number" name="nb_of_days"
                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder="" required/>
@@ -385,8 +386,18 @@
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
+                                <div class="relative z-0 mb-4 w-full group">
+                                    <input type="number" name="confessionnels"
+                                           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                           placeholder="" required/>
+                                    <label for="confessionnels"
+                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confessionnels</label>
+                                    @error('confessionnels')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
-                            <div class="relative z-0 mb-6 w-full group">
+                            <div class="relative z-0 mb-4 w-full group">
                                 <label for="role_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                     role</label>
                                 <select name="role_id" id="role_id_create" onchange="enableOrDisableDepartment(this);"
@@ -401,7 +412,7 @@
                                     @endif
                                 </select>
                             </div>
-                            <div class="relative z-0 mb-6 w-full group">
+                            <div class="relative z-0 mb-4 w-full group">
                                 <label for="department_id"
                                        class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                     role</label>

@@ -31,7 +31,7 @@ class LeaveController extends Controller
             $substitutes = Employee::role('sg')->get()->except($employee->id);
         }
         else{
-            $substitutes = Employee::where('department_id', $employee->department_id)->get()->except($employee->id);
+            $substitutes = Employee::where('department_id', $employee->department_id)->role($employee->roles()->first()->name)->get()->except($employee->id);
         }
         return view('leaves.create',[
             'employee' => $employee,
@@ -82,7 +82,7 @@ class LeaveController extends Controller
             $leave_service->acceptLeave($leave);
         }
         $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers);
-        return redirect()->route('leaves.index');
+        return redirect()->route('leaves.submitted');
     }
 
 
@@ -92,7 +92,7 @@ class LeaveController extends Controller
         $leave_types = LeaveType::all();
         $today = now();
         $employee_role = $employee->roles()->first()->id;
-        if($employee_role == "supervisor"){
+        if($employee->roles()->first()->name == "supervisor"){
             $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
         }
         else {
@@ -139,9 +139,23 @@ class LeaveController extends Controller
         return redirect()->route('leaves.index');
     }
 
+    public function submitted() {
+        $leaves = auth()->user()->leaves;
+        return view('leaves.submitted', [
+            'leaves' => $leaves
+        ]);
+    }
+
 //    public function downloadAttachment(Leave $leave) {
 //        $leave_service = new LeaveService();
 //        $leave_service->downloadAttachment($leave);
 //        return redirect()->route('leaves.index');
 //    }
+
+
+
+    public function destroy(Leave $leave) {
+        $leave->delete();
+        return redirect()->route('leaves.submitted');
+    }
 }

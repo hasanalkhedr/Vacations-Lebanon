@@ -29,13 +29,13 @@ class DepartmentController extends Controller
 
     public function show(Department $department)
     {
-        $manager = Employee::where('id', $department->manager_id)->first();
         return view('departments.show', [
             'department' => $department,
             'employees' => $department->employees,
-            'manager' => $manager
+            'manager' => $department->manager
         ]);
     }
+
 
     public function edit(Department $department)
     {

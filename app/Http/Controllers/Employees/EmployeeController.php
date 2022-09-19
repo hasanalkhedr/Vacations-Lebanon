@@ -81,25 +81,33 @@ class EmployeeController
 
     public function show(Employee $employee)
     {
+        $departments = Department::all();
+        $roles = Role::all();
         $loggedInUser = auth()->user();
         $loggedInUserRoleName = $loggedInUser->roles()->first()->name;
         if($loggedInUserRoleName == "supervisor") {
             if($employee->department->id == $loggedInUser->department->id)
                 return view('employees.show', [
-                    'employee' => $employee
+                    'employee' => $employee,
+                    'departments' => $departments,
+                    'roles' => $roles
                 ]);
         }
         if($loggedInUserRoleName == "human_resource" || $loggedInUserRoleName == "sg") {
             return view('employees.show', [
-                'employee' => $employee
+                'employee' => $employee,
+                'departments' => $departments,
+                'roles' => $roles
             ]);
         }
         if($loggedInUser == $employee) {
             return view('employees.show', [
-                'employee' => $employee
+                'employee' => $employee,
+                'departments' => $departments,
+                'roles' => $roles
             ]);
         }
-        return back();
+        return redirect()->route('employees.index');
     }
 
     public function editProfile(Employee $employee)

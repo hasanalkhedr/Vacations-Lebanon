@@ -21,7 +21,7 @@
 
 <body>
 <div class="lg:flex">
-    <div class="lg:pt-12 w-1/4 border-gray-200 px-2 py-2.5 rounded dark:bg-gray-900 sm:pt-4">
+    <div class="lg:pt-12 w-1/4 border-gray-200 px-2 py-2.5 dark:bg-gray-900 sm:pt-4">
         <button data-collapse-toggle="aside-default" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
             <span class="sr-only">Open main menu</span>
             <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
@@ -36,36 +36,35 @@
                 </li>
                 @endunless
                 @unless(auth()->user()->roles()->first()->name == "employee")
+                        <li>
+                            <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" href="{{ route('employees.index') }}">
+                                <span class="mx-2 font-medium">Users</span>
+                            </a>
+                        </li>
+                @endunless
                     <li>
-                        <button type="button" class="flex items-center px-4 py-2 mt-5 w-full text-base font-normal text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-                            <span class="flex-1 text-left whitespace-nowrap font-medium mx-2" sidebar-toggle-item>Users</span>
+                        <button type="button" class="flex items-center px-4 py-2 mt-5 w-full text-base font-normal text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-leave-requests" data-collapse-toggle="dropdown-leave-requests">
+                            <span class="flex-1 text-left whitespace-nowrap font-medium mx-2" sidebar-toggle-item>Leave Requests</span>
                             <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                         </button>
-                        <ul id="dropdown-example" class="hidden py-2 space-y-2">
-                            <li>
-                                <a href="{{ url(route('employees.show' , ['employee' => auth()->user()])) }}" class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Show Profile</a>
-                            </li>
+                        <ul id="dropdown-leave-requests" class="hidden py-2 space-y-2">
                             @unless(auth()->user()->roles()->first()->name == "employee")
-                            <li>
-                                <a href="{{ url(route('employees.index')) }}" class="usersTitle flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Employees</a>
-                            </li>
+                                <li>
+                                    <a href="{{ url(route('leaves.index')) }}" class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming Leave Requests</a>
+                                </li>
                             @endunless
+                            <li>
+                                <a href="{{ url(route('leaves.submitted')) }}" class="usersTitle flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Outgoing Leave Requests</a>
+                            </li>
                         </ul>
                     </li>
-                @endunless
-
-                <li>
-                    <a class="flex items-center px-4 py-2 mt-4 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" href="{{ route('leaves.index') }}">
-                        <span class="mx-2 font-medium">Leave Requests</span>
-                    </a>
-                </li>
             </ul>
         </aside>
     </div>
 
     <div class="lg:pt-8 w-full h-full overflow-y-auto sm:pt-0 lg:mx-4 sm:mx-0">
         <nav class="w-full bg-white border-b-2 border-indigo-600 flex justify-between">
-            <div class="px-6 py-3 text-xl font-bold text-blue-800">
+            <div class="px-2 py-3 text-xl font-bold text-black">
                 {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
             </div>
             <div class="px-6 py-3 text-xl font-bold text-black">

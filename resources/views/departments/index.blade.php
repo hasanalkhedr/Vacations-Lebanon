@@ -13,7 +13,7 @@
     </nav>
     @include('partials.searches._search-departments')
     <div class="mx-2 overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table x-data="data()" class=" w-full text-sm text-left text-gray-500 dark:text-gray-400"
+        <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
                x-data="departmentData">
             @unless($departments->isEmpty())
             <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -37,10 +37,10 @@
             <tbody x-ref="tbody">
                 @foreach ($departments as $department)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('departments.show', ['department' => $department->id])) }}'">
                             {{ $department->name }}
                         </td>
-                        <td class="py-4 px-6 border-b">
+                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('departments.show', ['department' => $department->id])) }}'">
                             @if($department->manager == NULL)
                                 <div class="font-bold">
                                     -
