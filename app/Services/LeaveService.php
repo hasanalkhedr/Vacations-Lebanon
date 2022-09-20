@@ -99,8 +99,7 @@ class LeaveService
         $leave->save();
     }
 
-    function isWeekend($date) {
+    public function isWeekend($date) {
         return (date('N', strtotime($date)) == 0 || date('N', strtotime($date)) == 6);
     }
-
 }

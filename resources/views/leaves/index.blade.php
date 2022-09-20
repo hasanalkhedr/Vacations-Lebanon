@@ -7,14 +7,14 @@
         <div class="text-lg">
             Incoming Leave Requests
         </div>
-        <div>
-            <a href="{{ url(route('leaves.create')) }}">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
-                    >
-                Submit Leave Request
-            </button>
-            </a>
-        </div>
+{{--        <div>--}}
+{{--            <a href="{{ url(route('leaves.create')) }}">--}}
+{{--            <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"--}}
+{{--                    >--}}
+{{--                Submit Leave Request--}}
+{{--            </button>--}}
+{{--            </a>--}}
+{{--        </div>--}}
     </nav>
     @include('partials.searches._search-leaves')
     <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
