@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->route('leaves.submitted');
+    return redirect()->route('login');
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
 
