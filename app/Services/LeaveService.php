@@ -6,6 +6,8 @@ use App\Jobs\SendLeaveRequestAcceptedEmailJob;
 use App\Jobs\SendLeaveRequestIncomingEmailJob;
 use App\Jobs\SendLeaveRequestRejectedEmailJob;
 use App\Models\Employee;
+use App\Models\Leave;
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
@@ -102,4 +104,19 @@ class LeaveService
     public function isWeekend($date) {
         return (date('N', strtotime($date)) == 0 || date('N', strtotime($date)) == 6);
     }
+
+//    public function getDisabledDates($employee)
+//    {
+//        $leaves = Leave::where('employee_id', $employee->id)->whereNot('to', '<', now())->get();
+//        $disabled_dates = [];
+//        foreach ($leaves as $leave) {
+//        $period = CarbonPeriod::create($leave->from, $leave->to);
+//            // Iterate over the period
+//            foreach ($period as $date) {
+//                if(!in_array($date->toDateString(), $disabled_dates) )
+//                    $disabled_dates[] = $date->toDateString();
+//            }
+//        }
+//        return $disabled_dates;
+//    }
 }

@@ -41,18 +41,24 @@
                 @foreach ($employees as $employee)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('employees.show', ['employee' => $employee->id])) }}'">
-                            {{ $employee->first_name }} {{ $employee->last_name }}
+                            <div class="cursor-pointer">
+                                {{ $employee->first_name }} {{ $employee->last_name }}
+                            </div>
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('employees.show', ['employee' => $employee->id])) }}'">
-                            @if($employee->department == NULL)
+                        @if($employee->department == NULL)
+                            <td class="py-4 px-6 border-b">
                                 <div class="font-bold">
                                     -
                                 </div>
-                            @else
-                                {{$employee->department->name}}
-                            @endif
-                        </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('employees.show', ['employee' => $employee->id])) }}'">
+                            </td>
+                        @else
+                            <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('departments.show', ['department' => $employee->department->id])) }}'">
+                                <div class="cursor-pointer">
+                                    {{$employee->department->name}}
+                                </div>
+                            </td>
+                        @endif
+                        <td class="py-4 px-6 border-b">
                             {{ $employee->roles()->first()->name }}
                         </td>
                         @if(auth()->user()->roles()->first()->name == "human_resource")

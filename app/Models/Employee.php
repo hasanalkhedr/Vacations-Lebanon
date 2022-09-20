@@ -52,7 +52,10 @@ class Employee extends Authenticatable
                 ->orwhere('last_name', 'like', '%' . request('search') . '%')
                 ->orwhereHas('roles', function ($q) {
                     $q->where('name', 'like', '%' . request('search') . '%');
-                });;
+                })
+                ->orwhereHas('department', function ($q) {
+                    $q->where('name', 'like', '%' . request('search') . '%');
+                });
         };
     }
 

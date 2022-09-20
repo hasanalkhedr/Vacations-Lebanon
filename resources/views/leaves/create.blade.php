@@ -16,14 +16,14 @@
                 </div>
                 <div class="grid md:grid-cols-2 md:gap-6">
                     <div class="relative z-0 w-full group flex flex-col">
-                        <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
-                        <input type="text" name="from" id="fromDate" placeholder="Please select Date Range" data-input>
+                        <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
+                        <input type="text" name="from" id="fromDate" placeholder="Please select Date Range" data-input onload="disableDates(this)">
                         @error('from')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div class="relative z-0 mb-6 w-full group flex flex-col">
-                        <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
+                        <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
                         <input type="text" name="to" id="toDate" placeholder="Please select Date Range" data-input>
                         @error('to')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -200,6 +200,13 @@
             locale: {
                 firstDayOfWeek: 1
             }
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        document.addEventListener("load", {
+            console.log('hi')
         });
 
     </script>

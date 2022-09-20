@@ -33,6 +33,8 @@ class LeaveController extends Controller
         else{
             $substitutes = Employee::where('department_id', $employee->department_id)->role($employee->roles()->first()->name)->get()->except($employee->id);
         }
+//        $leave_service = new LeaveService();
+//        $disabled_dates = $leave_service->getDisabledDates($employee);
         return view('leaves.create',[
             'employee' => $employee,
             'leave_durations' => $leave_durations,

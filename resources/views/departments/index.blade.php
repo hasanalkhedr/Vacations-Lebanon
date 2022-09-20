@@ -38,15 +38,19 @@
                 @foreach ($departments as $department)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('departments.show', ['department' => $department->id])) }}'">
-                            {{ $department->name }}
+                            <div class="cursor-pointer">
+                                {{ $department->name }}
+                            </div>
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('departments.show', ['department' => $department->id])) }}'">
+                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('employees.show', ['employee' => $department->manager->id])) }}'">
                             @if($department->manager == NULL)
                                 <div class="font-bold">
                                     -
                                 </div>
                             @else
-                                {{$department->manager->first_name}} {{$department->manager->last_name}}
+                                <div class="cursor-pointer">
+                                    {{$department->manager->first_name}} {{$department->manager->last_name}}
+                                </div>
                             @endif
                         </td>
                         @if(auth()->user()->roles()->first()->name == "human_resource")
