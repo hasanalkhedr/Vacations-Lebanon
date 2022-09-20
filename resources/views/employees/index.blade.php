@@ -43,7 +43,7 @@
                         <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('employees.show', ['employee' => $employee->id])) }}'">
                             {{ $employee->first_name }} {{ $employee->last_name }}
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url('employees.show', ['employee' => $employee->id]) }}'">
+                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('employees.show', ['employee' => $employee->id])) }}'">
                             @if($employee->department == NULL)
                                 <div class="font-bold">
                                     -

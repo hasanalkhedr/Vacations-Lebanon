@@ -25,8 +25,7 @@ class UpdateEmployeePasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'current_password' => 'required',
-            'new_password' => ['required', 'confirmed', 'min:6'],
+            'password' => ['required', 'confirmed', 'min:6'],
         ];
     }
 }

@@ -152,13 +152,8 @@ class EmployeeController
     public function updatePassword(UpdateEmployeePasswordRequest $request, Employee $employee)
     {
         $validated = $request->validated();
-        if(Hash::check($validated['current_password'], $employee->password)) {
-            $employee->update(['password' => Hash::make($validated['new_password'])]);
-            return redirect()->route('employees.show', ['employee' => $employee]);
-        }
-        else {
-            return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('new_password');
-        }
+        $employee->update(['password' => Hash::make($validated['password'])]);
+        return redirect()->route('employees.show', ['employee' => $employee]);
     }
 
     public function destroy(Employee $employee)
