@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->route('leaves.index');
+    return redirect()->route('leaves.submitted');
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
 
