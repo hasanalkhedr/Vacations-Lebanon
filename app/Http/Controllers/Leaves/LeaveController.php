@@ -123,6 +123,16 @@ class LeaveController extends Controller
 
     public function show(Leave $leave) {
         {
+            $loggedInRole = auth()->user()->roles()->first();
+            if($loggedInRole->name == "employee"){
+                if($leave->employee_id != auth()->user()->id) {
+                    return back();
+                }
+            }
+            elseif ($loggedInRole->id != $leave->processing_officer_role) {
+                return back();
+            }
+
             return view('leaves.show', [
                 'leave' => $leave
             ]);
