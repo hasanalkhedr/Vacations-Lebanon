@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Exceptions\UnauthorizedException;
 
-class RoleMiddleware extends \Spatie\Permission\Middlewares\RoleMiddleware
+class RoleMiddlewareCustom
 {
     public function handle($request, Closure $next, $role, $guard = null)
     {
@@ -21,7 +20,7 @@ class RoleMiddleware extends \Spatie\Permission\Middlewares\RoleMiddleware
             : explode('|', $role);
 
         if (! $authGuard->user()->hasAnyRole($roles)) {
-            throw UnauthorizedException::forRoles($roles);
+            return back();
         }
 
         return $next($request);

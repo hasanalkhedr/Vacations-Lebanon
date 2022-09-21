@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -55,11 +57,8 @@ class Handler extends ExceptionHandler
             return redirect('/login');
 
         }
-
-        if ($e instanceof UserNo) {
-
-            return redirect('/login');
-
+        if($e instanceof ModelNotFoundException) {
+            return back();
         }
 
         return parent::render($request, $e);
