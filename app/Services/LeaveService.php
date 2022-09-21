@@ -90,21 +90,10 @@ class LeaveService
         $period = CarbonPeriod::create($leave->from, $leave->to);
         $nb_of_days_off = 0;
         $disabled_dates = unserialize($leave->disabled_dates);
-        Log::info(gettype($disabled_dates));
         foreach ($period as $date) {
-            Log::info('--------------------------');
             $date = $date->toDateString();
-            Log::info($date);
-
-            if(!$this->isWeekend($date)){
-                Log::info("not a weekend");
-            }
-            if(!in_array($date, $disabled_dates) ){
-                Log::info("Not disabled date");
-            }
             if(!$this->isWeekend($date) && !in_array($date, $disabled_dates) ){
                 $nb_of_days_off = $nb_of_days_off + 1;
-                Log::info("nb of days off: " . $nb_of_days_off);
             }
         }
         $leave_duration_name = $leave->leave_duration->name;
