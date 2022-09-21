@@ -177,36 +177,33 @@
             dateFormat: "Y-m-d",
             disable:[
                 function(date) {
-                    return (date.getDay() === 0 || date.getDay() === 6);
-                },
-            ],
+                    let date_temp = new Date(date.getTime());
+                    let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate()+1)))).toISOString().split('T')[0];
+                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) );
+                }],
 
             locale: {
                 firstDayOfWeek: 1
             },
             onClose: function(selectedDates, dateStr, instance) {
-                topicker.set('minDate', dateStr);
+                if(dateStr) {
+                    topicker.set('minDate', dateStr);
+                }
             },
         });
 
         let topicker = $("#toDate").flatpickr({
             minDate: "today",
             dateFormat: "Y-m-d",
-            disable: [
+            disable:[
                 function(date) {
-                    return (date.getDay() === 0 || date.getDay() === 6);
-                }
-            ],
+                    let date_temp = new Date(date.getTime());
+                    let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate()+1)))).toISOString().split('T')[0];
+                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) );
+                }],
             locale: {
                 firstDayOfWeek: 1
             }
-        });
-
-    </script>
-
-    <script type="text/javascript">
-        document.addEventListener("load", {
-            console.log('hi')
         });
 
     </script>

@@ -33,8 +33,8 @@ class LeaveController extends Controller
         else{
             $substitutes = Employee::where('department_id', $employee->department_id)->role($employee->roles()->first()->name)->get()->except($employee->id);
         }
-//        $leave_service = new LeaveService();
-//        $disabled_dates = $leave_service->getDisabledDates($employee);
+        $leave_service = new LeaveService();
+        $disabled_dates = $leave_service->getDisabledDates($employee);
         return view('leaves.create',[
             'employee' => $employee,
             'leave_durations' => $leave_durations,
@@ -42,11 +42,15 @@ class LeaveController extends Controller
             'today' => $today,
             'department' => $employee->department,
             'substitutes' => $substitutes,
+            'disabled_dates' => $disabled_dates,
         ]);
     }
 
     public function store(StoreLeaveRequest $request) {
         $validated = $request->validated();
+        $leave_service = new LeaveService();
+        $disabled_dates = $leave_service->getDisabledDates(auth()->user());
+        $serializedArr = serialize($disabled_dates);
         $leave = Leave::create([
             'employee_id' => auth()->user()->id,
             'leave_duration_id' => $validated['leave_duration_id'],
@@ -62,7 +66,7 @@ class LeaveController extends Controller
         if($request['substitute_employee_id']) {
             $leave->substitute_employee_id = $request['substitute_employee_id'];
         }
-        $leave_service = new LeaveService();
+        $leave->disabled_dates = $serializedArr;
         $leave_employee_role = $leave->employee->roles()->first()->name;
         if($leave_employee_role == "employee" || $leave_employee_role == "supervisor") {
             $role = Role::findByName('human_resource');
