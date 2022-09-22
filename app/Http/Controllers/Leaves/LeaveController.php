@@ -59,6 +59,9 @@ class LeaveController extends Controller
             'travelling' => $validated['travelling'],
             'leave_type_id' => $validated['leave_type_id'],
         ]);
+        if($request->confessionnels) {
+            $leave->use_confessionnels = true;
+        }
         if($request->hasFile('attachment_path')) {
             $leave['attachment_path'] = $request->file('attachment_path')->store('attachments', 'public');
         }

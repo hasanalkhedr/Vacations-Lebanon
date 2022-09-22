@@ -30,14 +30,25 @@
                         @enderror
                     </div>
                 </div>
+                <span id="error"></span>
+
+                <div class="relative z-0 mb-6 w-full group">
+                    <p>Use Confessionnels</p>
+                    <div class="mt-2 flex flex-row">
+                        <input type="checkbox" name="confessionnels" id="confessionnels">
+                    </div>
+                    @error('confessionnels')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <div class="relative z-0 mb-6 w-full group">
                     <p>Travelling</p>
                     <div class="mt-2 flex flex-row">
                         <input type="radio" name="travelling" value=1>
-                        <label for="html" class="mx-2">Yes</label><br>
+                        <label for="travelling" class="mx-2">Yes</label><br>
                         <input type="radio" name="travelling" value=0 checked>
-                        <label for="css" class="mx-2">No</label>
+                        <label for="travelling" class="mx-2">No</label>
                     </div>
                     @error('travelling')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -150,6 +161,7 @@
                     </div>
                     <div>
                         <button
+                            id="createButton"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Create
                         </button>
@@ -162,11 +174,122 @@
 
     <script type="text/javascript">
         $('#fromDate').change(function(){
+            $('#createButton').attr('disabled', false);
+            $("#error").text("");
             let fromDate = $('#fromDate').val();
             let toDate = $('#toDate').val();
             if(fromDate>toDate) {
                 $("#toDate").val(fromDate);
                 toDate = $('#toDate').val();
+            }
+            let newFromDate = new Date(fromDate);
+            let newToDate = new Date(toDate);
+            dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000*3600*24)) + 1;
+            let tempDate = new Date(newFromDate.getTime());
+            while(tempDate <= newToDate){
+                newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
+                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6){
+                    dateDifference = dateDifference - 1;
+                }
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+            if($('#confessionnels')[0].checked) {
+                console.log(dateDifference + ' ' + {{  auth()->user()->confessionnels }})
+                if(dateDifference > {{  auth()->user()->confessionnels }}) {
+
+                    $('#createButton').attr('disabled', true)
+                    $('#error').css("color", "red");
+                    $("#error").text("You only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                }
+            }
+            else {
+                console.log(dateDifference + ' ' + {{  auth()->user()->nb_of_days }})
+                if(dateDifference > {{  auth()->user()->nb_of_days }}) {
+
+                    $('#createButton').attr('disabled', true)
+                    $('#error').css("color", "red");
+                    $("#error").text("You only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                }
+            }
+        });
+
+        $('#toDate').change(function(){
+            $('#createButton').attr('disabled', false)
+            $("#error").text("");
+            let fromDate = $('#fromDate').val();
+            let toDate = $('#toDate').val();
+            if(!fromDate) {
+                $("#fromDate").val(toDate);
+                fromDate = $('#fromDate').val();
+            }
+            let newFromDate = new Date(fromDate);
+            let newToDate = new Date(toDate);
+            dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000*3600*24)) + 1;
+            let tempDate = new Date(newFromDate.getTime());
+            while(tempDate <= newToDate){
+                newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
+                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6){
+                    dateDifference = dateDifference - 1;
+                }
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+            if($('#confessionnels')[0].checked) {
+                console.log(dateDifference + ' ' + {{  auth()->user()->confessionnels }})
+                if(dateDifference > {{  auth()->user()->confessionnels }}) {
+
+                    $('#createButton').attr('disabled', true)
+                    $('#error').css("color", "red");
+                    $("#error").text("You only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                }
+            }
+            else {
+                console.log(dateDifference + ' ' + {{  auth()->user()->nb_of_days }})
+                if(dateDifference > {{  auth()->user()->nb_of_days }}) {
+
+                    $('#createButton').attr('disabled', true)
+                    $('#error').css("color", "red");
+                    $("#error").text("You only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                }
+            }
+        });
+
+        $('#confessionnels').change(function(){
+            $('#createButton').attr('disabled', false)
+            $("#error").text("");
+            let fromDate = $('#fromDate').val();
+            let toDate = $('#toDate').val();
+            if(!fromDate) {
+                $("#fromDate").val(toDate);
+                fromDate = $('#fromDate').val();
+            }
+            let newFromDate = new Date(fromDate);
+            let newToDate = new Date(toDate);
+            dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000*3600*24)) + 1;
+            let tempDate = new Date(newFromDate.getTime());
+            while(tempDate <= newToDate){
+                newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
+                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6){
+                    dateDifference = dateDifference - 1;
+                }
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+            if($('#confessionnels')[0].checked) {
+                console.log(dateDifference + ' ' + {{  auth()->user()->confessionnels }})
+                if(dateDifference > {{  auth()->user()->confessionnels }}) {
+
+                    $('#createButton').attr('disabled', true)
+                    $('#error').css("color", "red");
+                    $("#error").text("You only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                }
+            }
+            else {
+                console.log(dateDifference + ' ' + {{  auth()->user()->nb_of_days }})
+                if(dateDifference > {{  auth()->user()->nb_of_days }}) {
+
+                    $('#createButton').attr('disabled', true)
+                    $('#error').css("color", "red");
+                    $("#error").text("You only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                }
             }
         });
     </script>

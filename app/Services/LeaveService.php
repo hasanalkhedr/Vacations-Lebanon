@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Psr\Log\LogLevel;
 use Spatie\Permission\Models\Role;
 
 class LeaveService
@@ -100,7 +101,12 @@ class LeaveService
         if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
             $nb_of_days_off = $nb_of_days_off / 2;
         }
-        $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
+        if($leave->use_confessionnels) {
+            $employee->confessionnels = $employee->confessionnels - $nb_of_days_off;
+        }
+        else{
+            $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
+        }
         $employee->save();
     }
 
@@ -111,7 +117,7 @@ class LeaveService
 
     public function getDisabledDates($employee)
     {
-        $leaves = Leave::where('employee_id', $employee->id)->whereNot('to', '<', now())->get();
+        $leaves = Leave::where('employee_id', $employee->id)->whereDate('to', '>=', now()->format('Y-m-d'))->get();
         $disabled_dates = [];
         foreach ($leaves as $leave) {
         $period = CarbonPeriod::create($leave->from, $leave->to);
