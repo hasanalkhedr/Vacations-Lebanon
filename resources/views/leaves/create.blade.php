@@ -199,7 +199,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
                 }
             }
             else {
@@ -208,7 +208,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
                 }
             }
         });
@@ -239,7 +239,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
                 }
             }
             else {
@@ -248,7 +248,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
                 }
             }
         });
@@ -279,7 +279,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
                 }
             }
             else {
@@ -288,7 +288,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
                 }
             }
         });
