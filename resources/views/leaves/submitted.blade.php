@@ -30,9 +30,9 @@
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
                         Status
                     </th>
-                    <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Remove</span>
-                    </th>
+                        <th scope="col" class="py-3 px-6">
+                            <span class="sr-only">Remove</span>
+                        </th>
                 </tr>
                 </thead>
                 <tbody x-ref="tbody">
@@ -57,12 +57,14 @@
                                 </div>
                             @endif
                         </td>
-                        <td class="py-4 px-6 text-right">
-                            <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
-                                    data-modal-toggle="deleteModal-{{$leave->id}}">
-                                Remove
-                            </button>
-                        </td>
+                        @if($leave->leave_status == 0)
+                            <td class="py-4 px-6 text-right">
+                                <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
+                                        data-modal-toggle="deleteModal-{{$leave->id}}">
+                                    Remove
+                                </button>
+                            </td>
+                        @endif
 
                         <div id="deleteModal-{{$leave->id}}" tabindex="-1" aria-hidden="true"
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">

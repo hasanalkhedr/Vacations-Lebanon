@@ -58,6 +58,13 @@
                             </li>
                         </ul>
                     </li>
+                @if(auth()->user()->roles()->first()->name == "human_resource")
+                    <li>
+                        <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" href="{{ route('leaves.getCalendarForm') }}">
+                            <span class="mx-2 font-medium">Calendar</span>
+                        </a>
+                    </li>
+                @endif
             </ul>
         </aside>
     </div>

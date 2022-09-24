@@ -67,6 +67,15 @@ Route::group(['middleware' => 'role_custom:supervisor|human_resource|sg', 'contr
     Route::get('/', 'index')->name('index');
 });
 
+Route::group(['middleware' => 'role_custom:human_resource', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
+
+    Route::group(['prefix' => '/calendar'], function () {
+        Route::get('/get-form', 'getCalendarForm')->name('getCalendarForm');
+        Route::post('/generate', 'generateCalendar')->name('generateCalendar');
+        Route::get('/get-calendar', 'getCalendar')->name('getCalendar');
+    });
+});
+
 
 Auth::routes();
 
