@@ -48,7 +48,7 @@ Route::group(['middleware' => 'role_custom:human_resource', 'controller' => Depa
 
 });
 
-Route::group(['middleware' => 'auth', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
+Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
     Route::get('/', 'index')->name('index');
 });
 
