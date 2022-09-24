@@ -21,7 +21,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
-
+    Route::post('/authenticate', 'authenticate')->name('authenticate');
     Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource'], function () {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');

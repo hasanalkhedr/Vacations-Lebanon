@@ -19,13 +19,17 @@ class EmployeeController
         return view('employees.login');
     }
     public function authenticate(AuthenticateEmployeeRequest $request) {
-
         $validated = $request->validated();
 
         if (auth()->attempt($validated)) {
             $employee = auth()->user();
             $request->session()->regenerate();
-            return redirect()->route('leaves.index');
+            if($employee->roles()->first()->name == "employee"){
+                return redirect()->route('leaves.submitted');
+            }
+            else {
+                return redirect()->route('leaves.index');
+            }
         }
         else {
             return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');
