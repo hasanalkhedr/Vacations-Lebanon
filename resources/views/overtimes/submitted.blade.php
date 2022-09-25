@@ -1,26 +1,29 @@
 <x-sidebar>
-    @section('title', 'Submitted Leave Requests')
+    @section('title', 'Submitted Overtime Requests')
     @push('head')
         <script src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
     @endpush
     <nav class="flex justify-between items-center p-2 text-black font-bold">
         <div class="text-lg">
-            Outgoing Leave Requests
+            Outgoing Overtime Requests
         </div>
         <div>
-            <a href="{{ url(route('leaves.create')) }}">
+            <a href="{{ url(route('overtimes.create')) }}">
             <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
                     >
-                Submit Leave Request
+                Submit Overtime Request
             </button>
             </a>
         </div>
     </nav>
     <div class="rounded-lg p-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()" class="rounded-lg border-collapse border border-slate-200 w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="leaveData">
-            @unless($leaves->isEmpty())
+            @unless($overtimes->isEmpty())
                 <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
+                    <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
+                        Date
+                    </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
                         From
                     </th>
@@ -36,18 +39,21 @@
                 </tr>
                 </thead>
                 <tbody x-ref="tbody">
-                @foreach ($leaves as $leave)
+                @foreach ($overtimes as $overtime)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            {{ $leave->from }}
+                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                            {{ $overtime->date }}
                         </td>
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            {{ $leave->to }}
+                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                            {{ $overtime->from }}
                         </td>
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            @if($leave->leave_status == 0)
+                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                            {{ $overtime->to }}
+                        </td>
+                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                            @if($overtime->overtime_status == 0)
                                 Pending
-                            @elseif($leave->leave_status == 1)
+                            @elseif($overtime->overtime_status == 1)
                                 <div class="text-green-500">
                                     Accepted
                                 </div>
@@ -57,16 +63,16 @@
                                 </div>
                             @endif
                         </td>
-                        @if($leave->leave_status == 0)
+                        @if($overtime->overtime_status == 0)
                             <td class="py-4 px-6 text-right">
                                 <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
-                                        data-modal-toggle="deleteModal-{{$leave->id}}">
+                                        data-modal-toggle="deleteModal-{{$overtime->id}}">
                                     Remove
                                 </button>
                             </td>
                         @endif
 
-                        <div id="deleteModal-{{$leave->id}}" tabindex="-1" aria-hidden="true"
+                        <div id="deleteModal-{{$overtime->id}}" tabindex="-1" aria-hidden="true"
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
                                 <!-- Modal content -->
@@ -84,12 +90,12 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Delete Leave Request
+                                            Delete Overtime Request
                                         </div>
                                         <div>
                                             <button type="button"
                                                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                                    data-modal-toggle="deleteModal-{{$leave->id}}">
+                                                    data-modal-toggle="deleteModal-{{$overtime->id}}">
                                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
                                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd"
@@ -103,23 +109,23 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                            Are you sure you want to delete this leave request? This action cannot be undone.
+                                            Are you sure you want to delete this overtime request? This action cannot be undone.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
                                     <div
                                         class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
                                         <div>
-                                            <button data-modal-toggle="deleteModal-{{$leave->id}}" type="button"
+                                            <button data-modal-toggle="deleteModal-{{$overtime->id}}" type="button"
                                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                                                 Cancel
                                             </button>
                                         </div>
                                         <div>
                                             <form method="POST"
-                                                  action="{{ route('leaves.destroy', ['leave' => $leave->id]) }}">
+                                                  action="{{ route('overtimes.destroy', ['overtime' => $overtime->id]) }}">
                                                 @csrf
-                                                <button data-modal-toggle="deleteModal-{{$leave->id}}"
+                                                <button data-modal-toggle="deleteModal-{{$overtime->id}}"
                                                         class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                                                     Delete
                                                 </button>
@@ -134,7 +140,7 @@
                 @else
                     <tr class="border-gray-300">
                         <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                            <p class="text-center">No Outgoing Leave Requests Found</p>
+                            <p class="text-center">No Overtime Requests Found</p>
                         </td>
                     </tr>
                 @endunless
@@ -142,11 +148,6 @@
         </table>
 
     </div>
-
-{{--    <div class="mt-6 p-4">--}}
-{{--        {{ $leaves->links() }}--}}
-{{--    </div>--}}
-
     <script type="text/javascript">
         function data() {
             return {

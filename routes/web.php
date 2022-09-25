@@ -3,6 +3,7 @@
 use App\Http\Controllers\Employees\EmployeeController;
 use App\Http\Controllers\Departments\DepartmentController;
 use \App\Http\Controllers\Leaves\LeaveController;
+use \App\Http\Controllers\Overtimes\OvertimeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +65,21 @@ Route::group(['middleware' => 'role_custom:employee|supervisor|human_resource|sg
 Route::group(['middleware' => 'role_custom:supervisor|human_resource|sg', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
     Route::post('/accept/{leave}', 'accept')->name('accept');
     Route::post('/reject/{leave}', 'reject')->name('reject');
+    Route::get('/', 'index')->name('index');
+});
+
+
+Route::group(['middleware' => 'role_custom:employee|supervisor|human_resource|sg', 'controller' => OvertimeController::class, 'prefix' => 'overtimes', 'as' => 'overtimes.'], function () {
+    Route::get('/create', 'create')->name('create');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/submitted', 'submitted')->name('submitted');
+    Route::get('/{overtime}', 'show')->name('show');
+    Route::post('/destroy/{overtime}', 'destroy')->name('destroy');
+});
+
+Route::group(['middleware' => 'role_custom:supervisor|human_resource|sg', 'controller' => OvertimeController::class, 'prefix' => 'overtimes', 'as' => 'overtimes.'], function () {
+    Route::post('/accept/{overtime}', 'accept')->name('accept');
+    Route::post('/reject/{overtime}', 'reject')->name('reject');
     Route::get('/', 'index')->name('index');
 });
 

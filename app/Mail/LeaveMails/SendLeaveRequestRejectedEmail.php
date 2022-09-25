@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\LeaveMails;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendLeaveRequestIncomingEmail extends Mailable
+class SendLeaveRequestRejectedEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,7 +27,7 @@ class SendLeaveRequestIncomingEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request')
-            ->view('emails.incoming-leave-request');
+        return $this->subject('Leave Request Rejected')
+            ->view('emails.leaves.rejected-leave-request');
     }
 }

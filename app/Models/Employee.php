@@ -67,4 +67,8 @@ class Employee extends Authenticatable
     public function leaves() {
         return $this->hasMany(Leave::class);
     }
+
+    public function overtimes() {
+        return $this->hasMany(Overtime::class);
+    }
 }

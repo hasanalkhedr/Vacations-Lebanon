@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\OvertimeMails;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendLeaveRequestRejectedEmail extends Mailable
+class SendOvertimeRequestAcceptedEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,7 +27,7 @@ class SendLeaveRequestRejectedEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request Rejected')
-            ->view('emails.rejected-leave-request');
+        return $this->subject('Leave Request Accepted')
+            ->view('emails.overtimes.accepted-overtime-request');
     }
 }

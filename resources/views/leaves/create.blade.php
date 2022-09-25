@@ -100,10 +100,10 @@
 
 {{--                                        </th>--}}
 {{--                                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">--}}
-{{--                                            Leaves Year 2021--}}
+{{--                                            LeaveMails Year 2021--}}
 {{--                                        </th>--}}
 {{--                                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">--}}
-{{--                                            Leaves Year 2022--}}
+{{--                                            LeaveMails Year 2022--}}
 {{--                                        </th>--}}
 {{--                                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">--}}
 {{--                                            Confessionnels Year 2022--}}
