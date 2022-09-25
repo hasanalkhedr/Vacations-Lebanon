@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\LeaveJobs;
 
-use App\Mail\SendLeaveRequestIncomingEmail;
-use App\Mail\SendLeaveRequestRejectedEmail;
+use App\Mail\LeaveMails\SendLeaveRequestIncomingEmail;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendLeaveRequestRejectedEmailJob implements ShouldQueue
+class SendLeaveRequestIncomingEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -35,7 +33,7 @@ class SendLeaveRequestRejectedEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        $email = new SendLeaveRequestRejectedEmail();
+        $email = new SendLeaveRequestIncomingEmail();
         Mail::to($this->employee_email)->send($email);
     }
 }

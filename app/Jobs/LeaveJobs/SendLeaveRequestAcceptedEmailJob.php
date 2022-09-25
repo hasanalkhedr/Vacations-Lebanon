@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\LeaveJobs;
 
-use App\Mail\SendLeaveRequestAcceptedEmail;
-use App\Mail\SendLeaveRequestIncomingEmail;
+use App\Mail\LeaveMails\SendLeaveRequestAcceptedEmail;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;

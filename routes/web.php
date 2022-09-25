@@ -3,6 +3,7 @@
 use App\Http\Controllers\Employees\EmployeeController;
 use App\Http\Controllers\Departments\DepartmentController;
 use \App\Http\Controllers\Leaves\LeaveController;
+use \App\Http\Controllers\Overtimes\OvertimeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -74,6 +75,21 @@ Route::group(['middleware' => 'role_custom:human_resource', 'controller' => Leav
         Route::post('/generate', 'generateCalendar')->name('generateCalendar');
         Route::get('/get-calendar', 'getCalendar')->name('getCalendar');
     });
+});
+
+
+Route::group(['middleware' => 'role_custom:employee|supervisor|human_resource|sg', 'controller' => OvertimeController::class, 'prefix' => 'overtimes', 'as' => 'overtimes.'], function () {
+    Route::get('/create', 'create')->name('create');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/submitted', 'submitted')->name('submitted');
+    Route::get('/{overtime}', 'show')->name('show');
+    Route::post('/destroy/{overtime}', 'destroy')->name('destroy');
+});
+
+Route::group(['middleware' => 'role_custom:supervisor|human_resource|sg', 'controller' => OvertimeController::class, 'prefix' => 'overtimes', 'as' => 'overtimes.'], function () {
+    Route::post('/accept/{overtime}', 'accept')->name('accept');
+    Route::post('/reject/{overtime}', 'reject')->name('reject');
+    Route::get('/', 'index')->name('index');
 });
 
 

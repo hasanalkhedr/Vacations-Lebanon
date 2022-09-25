@@ -2,16 +2,13 @@
 
 namespace App\Services;
 
-use App\Jobs\SendLeaveRequestAcceptedEmailJob;
-use App\Jobs\SendLeaveRequestIncomingEmailJob;
-use App\Jobs\SendLeaveRequestRejectedEmailJob;
+use App\Jobs\LeaveJobs\SendLeaveRequestAcceptedEmailJob;
+use App\Jobs\LeaveJobs\SendLeaveRequestIncomingEmailJob;
+use App\Jobs\LeaveJobs\SendLeaveRequestRejectedEmailJob;
 use App\Models\Employee;
 use App\Models\Leave;
-use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Psr\Log\LogLevel;
 use Spatie\Permission\Models\Role;
 
 class LeaveService

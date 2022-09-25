@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\OvertimeJobs;
 
-use App\Mail\SendLeaveRequestIncomingEmail;
+use App\Mail\OvertimeMails\SendOvertimeRequestRejectedEmail;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendLeaveRequestIncomingEmailJob implements ShouldQueue
+class SendOvertimeRequestRejectedEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,7 +33,7 @@ class SendLeaveRequestIncomingEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        $email = new SendLeaveRequestIncomingEmail();
+        $email = new SendOvertimeRequestRejectedEmail();
         Mail::to($this->employee_email)->send($email);
     }
 }
