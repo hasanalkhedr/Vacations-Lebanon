@@ -165,6 +165,57 @@ class LeaveController extends Controller
         ]);
     }
 
+    public function getCalendarForm() {
+        return view('leaves.calendar-form');
+    }
+
+    public function generateCalendar(Request $request) {
+        $year = now()->format('Y');
+        $month = Carbon::createFromDate($year, $request->month);
+        $month_name = Carbon::parse($month)->monthName;
+        $start_of_month = Carbon::parse($month)->startOfMonth();
+        $end_of_month = Carbon::parse($month)->endOfMonth();
+        $period = CarbonPeriod::create($start_of_month, $end_of_month);
+        $weekends = [];
+        $leave_service = new LeaveService();
+        foreach($period as $date)
+        {
+            if($leave_service->isWeekend($date)) {
+                $weekends[] = $date->format('Y-m-d');
+            }
+            $dates[] = $date;
+        }
+        $leaves = Leave::whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
+        $leaveId_dates_pairs = [];
+        foreach ($leaves as $leave) {
+            $enabled_dates = [];
+            $period = CarbonPeriod::create($leave->from, $leave->to);
+            $disabled_dates = unserialize($leave->disabled_dates);
+            if($disabled_dates){
+                foreach ($period as $date) {
+                    $date = $date->toDateString();
+                    if(!$leave_service->isWeekend($date) && !in_array($date, $disabled_dates) ){
+                        $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
+                    }
+                }
+            }
+            else {
+                foreach ($period as $date) {
+                    $date = $date->toDateString();
+                    $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
+                }
+            }
+        }
+        $employees = Employee::paginate(20);
+        return view('leaves.calendar', [
+            'month_name' => $month_name,
+            'dates' => $dates,
+            'employees' => $employees,
+            'leaveId_dates_pairs' => $leaveId_dates_pairs,
+            'weekends' => $weekends
+        ]);
+    }
+
 //    public function downloadAttachment(Leave $leave) {
 //        $leave_service = new LeaveService();
 //        $leave_service->downloadAttachment($leave);
@@ -177,4 +228,6 @@ class LeaveController extends Controller
         $leave->delete();
         return redirect()->route('leaves.submitted');
     }
+
+
 }
