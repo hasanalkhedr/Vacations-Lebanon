@@ -159,6 +159,6 @@ class LeaveService
 
     public function isHoliday($date) {
         $holidays = $this->getHolidays();
-        return (in_array($date->format('Y-m-d'), $holidays));
+        return (in_array($date, $holidays));
     }
 }

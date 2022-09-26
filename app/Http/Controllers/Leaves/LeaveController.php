@@ -203,7 +203,7 @@ class LeaveController extends Controller
             if($leave_service->isWeekend($date)) {
                 $weekends[] = $date->format('Y-m-d');
             }
-            if($leave_service->isHoliday($date)) {
+            if($leave_service->isHoliday($date->format('Y-m-d'))) {
                 $holidays[] = $date->format('Y-m-d');
             }
             $dates[] = $date;
