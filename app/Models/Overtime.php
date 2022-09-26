@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
 
 class Overtime extends Model
 {
@@ -57,5 +58,9 @@ class Overtime extends Model
 
     public function employee() {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function processing_officer() {
+        return $this->belongsTo(Role::class, 'processing_officer_role');
     }
 }

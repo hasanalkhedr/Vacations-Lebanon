@@ -23,7 +23,7 @@ Route::get('/', function () {
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
     Route::post('/authenticate', 'authenticate')->name('authenticate');
-    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource'], function () {
+    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource|sg'], function () {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
         Route::get('/editprofile/{employee}', 'editProfile')->name('editProfile');
@@ -46,12 +46,10 @@ Route::group(['middleware' => 'role_custom:human_resource', 'controller' => Depa
     Route::get('/{department}', 'show')->name('show');
     Route::put('/update/{department}', 'update')->name('update');
     Route::delete('/{department}', 'destroy')->name('destroy');
-
-});
-
-Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
     Route::get('/', 'index')->name('index');
+
 });
+
 
 Route::group(['middleware' => 'role_custom:employee|supervisor|human_resource|sg', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
     Route::get('/create', 'create')->name('create');

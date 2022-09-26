@@ -39,24 +39,24 @@ class OvertimeController extends Controller
             }
             $overtime->date_of_submission = now()->format('Y-m-d');
             $overtime_employee_role = $overtime->employee->roles()->first()->name;
-            if($overtime_employee_role == "employee" || $overtime_employee_role == "supervisor") {
-                $role = Role::findByName('human_resource');
-                $processing_officers = Employee::role('human_resource')->get();
+            if($overtime->employee->hasRole('sg')) {
+                $role = Role::findByName('sg');
                 $overtime->processing_officer_role = $role->id;
                 $overtime->save();
+                $processing_officers = NULL;
+                $overtime_service->acceptLeave($overtime);
             }
-            elseif($overtime_employee_role == "human_resource") {
+            elseif($overtime->employee->hasRole('human_resource')) {
                 $role = Role::findByName('sg');
                 $processing_officers = Employee::role('sg')->get();
                 $overtime->processing_officer_role = $role->id;
                 $overtime->save();
             }
             else {
-                $role = Role::findByName('sg');
+                $role = Role::findByName('human_resource');
+                $processing_officers = Employee::role('human_resource')->get();
                 $overtime->processing_officer_role = $role->id;
                 $overtime->save();
-                $processing_officers = NULL;
-                $overtime_service->acceptLeave($overtime);
             }
             $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
         }
@@ -79,11 +79,14 @@ class OvertimeController extends Controller
         $employee=auth()->user();
         $today = now();
         $employee_role = $employee->roles()->first()->id;
-        if($employee->roles()->first()->name == "supervisor"){
-            $overtimes = Overtime::where('processing_officer_role', $employee_role)->where('overtime_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+        if($employee->hasRole("human_resource")) {
+            $overtimes = Overtime::whereNot('processing_officer_role', Role::findByName('supervisor')->id)->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('overtime_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
-        else {
-            $overtimes = Overtime::where('processing_officer_role', $employee_role)->where('overtime_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+        if($employee->hasRole("supervisor")){
+            $overtimes = Overtime::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('overtime_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+        }
+        if($employee->hasRole("sg")) {
+            $overtimes = Overtime::where('overtime_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
 
         return view('overtimes.index', [
@@ -98,30 +101,43 @@ class OvertimeController extends Controller
 
     public function show(Overtime $overtime) {
         {
+            $processing_officer = Role::where('id', $overtime->processing_officer_role)->first();
             $loggedInRole = auth()->user()->roles()->first();
+            $roles = auth()->user()->getRoleNames();
             if($overtime->employee_id == auth()->user()->id) {
                 return view('overtimes.show', [
-                    'overtime' => $overtime
+                    'overtime' => $overtime,
+                    'processing_officer' => $processing_officer
                 ]);
             }
-            elseif ($loggedInRole->id == $overtime->processing_officer_role) {
-                return view('overtimes.show', [
-                    'overtime' => $overtime
-                ]);
+            foreach ($roles as $role) {
+                if (Role::findByName($role)->id != $overtime->processing_officer_role){
+                    return view('overtimes.show', [
+                        'overtime' => $overtime,
+                        'processing_officer' => $processing_officer
+                    ]);
+                }
+                else {
+                    continue;
+                }
             }
-            else {
-                return back();
-            }
+            return back();
         }
     }
 
     public function accept(Overtime $overtime) {
+        if(!auth()->user()->hasRole($overtime->processing_officer->name)) {
+            return back();
+        }
         $overtime_service = new OvertimeService();
         $overtime_service->checkProcessingOfficerandElevateRequest($overtime);
         return redirect()->route('overtimes.index');
     }
 
     public function reject(Request $request, Overtime $overtime) {
+        if(!auth()->user()->hasRole($overtime->processing_officer->name)) {
+            return back();
+        }
         $overtime_service = new OvertimeService();
         $overtime_service->rejectLeaveRequest($request, $overtime);
         return redirect()->route('overtimes.index');

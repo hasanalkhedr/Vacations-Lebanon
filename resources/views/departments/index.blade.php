@@ -24,7 +24,7 @@
                 <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
                     Supervisor
                 </th>
-                @if(auth()->user()->roles()->first()->name == "human_resource")
+                @if(auth()->user()->hasRole('human_resource'))
                     <th scope="col" class="py-3 px-6">
                         <span class="sr-only">Edit</span>
                     </th>
@@ -53,7 +53,7 @@
                                 </div>
                             @endif
                         </td>
-                        @if(auth()->user()->roles()->first()->name == "human_resource")
+                        @hasanyrole('human_resource|sg')
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline" type="button"
                                         data-modal-toggle="editModal-{{$department->id}}">
@@ -66,7 +66,7 @@
                                     Delete
                                 </button>
                             </td>
-                        @endif
+                        @endhasanyrole
 
                         <div id="deleteModal-{{$department->id}}" tabindex="-1" aria-hidden="true"
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">

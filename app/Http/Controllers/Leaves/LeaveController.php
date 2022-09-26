@@ -21,17 +21,20 @@ class LeaveController extends Controller
 
     public function create() {
         $employee = auth()->user();
+        if($employee->hasRole("sg")) {
+            return back();
+        }
         $leave_durations = LeaveDuration::all();
         $leave_types = LeaveType::all();
         $today = now();
-        if($employee->roles()->first()->name == 'human_resource') {
+        if($employee->hasRole("human_resource")) {
             $substitutes = Employee::role('human_resource')->get()->except($employee->id);
         }
-        elseif ($employee->roles()->first()->name == 'sg'){
-            $substitutes = Employee::role('sg')->get()->except($employee->id);
+        elseif ($employee->hasRole("employee")){
+            $substitutes = Employee::where('department_id', $employee->department_id)->role($employee->roles()->first()->name)->get()->except($employee->id);
         }
         else{
-            $substitutes = Employee::where('department_id', $employee->department_id)->role($employee->roles()->first()->name)->get()->except($employee->id);
+            $substitutes = Employee::where('department_id', $employee->department_id)->get()->except($employee->id);
         }
         $leave_service = new LeaveService();
         $disabled_dates = $leave_service->getDisabledDates($employee);
@@ -71,24 +74,24 @@ class LeaveController extends Controller
         }
         $leave->disabled_dates = $serializedArr;
         $leave_employee_role = $leave->employee->roles()->first()->name;
-        if($leave_employee_role == "employee" || $leave_employee_role == "supervisor") {
-            $role = Role::findByName('human_resource');
-            $processing_officers = Employee::role('human_resource')->get();
+        if($leave->employee->hasRole('sg'))  {
+            $role = Role::findByName('sg');
             $leave->processing_officer_role = $role->id;
             $leave->save();
+            $processing_officers = NULL;
+            $leave_service->acceptLeave($leave);
         }
-        elseif($leave_employee_role == "human_resource") {
+        elseif($leave->employee->hasRole('human_resource')) {
             $role = Role::findByName('sg');
             $processing_officers = Employee::role('sg')->get();
             $leave->processing_officer_role = $role->id;
             $leave->save();
         }
         else {
-            $role = Role::findByName('sg');
+            $role = Role::findByName('human_resource');
+            $processing_officers = Employee::role('human_resource')->get();
             $leave->processing_officer_role = $role->id;
             $leave->save();
-            $processing_officers = NULL;
-            $leave_service->acceptLeave($leave);
         }
         $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers);
         return redirect()->route('leaves.submitted');
@@ -101,20 +104,20 @@ class LeaveController extends Controller
         $leave_types = LeaveType::all();
         $today = now();
         $employee_role = $employee->roles()->first()->id;
-        if($employee->roles()->first()->name == "supervisor"){
-            $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+        if($employee->hasRole("human_resource")) {
+            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('supervisor')->id)->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
-        else {
-            $leaves = Leave::where('processing_officer_role', $employee_role)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+        if($employee->hasRole("supervisor")){
+            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+        }
+        if($employee->hasRole("sg")) {
+            $leaves = Leave::where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
 
-        if($employee->roles()->first()->name == 'human_resource') {
+        if($employee->hasRole("human_resource")) {
             $substitutes = Employee::role('human_resource')->get()->except($employee->id);
         }
-        elseif ($employee->roles()->first()->name == 'sg'){
-            $substitutes = Employee::role('sg')->get()->except($employee->id);
-        }
-        else{
+        else {
             $substitutes = Employee::where('department_id', $employee->department_id)->get()->except($employee->id);
         }
         return view('leaves.index', [
@@ -130,31 +133,44 @@ class LeaveController extends Controller
 
     public function show(Leave $leave) {
         {
+            $processing_officer = Role::where('id', $leave->processing_officer_role)->first();
             $loggedInRole = auth()->user()->roles()->first();
+            $roles = auth()->user()->getRoleNames();
+
             if($leave->employee_id != auth()->user()->id) {
                 return view('leaves.show', [
-                    'leave' => $leave
+                    'leave' => $leave,
+                    'processing_officer' => $processing_officer
                 ]);
             }
-            elseif ($loggedInRole->id != $leave->processing_officer_role) {
-                return view('leaves.show', [
-                    'leave' => $leave
-                ]);
+            foreach ($roles as $role) {
+                if (Role::findByName($role)->id != $leave->processing_officer_role) {
+                    return view('leaves.show', [
+                        'leave' => $leave,
+                        'processing_officer' => $processing_officer
+                    ]);
+                }
+                else {
+                    continue;
+                }
             }
-
-            else {
-                return back();
-            }
+            return back();
         }
     }
 
     public function accept(Leave $leave) {
+        if(!auth()->user()->hasRole($leave->processing_officer->name)) {
+            return back();
+        }
         $leave_service = new LeaveService();
         $leave_service->checkProcessingOfficerandElevateRequest($leave);
         return redirect()->route('leaves.index');
     }
 
     public function reject(Request $request, Leave $leave) {
+        if(!auth()->user()->hasRole($leave->processing_officer->name)) {
+            return back();
+        }
         $leave_service = new LeaveService();
         $leave_service->rejectLeaveRequest($request, $leave);
         return redirect()->route('leaves.index');

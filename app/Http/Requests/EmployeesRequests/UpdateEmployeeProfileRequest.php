@@ -30,7 +30,6 @@ class UpdateEmployeeProfileRequest extends FormRequest
             'email' => ['required', 'email', Rule::unique('employees', 'email')->ignore($this->employee)],
             'phone_number' => ['required', Rule::unique('employees', 'phone_number')->ignore($this->employee)],
             'nb_of_days' => ['required'],
-            'role_id' => ['required']
         ];
     }
 }

@@ -38,7 +38,14 @@ class LeaveService
         $role = Role::findById($processing_officer_role);
         switch ($role->name){
             case ('human_resource'):
-                if($employee->roles()->first()->name == "employee"){
+                if(auth()->user()->hasRole('sg')) {
+                    $role_sg = Role::findByName('sg');
+                    $leave->processing_officer_role = $role_sg->id;
+                    $this->acceptLeave($leave);
+                    $processing_officers = NULL;
+                    break;
+                }
+                if($employee->hasRole("employee")) {
                     $officer_role = Role::findByName('supervisor');
                     $supervisor_id = $leave->employee->department->manager->id;
                     $processing_officers = Employee::where('id', $supervisor_id)->get();
@@ -53,6 +60,11 @@ class LeaveService
                 $role_sg = Role::findByName('sg');
                 $leave->processing_officer_role = $role_sg->id;
                 $processing_officers = Employee::role('sg')->get();
+                if(auth()->user()->hasRole('sg')) {
+                    $this->acceptLeave($leave);
+                    $processing_officers = NULL;
+                    break;
+                }
                 break;
             case ('sg'):
                 $this->acceptLeave($leave);

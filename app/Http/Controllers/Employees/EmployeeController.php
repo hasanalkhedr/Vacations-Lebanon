@@ -24,7 +24,7 @@ class EmployeeController
         if (auth()->attempt($validated)) {
             $employee = auth()->user();
             $request->session()->regenerate();
-            if($employee->roles()->first()->name == "employee"){
+            if($employee->hasRole("employee")){
                 return redirect()->route('leaves.submitted');
             }
             else {
@@ -43,6 +43,7 @@ class EmployeeController
     }
 
     public function store(StoreEmployeeRequest $request) {
+
         $validated = $request->validated();
         $employee = Employee::create([
             'first_name' => $validated['first_name'],
@@ -52,16 +53,22 @@ class EmployeeController
             'phone_number' => $validated['phone_number'],
             'nb_of_days' => $validated['nb_of_days'],
         ]);
-        $role = Role::findById($request['role_id']);
-        if($role->name != 'employee'){
-            $employee['department_id'] = NULL;
+        $role_ids = explode(',', $request->values);
+        foreach ($role_ids as $role_id) {
+            $employee->assignRole(Role::findById($role_id)->name);
+        }
+        $roles = $employee->getRoleNames();
+        foreach ($roles as $role) {
+            $roles_names[] = $role;
+        }
+        if(in_array('employee', $roles_names)){
+            $employee['department_id'] = $request['department_id'];
         }
         else {
-            $employee['department_id'] = $request['department_id'];
+            $employee['department_id'] = NULL;
         }
         $employee->save();
 
-        $employee->roles()->save($role);
         return redirect()->route('employees.index');
     }
 
@@ -89,7 +96,7 @@ class EmployeeController
         $roles = Role::all();
         $loggedInUser = auth()->user();
         $loggedInUserRoleName = $loggedInUser->roles()->first()->name;
-        if($loggedInUserRoleName == "supervisor") {
+        if($loggedInUser->hasRole('supervisor')) {
             if($employee->department->id == $loggedInUser->department->id)
                 return view('employees.show', [
                     'employee' => $employee,
@@ -97,7 +104,7 @@ class EmployeeController
                     'roles' => $roles
                 ]);
         }
-        if($loggedInUserRoleName == "human_resource" || $loggedInUserRoleName == "sg") {
+        if($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole("sg")) {
             return view('employees.show', [
                 'employee' => $employee,
                 'departments' => $departments,
@@ -131,21 +138,36 @@ class EmployeeController
             'phone_number' => $validated['phone_number'],
             'nb_of_days' => $validated['nb_of_days'],
         ]);
-        $role = Role::findById($request['role_id']);
-        $employee->roles()->sync([$validated['role_id']]);
-        if($role->name != 'employee'){
-            $employee['department_id'] = NULL;
+        $role_ids = explode(',', $request->values);
+        foreach ($role_ids as $role_id) {
+            $role_names[] = Role::findById($role_id)->name;
         }
-        else {
+        $employee->syncRoles($role_names);
+        $roles = $employee->getRoleNames();
+        foreach ($roles as $role) {
+            $roles_names[] = $role;
+        }
+        if(in_array('employee', $roles_names)){
             $employee['department_id'] = $request['department_id'];
         }
+        else {
+            $employee['department_id'] = NULL;
+        }
+//        $role = Role::findById($request['role_id']);
+//        $employee->roles()->sync([$validated['role_id']]);
+//        if($role->name != 'employee'){
+//            $employee['department_id'] = NULL;
+//        }
+//        else {
+//            $employee['department_id'] = $request['department_id'];
+//        }
         $employee->save();
         return redirect()->route('employees.index');
     }
 
     public function editPassword(Employee $employee)
     {
-        if(auth()->user()->roles()->first()->name == 'human_resource' || auth()->user()->id == $employee->id) {
+        if(auth()->user()->hasRole('human_resource') || auth()->user()->id == $employee->id) {
             return view('employees.edit-password', ['employee' => $employee]);
         }
         else {

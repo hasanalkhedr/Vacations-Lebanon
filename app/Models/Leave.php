@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
 
 class Leave extends Model
 {
@@ -71,5 +72,9 @@ class Leave extends Model
 
     public function substitute_employee() {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function processing_officer() {
+        return $this->belongsTo(Role::class, 'processing_officer_role');
     }
 }

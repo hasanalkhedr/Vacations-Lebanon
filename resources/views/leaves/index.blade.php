@@ -56,18 +56,20 @@
                             @endif
 
                         </td>
-                        <td class="py-4 px-6 text-right border-b">
-                            <button class="font-medium text-green-600 dark:text-green-500 hover:underline" type="button"
-                                    data-modal-toggle="acceptModal-{{$leave->id}}">
-                                Accept
-                            </button>
-                        </td>
-                        <td class="py-4 px-6 text-right border-b">
-                            <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
-                                    data-modal-toggle="rejectModal-{{$leave->id}}">
-                                Reject
-                            </button>
-                        </td>
+                        @if($employee->hasRole($leave->processing_officer->name))
+                            <td class="py-4 px-6 text-right border-b">
+                                <button class="font-medium text-green-600 dark:text-green-500 hover:underline" type="button"
+                                        data-modal-toggle="acceptModal-{{$leave->id}}">
+                                    Accept
+                                </button>
+                            </td>
+                            <td class="py-4 px-6 text-right border-b">
+                                <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
+                                        data-modal-toggle="rejectModal-{{$leave->id}}">
+                                    Reject
+                                </button>
+                            </td>
+                        @endif
 
                         <div id="rejectModal-{{$leave->id}}" tabindex="-1" aria-hidden="true"
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">

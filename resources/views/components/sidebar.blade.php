@@ -39,8 +39,8 @@
             </button>
             <aside class="hidden w-full md:block md:w-auto" id="aside-default">
                 <ul>
-                    @unless(auth()->user()->roles()->first()->name == 'employee' ||
-                        auth()->user()->roles()->first()->name == 'supervisor')
+                    @unless(auth()->user()->hasRole('employee') ||
+                        auth()->user()->hasRole('supervisor'))
                         <li>
                             <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                 href="{{ route('departments.index') }}">
@@ -48,7 +48,7 @@
                             </a>
                         </li>
                     @endunless
-                    @unless(auth()->user()->roles()->first()->name == 'employee')
+                    @unless(auth()->user()->hasRole('employee'))
                         <li>
                             <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                 href="{{ route('employees.index') }}">
@@ -71,7 +71,7 @@
                             </svg>
                         </button>
                         <ul id="dropdown-leave-requests" class="hidden py-2 space-y-2">
-                            @unless(auth()->user()->roles()->first()->name == 'employee')
+                            @unless(auth()->user()->hasRole('employee'))
                                 <li>
                                     <a href="{{ url(route('leaves.index')) }}"
                                         class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming
@@ -100,7 +100,7 @@
                             </svg>
                         </button>
                         <ul id="dropdown-overtime-requests" class="hidden py-2 space-y-2">
-                            @unless(auth()->user()->roles()->first()->name == 'employee')
+                            @unless(auth()->user()->hasRole('employee'))
                                 <li>
                                     <a href="{{ url(route('overtimes.index')) }}"
                                         class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming
@@ -114,7 +114,7 @@
                             </li>
                         </ul>
                     </li>
-                    @if (auth()->user()->roles()->first()->name == 'human_resource')
+                    @if (auth()->user()->hasRole('human_resource'))
                         <li>
                             <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                 href="{{ route('leaves.getCalendarForm') }}">
