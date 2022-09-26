@@ -4,6 +4,7 @@ use App\Http\Controllers\Employees\EmployeeController;
 use App\Http\Controllers\Departments\DepartmentController;
 use \App\Http\Controllers\Leaves\LeaveController;
 use \App\Http\Controllers\Overtimes\OvertimeController;
+use \App\Http\Controllers\Holidays\HolidayController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -39,7 +40,7 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
     });
 });
 
-Route::group(['middleware' => 'role_custom:human_resource', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
+Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
     Route::get('/edit/{department}', 'edit')->name('edit');
@@ -66,7 +67,7 @@ Route::group(['middleware' => 'role_custom:supervisor|human_resource|sg', 'contr
     Route::get('/', 'index')->name('index');
 });
 
-Route::group(['middleware' => 'role_custom:human_resource', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
+Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
 
     Route::group(['prefix' => '/calendar'], function () {
         Route::get('/get-form', 'getCalendarForm')->name('getCalendarForm');
@@ -90,6 +91,16 @@ Route::group(['middleware' => 'role_custom:supervisor|human_resource|sg', 'contr
     Route::get('/', 'index')->name('index');
 });
 
+Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => HolidayController::class, 'prefix' => 'holidays', 'as' => 'holidays.'], function () {
+    Route::get('/create', 'create')->name('create');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/edit/{holiday}', 'edit')->name('edit');
+    Route::put('/update/{holiday}', 'update')->name('update');
+    Route::get('/{holiday}', 'show')->name('show');
+    Route::delete('/{holiday}', 'destroy')->name('destroy');
+    Route::get('/', 'index')->name('index');
+
+});
 
 Auth::routes();
 

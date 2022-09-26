@@ -6,6 +6,7 @@ use App\Jobs\LeaveJobs\SendLeaveRequestAcceptedEmailJob;
 use App\Jobs\LeaveJobs\SendLeaveRequestIncomingEmailJob;
 use App\Jobs\LeaveJobs\SendLeaveRequestRejectedEmailJob;
 use App\Models\Employee;
+use App\Models\Holiday;
 use App\Models\Leave;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Log;
@@ -16,41 +17,40 @@ class LeaveService
     const ACCEPTED_STATUS = 1;
     const REJECTED_STATUS = 2;
 
-    public function sendEmailToInvolvedEmployees($leave, $processing_officers = NULL) {
-        if($leave->leave_status == self::ACCEPTED_STATUS){
+    public function sendEmailToInvolvedEmployees($leave, $processing_officers = NULL)
+    {
+        if ($leave->leave_status == self::ACCEPTED_STATUS) {
             $employee = Employee::where('id', $leave->employee_id)->first();
             dispatch(new SendLeaveRequestAcceptedEmailJob($employee));
-        }
-        elseif($leave->leave_status == self::REJECTED_STATUS){
+        } elseif ($leave->leave_status == self::REJECTED_STATUS) {
             $employee = Employee::where('id', $leave->employee_id)->first();
             dispatch(new SendLeaveRequestRejectedEmailJob($employee));
-        }
-        else {
+        } else {
             foreach ($processing_officers as $processing_officer) {
                 dispatch(new SendLeaveRequestIncomingEmailJob($processing_officer));
             }
         }
     }
 
-    public function checkProcessingOfficerandElevateRequest($leave) {
+    public function checkProcessingOfficerandElevateRequest($leave)
+    {
         $employee = $leave->employee;
         $processing_officer_role = $leave->processing_officer_role;
         $role = Role::findById($processing_officer_role);
-        switch ($role->name){
+        switch ($role->name) {
             case ('human_resource'):
-                if(auth()->user()->hasRole('sg')) {
+                if (auth()->user()->hasRole('sg')) {
                     $role_sg = Role::findByName('sg');
                     $leave->processing_officer_role = $role_sg->id;
                     $this->acceptLeave($leave);
                     $processing_officers = NULL;
                     break;
                 }
-                if($employee->hasRole("employee")) {
+                if ($employee->hasRole("employee")) {
                     $officer_role = Role::findByName('supervisor');
                     $supervisor_id = $leave->employee->department->manager->id;
                     $processing_officers = Employee::where('id', $supervisor_id)->get();
-                }
-                else {
+                } else {
                     $officer_role = Role::findByName('sg');
                     $processing_officers = Employee::role('sg')->get();
                 }
@@ -60,7 +60,7 @@ class LeaveService
                 $role_sg = Role::findByName('sg');
                 $leave->processing_officer_role = $role_sg->id;
                 $processing_officers = Employee::role('sg')->get();
-                if(auth()->user()->hasRole('sg')) {
+                if (auth()->user()->hasRole('sg')) {
                     $this->acceptLeave($leave);
                     $processing_officers = NULL;
                     break;
@@ -75,9 +75,10 @@ class LeaveService
         $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
     }
 
-    public function rejectLeaveRequest($request, $leave) {
+    public function rejectLeaveRequest($request, $leave)
+    {
         $leave->leave_status = self::REJECTED_STATUS;
-        if($request['cancellation_reason']) {
+        if ($request['cancellation_reason']) {
             $leave->cancellation_reason = $request['cancellation_reason'];
         }
         $leave->save();
@@ -89,20 +90,22 @@ class LeaveService
 //    }
 
 
-    public function acceptLeave($leave) {
+    public function acceptLeave($leave)
+    {
         $this->updateNbOfDaysOff($leave);
         $leave->leave_status = self::ACCEPTED_STATUS;
         $leave->save();
     }
 
-    public function updateNbOfDaysOff($leave) {
+    public function updateNbOfDaysOff($leave)
+    {
         $employee = $leave->employee;
         $period = CarbonPeriod::create($leave->from, $leave->to);
         $nb_of_days_off = 0;
         $disabled_dates = unserialize($leave->disabled_dates);
         foreach ($period as $date) {
             $date = $date->toDateString();
-            if(!$this->isWeekend($date) && !in_array($date, $disabled_dates) ){
+            if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date)) {
                 $nb_of_days_off = $nb_of_days_off + 1;
             }
         }
@@ -110,17 +113,16 @@ class LeaveService
         if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
             $nb_of_days_off = $nb_of_days_off / 2;
         }
-        if($leave->use_confessionnels) {
+        if ($leave->use_confessionnels) {
             $employee->confessionnels = $employee->confessionnels - $nb_of_days_off;
-        }
-        else{
+        } else {
             $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
         }
         $employee->save();
     }
 
-    public function isWeekend($date) {
-        Log::alert($date . date('N', strtotime($date)));
+    public function isWeekend($date)
+    {
         return (date('N', strtotime($date)) == 7 || date('N', strtotime($date)) == 6);
     }
 
@@ -129,13 +131,34 @@ class LeaveService
         $leaves = Leave::where('employee_id', $employee->id)->whereDate('to', '>=', now()->format('Y-m-d'))->get();
         $disabled_dates = [];
         foreach ($leaves as $leave) {
-        $period = CarbonPeriod::create($leave->from, $leave->to);
+            $period = CarbonPeriod::create($leave->from, $leave->to);
             // Iterate over the period
             foreach ($period as $date) {
-                if(!in_array($date->toDateString(), $disabled_dates))
+                if (!in_array($date->toDateString(), $disabled_dates))
                     $disabled_dates[] = $date->toDateString();
             }
         }
+
         return $disabled_dates;
+    }
+
+    public function getHolidays()
+    {
+        $holidays = Holiday::whereDate('to', '>=', now()->format('Y-m-d'))->get();
+        $holiday_dates = [];
+        foreach ($holidays as $holiday) {
+            $period = CarbonPeriod::create($holiday->from, $holiday->to);
+            // Iterate over the period
+            foreach ($period as $date) {
+                if (!in_array($date->toDateString(), $holiday_dates))
+                    $holiday_dates[] = $date->toDateString();
+            }
+        }
+        return $holiday_dates;
+    }
+
+    public function isHoliday($date) {
+        $holidays = $this->getHolidays();
+        return (in_array($date->format('Y-m-d'), $holidays));
     }
 }

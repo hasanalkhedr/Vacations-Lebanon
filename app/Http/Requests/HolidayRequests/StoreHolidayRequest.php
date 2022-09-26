@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\DepartmentRequests;
+namespace App\Http\Requests\HolidayRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreDepartmentRequest extends FormRequest
+class StoreHolidayRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,8 @@ class StoreDepartmentRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            ''
+            'from' => ['required', 'date'],
+            'to' => ['required', 'date'],
         ];
     }
 }

@@ -33,6 +33,9 @@
                         @if(in_array($date->format('Y-m-d'), $weekends))
                             <td class="border border-b py-2 px-5 text-gray-900 bg-gray-500 whitespace-nowrap dark:text-white w-60">
                             </td>
+                        @elseif(in_array($date->format('Y-m-d'), $holidays))
+                            <td class="border border-b py-2 px-5 text-gray-900 bg-green-600 whitespace-nowrap dark:text-white w-60">
+                            </td>
                         @elseif(array_key_exists($employee->id . '&' . $date->format('Y-m-d'), $leaveId_dates_pairs))
                             @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->employee->id == $employee->id)
                                 @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")

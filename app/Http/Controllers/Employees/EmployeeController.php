@@ -153,14 +153,6 @@ class EmployeeController
         else {
             $employee['department_id'] = NULL;
         }
-//        $role = Role::findById($request['role_id']);
-//        $employee->roles()->sync([$validated['role_id']]);
-//        if($role->name != 'employee'){
-//            $employee['department_id'] = NULL;
-//        }
-//        else {
-//            $employee['department_id'] = $request['department_id'];
-//        }
         $employee->save();
         return redirect()->route('employees.index');
     }

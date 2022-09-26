@@ -188,7 +188,7 @@
             let tempDate = new Date(newFromDate.getTime());
             while(tempDate <= newToDate){
                 newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
-                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6){
+                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)){
                     dateDifference = dateDifference - 1;
                 }
                 tempDate.setDate(tempDate.getDate() + 1);
@@ -228,7 +228,7 @@
             let tempDate = new Date(newFromDate.getTime());
             while(tempDate <= newToDate){
                 newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
-                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6){
+                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)){
                     dateDifference = dateDifference - 1;
                 }
                 tempDate.setDate(tempDate.getDate() + 1);
@@ -268,7 +268,7 @@
             let tempDate = new Date(newFromDate.getTime());
             while(tempDate <= newToDate){
                 newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
-                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6){
+                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)){
                     dateDifference = dateDifference - 1;
                 }
                 tempDate.setDate(tempDate.getDate() + 1);
@@ -302,7 +302,7 @@
                 function(date) {
                     let date_temp = new Date(date.getTime());
                     let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate()+1)))).toISOString().split('T')[0];
-                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) );
+                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
                 }],
 
             locale: {
@@ -322,7 +322,7 @@
                 function(date) {
                     let date_temp = new Date(date.getTime());
                     let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate()+1)))).toISOString().split('T')[0];
-                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) );
+                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
                 }],
             locale: {
                 firstDayOfWeek: 1

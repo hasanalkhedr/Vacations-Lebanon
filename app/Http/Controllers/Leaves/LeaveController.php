@@ -38,6 +38,7 @@ class LeaveController extends Controller
         }
         $leave_service = new LeaveService();
         $disabled_dates = $leave_service->getDisabledDates($employee);
+        $holiday_dates = $leave_service->getHolidays();
         return view('leaves.create',[
             'employee' => $employee,
             'leave_durations' => $leave_durations,
@@ -46,6 +47,7 @@ class LeaveController extends Controller
             'department' => $employee->department,
             'substitutes' => $substitutes,
             'disabled_dates' => $disabled_dates,
+            'holiday_dates' => $holiday_dates
         ]);
     }
 
@@ -73,7 +75,6 @@ class LeaveController extends Controller
             $leave->substitute_employee_id = $request['substitute_employee_id'];
         }
         $leave->disabled_dates = $serializedArr;
-        $leave_employee_role = $leave->employee->roles()->first()->name;
         if($leave->employee->hasRole('sg'))  {
             $role = Role::findByName('sg');
             $leave->processing_officer_role = $role->id;
@@ -195,18 +196,21 @@ class LeaveController extends Controller
         $end_of_month = Carbon::parse($month)->endOfMonth();
         $period = CarbonPeriod::create($start_of_month, $end_of_month);
         $weekends = [];
+        $holidays = [];
         $leave_service = new LeaveService();
         foreach($period as $date)
         {
             if($leave_service->isWeekend($date)) {
                 $weekends[] = $date->format('Y-m-d');
             }
+            if($leave_service->isHoliday($date)) {
+                $holidays[] = $date->format('Y-m-d');
+            }
             $dates[] = $date;
         }
         $leaves = Leave::whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
         $leaveId_dates_pairs = [];
         foreach ($leaves as $leave) {
-            $enabled_dates = [];
             $period = CarbonPeriod::create($leave->from, $leave->to);
             $disabled_dates = unserialize($leave->disabled_dates);
             if($disabled_dates){
@@ -230,7 +234,8 @@ class LeaveController extends Controller
             'dates' => $dates,
             'employees' => $employees,
             'leaveId_dates_pairs' => $leaveId_dates_pairs,
-            'weekends' => $weekends
+            'weekends' => $weekends,
+            'holidays' => $holidays,
         ]);
     }
 

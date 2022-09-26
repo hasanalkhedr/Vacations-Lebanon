@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('overtime_submissions', function (Blueprint $table) {
+        Schema::create('holidays', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->
+            $table->date('from');
+            $table->date('to');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('overtime_submissions');
+        Schema::dropIfExists('holidays');
     }
 };

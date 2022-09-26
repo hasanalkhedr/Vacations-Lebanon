@@ -117,7 +117,7 @@
                         </svg>
                     </div>
                     <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                        Edit Department: {{ $department->name }}
+                        Delete Department: {{ $department->name }}
                     </div>
                     <div>
                         <button type="button"
