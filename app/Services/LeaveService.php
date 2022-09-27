@@ -9,7 +9,7 @@ use App\Models\Employee;
 use App\Models\Holiday;
 use App\Models\Leave;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 class LeaveService
@@ -85,9 +85,9 @@ class LeaveService
         $this->sendEmailToInvolvedEmployees($leave);
     }
 
-//    public function downloadAttachment($leave) {
-//        Storage::download('/public/' . $leave->attachment_path);
-//    }
+    public function downloadAttachment($leave) {
+
+    }
 
 
     public function acceptLeave($leave)

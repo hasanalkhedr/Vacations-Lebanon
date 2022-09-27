@@ -10,6 +10,7 @@ use App\Models\LeaveDuration;
 use App\Models\LeaveType;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use App\Services\LeaveService;
 use Illuminate\Http\Request;
@@ -239,11 +240,13 @@ class LeaveController extends Controller
         ]);
     }
 
-//    public function downloadAttachment(Leave $leave) {
-//        $leave_service = new LeaveService();
-//        $leave_service->downloadAttachment($leave);
-//        return redirect()->route('leaves.index');
-//    }
+    public function downloadAttachment(Leave $leave) {
+        $path = Storage::disk('local')->path("public/$leave->attachment_path");
+        $content = file_get_contents($path);
+        return response($content)->withHeaders([
+            'Content-Type' => mime_content_type($path)
+        ]);
+    }
 
 
 

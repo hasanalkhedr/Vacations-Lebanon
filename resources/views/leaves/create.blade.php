@@ -1,7 +1,7 @@
 <x-sidebar>
     <div class="relative w-full h-full md:h-auto">
         <div class="p-6">
-            <form method="POST" action="{{ route('leaves.store') }}">
+            <form method="POST" action="{{ route('leaves.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="relative z-0 mb-6 w-full group">
                     <label for="leave_duration_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Leave Duration</label>

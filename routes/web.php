@@ -58,7 +58,7 @@ Route::group(['middleware' => 'role_custom:employee|supervisor|human_resource|sg
     Route::get('/submitted', 'submitted')->name('submitted');
     Route::get('/{leave}', 'show')->name('show');
     Route::post('/destroy/{leave}', 'destroy')->name('destroy');
-//    Route::get('/download/{leave}', 'downloadAttachment')->name('downloadAttachment');
+    Route::get('/download/{leave}', 'downloadAttachment')->name('downloadAttachment');
 });
 
 Route::group(['middleware' => 'role_custom:supervisor|human_resource|sg', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
