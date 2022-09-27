@@ -755,4 +755,4 @@
         }
     </script>
 
-</x-sidebar>>
+</x-sidebar>
