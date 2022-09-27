@@ -24,11 +24,11 @@ class EmployeeController
         if (auth()->attempt($validated)) {
             $employee = auth()->user();
             $request->session()->regenerate();
-            if($employee->hasRole("employee")){
-                return redirect()->route('leaves.submitted');
+            if($employee->hasRole("supervisor") || $employee->hasRole("human_resource") ||$employee->hasRole("sg")){
+                return redirect()->route('leaves.index');
             }
             else {
-                return redirect()->route('leaves.index');
+                return redirect()->route('leaves.submitted');
             }
         }
         else {

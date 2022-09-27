@@ -9,62 +9,69 @@
             </a>
         </div>
     </div>
+    <div class="grid grid-cols-3 gap-4">
+        <div class="bg-gray-500 text-white p-2 text-center">Weekend</div>
+        <div class="bg-green-600 text-white p-2 text-center">National Holiday</div>
+        <div class="bg-red-500 text-white p-2 text-center">Half Day AM</div>
+        <div class="bg-blue-600 text-white p-2 text-center">Half Day PM</div>
+        <div class="bg-yellow-600 text-white p-2 text-center">One or More Full Days</div>
+    </div>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-    <table class="mx-4 w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-            <th class="border"></th>
-            @foreach($dates as $date)
-                <th scope="col" class="text-center border py-3">
-                    {{ $date->day }}
-                </th>
-            @endforeach
-        </tr>
-        </thead>
-        <tbody>
-            @foreach ($employees as $employee)
-                <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td class="border px-2 py-3 sm:text-sm font-bold text-gray-900 whitespace-nowrap dark:text-white">
-                        <div>
-                            {{ $employee->first_name }} {{ $employee->last_name }}
-                        </div>
-                    </td>
-                    @foreach($dates as $date)
-                        @if(in_array($date->format('Y-m-d'), $weekends))
-                            <td class="border border-b py-2 px-5 text-gray-900 bg-gray-500 whitespace-nowrap dark:text-white w-60">
-                            </td>
-                        @elseif(in_array($date->format('Y-m-d'), $holidays))
-                            <td class="border border-b py-2 px-5 text-gray-900 bg-green-600 whitespace-nowrap dark:text-white w-60">
-                            </td>
-                        @elseif(array_key_exists($employee->id . '&' . $date->format('Y-m-d'), $leaveId_dates_pairs))
-                            @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->employee->id == $employee->id)
-                                @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
-                                    <td class="border py-2 px-5 bg-red-500 text-gray-900 whitespace-nowrap dark:text-white w-60">
-                                    </td>
-                                @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
-                                    <td class="border py-2 px-5 text-gray-900 bg-blue-600 whitespace-nowrap dark:text-white w-60">
-                                    </td>
+        <table class="mx-4 w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th class="border"></th>
+                @foreach($dates as $date)
+                    <th scope="col" class="text-center border py-3">
+                        {{ $date->day }}
+                    </th>
+                @endforeach
+            </tr>
+            </thead>
+            <tbody>
+                @foreach ($employees as $employee)
+                    <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td class="border px-2 py-3 sm:text-sm font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                            <div>
+                                {{ $employee->first_name }} {{ $employee->last_name }}
+                            </div>
+                        </td>
+                        @foreach($dates as $date)
+                            @if(in_array($date->format('Y-m-d'), $weekends))
+                                <td class="border border-b py-2 px-5 text-gray-900 bg-gray-500 whitespace-nowrap dark:text-white">
+                                </td>
+                            @elseif(in_array($date->format('Y-m-d'), $holidays))
+                                <td class="border border-b py-2 px-5 text-gray-900 bg-green-600 whitespace-nowrap dark:text-white">
+                                </td>
+                            @elseif(array_key_exists($employee->id . '&' . $date->format('Y-m-d'), $leaveId_dates_pairs))
+                                @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->employee->id == $employee->id)
+                                    @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
+                                        <td class="border py-2 px-5 text-gray-900 bg-red-500 whitespace-nowrap dark:text-white">
+                                        </td>
+                                    @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
+                                        <td class="border py-2 px-5 text-gray-900 bg-blue-600 whitespace-nowrap dark:text-white">
+                                        </td>
+                                    @else
+                                        <td class="border py-2 px-5 text-gray-900 bg-yellow-600 whitespace-nowrap dark:text-white">
+                                        </td>
+                                    @endif
                                 @else
-                                    <td class="border py-2 px-5 text-gray-900 bg-yellow-600 whitespace-nowrap dark:text-white w-60">
+                                    <td class="border py-2 px-5 text-gray-900 whitespace-nowrap dark:text-white">
                                     </td>
                                 @endif
                             @else
-                                <td class="border py-2 px-5 text-gray-900 whitespace-nowrap dark:text-white w-60">
+                                <td class="border py-2 px-5 text-gray-900 whitespace-nowrap dark:text-white">
                                 </td>
                             @endif
-                        @else
-                            <td class="border py-2 px-5 text-gray-900 whitespace-nowrap dark:text-white w-60">
-                            </td>
-                        @endif
-                    @endforeach
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+                        @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
-<div class="mt-6 p-4">
-    {{ $employees->links() }}
-</div>
+    <div class="mt-6 p-4">
+        {{ $employees->links() }}
+    </div>
 
 </x-sidebar>
