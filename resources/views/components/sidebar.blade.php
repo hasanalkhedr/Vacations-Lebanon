@@ -137,7 +137,7 @@
 
         <div class="lg:pt-8 w-full h-full overflow-y-auto sm:pt-0 lg:mx-4 sm:mx-0">
             <nav class="w-full bg-white border-b-2 border-indigo-600 flex justify-between">
-                <div class="flex flex-col">
+                <div class="flex flex-col py-2">
                     <div class="px-2 text-xl font-bold text-black">
                         {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
                     </div>

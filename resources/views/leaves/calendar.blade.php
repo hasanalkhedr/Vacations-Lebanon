@@ -17,7 +17,7 @@
         <div class="bg-yellow-600 text-white p-2 text-center rounded">One or More Full Days</div>
     </div>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table class="mx-4 w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <table class="mx-4 w-full text-sm text-left text-gray-500 dark:text-gray-400" style="display: table-caption;">
             <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th class="border"></th>
@@ -38,29 +38,29 @@
                         </td>
                         @foreach($dates as $date)
                             @if(in_array($date->format('Y-m-d'), $weekends))
-                                <td class="border border-b py-2 px-5 text-gray-900 bg-gray-500 whitespace-nowrap dark:text-white">
+                                <td class="border border-b py-1 px-5 text-gray-900 bg-gray-500 whitespace-nowrap dark:text-white">
                                 </td>
                             @elseif(in_array($date->format('Y-m-d'), $holidays))
-                                <td class="border border-b py-2 px-5 text-gray-900 bg-green-600 whitespace-nowrap dark:text-white">
+                                <td class="border border-b py-1 px-5 text-gray-900 bg-green-600 whitespace-nowrap dark:text-white">
                                 </td>
                             @elseif(array_key_exists($employee->id . '&' . $date->format('Y-m-d'), $leaveId_dates_pairs))
                                 @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->employee->id == $employee->id)
                                     @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
-                                        <td class="border py-2 px-5 text-gray-900 bg-red-500 whitespace-nowrap dark:text-white">
+                                        <td class="border py-1 px-5 text-gray-900 bg-red-500 whitespace-nowrap dark:text-white">
                                         </td>
                                     @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
-                                        <td class="border py-2 px-5 text-gray-900 bg-blue-600 whitespace-nowrap dark:text-white">
+                                        <td class="border py-1 px-5 text-gray-900 bg-blue-600 whitespace-nowrap dark:text-white">
                                         </td>
                                     @else
-                                        <td class="border py-2 px-5 text-gray-900 bg-yellow-600 whitespace-nowrap dark:text-white">
+                                        <td class="border py-1 px-5 text-gray-900 bg-yellow-600 whitespace-nowrap dark:text-white">
                                         </td>
                                     @endif
                                 @else
-                                    <td class="border py-2 px-5 text-gray-900 whitespace-nowrap dark:text-white">
+                                    <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white">
                                     </td>
                                 @endif
                             @else
-                                <td class="border py-2 px-5 text-gray-900 whitespace-nowrap dark:text-white">
+                                <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white">
                                 </td>
                             @endif
                         @endforeach
