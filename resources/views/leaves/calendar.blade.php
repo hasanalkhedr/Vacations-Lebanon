@@ -9,12 +9,12 @@
             </a>
         </div>
     </div>
-    <div class="grid grid-cols-3 gap-4">
-        <div class="bg-gray-500 text-white p-2 text-center">Weekend</div>
-        <div class="bg-green-600 text-white p-2 text-center">National Holiday</div>
-        <div class="bg-red-500 text-white p-2 text-center">Half Day AM</div>
-        <div class="bg-blue-600 text-white p-2 text-center">Half Day PM</div>
-        <div class="bg-yellow-600 text-white p-2 text-center">One or More Full Days</div>
+    <div class="my-2 mx-4 grid grid-cols-3 gap-4">
+        <div class="bg-gray-500 text-white p-2 text-center rounded">Weekend</div>
+        <div class="bg-green-600 text-white p-2 text-center rounded">National Holiday</div>
+        <div class="bg-red-500 text-white p-2 text-center rounded">Half Day AM</div>
+        <div class="bg-blue-600 text-white p-2 text-center rounded">Half Day PM</div>
+        <div class="bg-yellow-600 text-white p-2 text-center rounded">One or More Full Days</div>
     </div>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
         <table class="mx-4 w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -69,9 +69,4 @@
             </tbody>
         </table>
     </div>
-
-    <div class="mt-6 p-4">
-        {{ $employees->links() }}
-    </div>
-
 </x-sidebar>

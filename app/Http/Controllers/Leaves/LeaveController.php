@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Leaves;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LeaveRequests\StoreLeaveRequest;
+use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Leave;
 use App\Models\LeaveDuration;
@@ -18,7 +19,7 @@ use Illuminate\Http\Request;
 class LeaveController extends Controller
 {
     const PENDING_STATUS = 0;
-
+    const ACCEPTED_STATUS = 1;
 
     public function create() {
         $employee = auth()->user();
@@ -105,7 +106,6 @@ class LeaveController extends Controller
         $leave_durations = LeaveDuration::all();
         $leave_types = LeaveType::all();
         $today = now();
-        $employee_role = $employee->roles()->first()->id;
         if($employee->hasRole("human_resource")) {
             $leaves = Leave::whereNot('processing_officer_role', Role::findByName('supervisor')->id)->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
@@ -186,7 +186,10 @@ class LeaveController extends Controller
     }
 
     public function getCalendarForm() {
-        return view('leaves.calendar-form');
+        $departments = Department::all();
+        return view('leaves.calendar-form', [
+            'departments' => $departments,
+        ]);
     }
 
     public function generateCalendar(Request $request) {
@@ -209,7 +212,20 @@ class LeaveController extends Controller
             }
             $dates[] = $date;
         }
-        $leaves = Leave::whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
+        if($request->department_id == 'all') {
+            $leaves = Leave::where('leave_status', self::ACCEPTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
+            $employees = Employee::all();
+        }
+        else {
+            if(!auth()->user()->hasRole(['human_resource', 'sg'])){
+                $department = Department::where('id', auth()->user()->department_id)->first();
+            }
+            else {
+                $department = Department::where('id', $request->department_id)->first();
+            }
+            $leaves = Leave::whereIn('employee_id', $department->employees->pluck('id')->toarray())->where('leave_status', self::ACCEPTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
+            $employees = $department->employees;
+        }
         $leaveId_dates_pairs = [];
         foreach ($leaves as $leave) {
             $period = CarbonPeriod::create($leave->from, $leave->to);
@@ -229,7 +245,6 @@ class LeaveController extends Controller
                 }
             }
         }
-        $employees = Employee::paginate(20);
         return view('leaves.calendar', [
             'month_name' => $month_name,
             'dates' => $dates,
@@ -247,8 +262,6 @@ class LeaveController extends Controller
             'Content-Type' => mime_content_type($path)
         ]);
     }
-
-
 
     public function destroy(Leave $leave) {
         $leave->delete();

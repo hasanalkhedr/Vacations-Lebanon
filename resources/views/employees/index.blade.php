@@ -28,12 +28,14 @@
         <div class="text-lg">
             Users
         </div>
+        @hasanyrole('human_resource|sg')
         <div>
             <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
                     data-modal-toggle="createModal">
                 Add User
             </button>
         </div>
+        @endhasanyrole
     </nav>
 
     @include('partials.searches._search-employees')

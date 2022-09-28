@@ -24,8 +24,8 @@
 </head>
 
 <body>
-    <div class="lg:flex">
-        <div class="lg:pt-12 w-1/6 border-gray-200 px-2 py-2.5 dark:bg-gray-900 sm:pt-4">
+    <div class="lg:flex h-full min-h-screen">
+        <div class="lg:pt-12 w-1/6 border-gray-200 px-2 py-2.5 dark:bg-gray-900 sm:pt-4 lg:bg-gray-200">
             <button data-collapse-toggle="aside-default" type="button"
                 class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                 aria-controls="navbar-default" aria-expanded="false">
@@ -42,10 +42,17 @@
                     @unless(auth()->user()->hasRole('employee') ||
                         auth()->user()->hasRole('supervisor'))
                         <li>
-                            <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                                href="{{ route('departments.index') }}">
-                                <span class="mx-2 font-medium">Departments</span>
-                            </a>
+                            @if(Route::is('departments.index'))
+                                <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group lg:bg-gray-300 dark:text-white dark:hover:bg-gray-700">
+                                    <span class="mx-2 font-medium">Departments</span>
+                                </a>
+                            @else
+                                <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                                   href="{{ route('departments.index') }}">
+                                    <span class="mx-2 font-medium">Departments</span>
+                                </a>
+                            @endif
+
                         </li>
                     @endunless
                     @unless(auth()->user()->hasRole('employee'))
@@ -122,7 +129,7 @@
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasRole('human_resource') || auth()->user()->hasRole('sg'))
+                    @if (auth()->user()->hasRole('supervisor') || auth()->user()->hasRole('human_resource') || auth()->user()->hasRole('sg'))
                         <li>
                             <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                 href="{{ route('leaves.getCalendarForm') }}">
@@ -136,8 +143,23 @@
 
         <div class="lg:pt-8 w-full h-full overflow-y-auto sm:pt-0 lg:mx-4 sm:mx-0">
             <nav class="w-full bg-white border-b-2 border-indigo-600 flex justify-between">
-                <div class="px-2 py-3 text-xl font-bold text-black">
-                    {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+                <div class="flex flex-col">
+                    <div class="px-2 text-xl font-bold text-black">
+                        {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+                    </div>
+                    <div class="px-2 text-md italic text-black">
+                        @if(auth()->user()->getRoleNames()->count() == 1)
+                            {{ auth()->user()->roles()->first()->name }}
+                        @else
+                            @foreach(auth()->user()->getRoleNames() as $role_name)
+                                @if(auth()->user()->getRoleNames()->last() == $role_name)
+                                    {{ $role_name }}
+                                @else
+                                    {{ $role_name }} |
+                                @endif
+                            @endforeach
+                        @endif
+                    </div>
                 </div>
                 <div class="px-6 py-3 text-xl font-bold text-black">
                     <form method="POST" action="{{ route('logout') }}">

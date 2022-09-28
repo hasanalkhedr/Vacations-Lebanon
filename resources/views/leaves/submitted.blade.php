@@ -30,6 +30,9 @@
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
                         Status
                     </th>
+                    <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
+                        Processing Officer
+                    </th>
                         <th scope="col" class="py-3 px-6">
                             <span class="sr-only">Remove</span>
                         </th>
@@ -56,6 +59,9 @@
                                     Rejected
                                 </div>
                             @endif
+                        </td>
+                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                            {{ $leave->processing_officer->name }}
                         </td>
                         @if($leave->leave_status == 0)
                             <td class="py-4 px-6 text-right">
