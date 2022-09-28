@@ -72,7 +72,7 @@ class LeaveService
                 break;
         }
         $leave->save();
-        $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
+//        $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
     }
 
     public function rejectLeaveRequest($request, $leave)
@@ -82,7 +82,7 @@ class LeaveService
             $leave->cancellation_reason = $request['cancellation_reason'];
         }
         $leave->save();
-        $this->sendEmailToInvolvedEmployees($leave);
+//        $this->sendEmailToInvolvedEmployees($leave);
     }
 
     public function downloadAttachment($leave) {

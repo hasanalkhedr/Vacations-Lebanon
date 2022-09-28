@@ -96,7 +96,7 @@ class LeaveController extends Controller
             $leave->processing_officer_role = $role->id;
             $leave->save();
         }
-        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers);
+//        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers);
         return redirect()->route('leaves.submitted');
     }
 
