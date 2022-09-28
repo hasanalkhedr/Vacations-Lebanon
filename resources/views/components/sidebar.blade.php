@@ -42,23 +42,17 @@
                     @unless(auth()->user()->hasRole('employee') ||
                         auth()->user()->hasRole('supervisor'))
                         <li>
-                            @if(Route::is('departments.index'))
-                                <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group lg:bg-gray-300 dark:text-white dark:hover:bg-gray-700">
-                                    <span class="mx-2 font-medium">Departments</span>
-                                </a>
-                            @else
-                                <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                                   href="{{ route('departments.index') }}">
-                                    <span class="mx-2 font-medium">Departments</span>
-                                </a>
-                            @endif
+                            <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                               href="{{ route('departments.index') }}">
+                                <span class="mx-2 font-medium">Departments</span>
+                            </a>
 
                         </li>
                     @endunless
                     @unless(auth()->user()->hasRole('employee'))
                         <li>
                             <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                                href="{{ route('employees.index') }}">
+                               href="{{ route('employees.index') }}">
                                 <span class="mx-2 font-medium">Users</span>
                             </a>
                         </li>
@@ -149,13 +143,13 @@
                     </div>
                     <div class="px-2 text-md italic text-black">
                         @if(auth()->user()->getRoleNames()->count() == 1)
-                            {{ auth()->user()->roles()->first()->name }}
+                            {{ auth()->user()->roles()->first()->display_name }}
                         @else
                             @foreach(auth()->user()->getRoleNames() as $role_name)
                                 @if(auth()->user()->getRoleNames()->last() == $role_name)
-                                    {{ $role_name }}
+                                    {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }}
                                 @else
-                                    {{ $role_name }} |
+                                    {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }} |
                                 @endif
                             @endforeach
                         @endif

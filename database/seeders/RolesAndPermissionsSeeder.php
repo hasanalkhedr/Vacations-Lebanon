@@ -33,12 +33,16 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view_leave_status']);
 
         $role = Role::create(['name' => 'employee']);
+        $role->display_name = "Employee";
+        $role->save();
         $role->givePermissionTo([
             'submit_leave_request',
             'view_leave_status',
         ]);
 
         $role = Role::create(['name' => 'human_resource']);
+        $role->display_name = "HR";
+        $role->save();
         $role->givePermissionTo([
             'view_all_employees',
             'view_departments',
@@ -54,6 +58,8 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         $role = Role::create(['name' => 'supervisor']);
+        $role->display_name = "Supervisor";
+        $role->save();
         $role->givePermissionTo([
             'submit_leave_request',
             'view_leave_status',
@@ -64,6 +70,8 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         $role = Role::create(['name' => 'sg']);
+        $role->display_name = "SG";
+        $role->save();
         $role->givePermissionTo([
             'view_all_employees',
             'view_all_vacations',

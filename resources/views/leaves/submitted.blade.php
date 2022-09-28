@@ -61,7 +61,7 @@
                             @endif
                         </td>
                         <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            {{ $leave->processing_officer->name }}
+                            {{ $leave->processing_officer->display_name }}
                         </td>
                         @if($leave->leave_status == 0)
                             <td class="py-4 px-6 text-right">
