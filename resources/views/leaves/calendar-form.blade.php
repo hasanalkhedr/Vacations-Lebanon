@@ -1,4 +1,5 @@
 <x-sidebar>
+    @section('title', 'Calendar Form')
     <form method="POST" action="{{ route('leaves.generateCalendar') }}" enctype="multipart/form-data" class="m-2">
         @csrf
         <div>

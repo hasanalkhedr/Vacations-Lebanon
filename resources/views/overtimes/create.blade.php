@@ -1,4 +1,5 @@
 <x-sidebar>
+    @section('title', 'Create Overtime Submission')
     <div class="relative w-full h-full md:h-auto">
         <div class="p-6">
             <form method="POST" action="{{ route('overtimes.store') }}">

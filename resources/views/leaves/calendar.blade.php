@@ -1,4 +1,5 @@
 <x-sidebar>
+    @section('title', 'Calendar')
     <div class="w-full bg-white flex justify-between items-center">
         <div class="p-4 text-lg">
             {{ $month_name }}

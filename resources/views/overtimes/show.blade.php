@@ -1,8 +1,8 @@
 <x-sidebar>
-    @yield('title', 'Show Overtime Request')
+    @section('title', 'Show Overtime Request')
     <div class="m-4">
         <div class="mb-6">
-            <a href="{{ url(route('overtimes.index')) }}">
+            <a href="{{ url()->previous() }}">
                 <button type="button" class="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">Back</button>
             </a>
         </div>
@@ -57,7 +57,7 @@
             @endif
         </div>
         @unlessrole('employee')
-            @if($overtime->overtime_status == 0 && auth()->user()->hasRole($leave->processing_officer->name))
+            @if($overtime->overtime_status == 0 && auth()->user()->hasRole($overtime->processing_officer->name))
                 <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-modal-toggle="acceptModal">Accept</button>
                 <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" data-modal-toggle="rejectModal">Reject</button>
             @endif

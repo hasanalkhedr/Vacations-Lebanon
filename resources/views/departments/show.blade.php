@@ -1,4 +1,5 @@
 <x-sidebar>
+    @section('title', 'Show Department')
     <div class="m-4">
         <div class="mb-6">
             <a href="{{ url(route('departments.index')) }}">

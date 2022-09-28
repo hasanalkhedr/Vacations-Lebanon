@@ -1,5 +1,5 @@
 <x-sidebar>
-    @section('title', 'Edit Employee')
+    @section('title', 'Show Employee')
     @push('head')
         <style>
             [x-cloak] {
