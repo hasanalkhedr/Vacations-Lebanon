@@ -51,7 +51,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96176715486',
             'department_id' => 1
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(1);
         $department['manager_id'] = $employee['id'];
@@ -87,7 +89,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96176030307',
             'department_id' => 2
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(2);
         $department['manager_id'] = $employee['id'];
@@ -101,7 +105,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96176730303',
             'department_id' => 3
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(3);
         $department['manager_id'] = $employee['id'];
@@ -137,7 +143,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96176030463',
             'department_id' => 4
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(4);
         $department['manager_id'] = $employee['id'];
@@ -162,7 +170,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96176030300',
             'department_id' => 5
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(5);
         $department['manager_id'] = $employee['id'];
@@ -187,7 +197,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96176037303',
             'department_id' => 6
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(6);
         $department['manager_id'] = $employee['id'];
@@ -245,7 +257,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96178470303',
             'department_id' => 7
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(7);
         $department['manager_id'] = $employee['id'];
@@ -292,7 +306,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96176493303',
             'department_id' => 8
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(8);
         $department['manager_id'] = $employee['id'];
@@ -339,7 +355,9 @@ class EmployeeSeeder extends Seeder
             'phone_number' => '+96176099303',
             'department_id' => 9
         ]);
-        $role = Role::findByName('supervisor');
+        $role = Role::findByName('employee');
+        $employee->is_supervisor = true;
+        $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(9);
         $department['manager_id'] = $employee['id'];

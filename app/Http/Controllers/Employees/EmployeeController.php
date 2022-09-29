@@ -24,7 +24,7 @@ class EmployeeController
         if (auth()->attempt($validated)) {
             $employee = auth()->user();
             $request->session()->regenerate();
-            if($employee->hasRole("supervisor") || $employee->hasRole("human_resource") ||$employee->hasRole("sg")){
+            if($employee->is_supervisor || $employee->hasRole("human_resource") ||$employee->hasRole("sg")){
                 return redirect()->route('leaves.index');
             }
             else {
@@ -43,7 +43,6 @@ class EmployeeController
     }
 
     public function store(StoreEmployeeRequest $request) {
-
         $validated = $request->validated();
         $employee = Employee::create([
             'first_name' => $validated['first_name'],
@@ -53,8 +52,7 @@ class EmployeeController
             'phone_number' => $validated['phone_number'],
             'nb_of_days' => $validated['nb_of_days'],
         ]);
-        $role_ids = explode(',', $request->values);
-        foreach ($role_ids as $role_id) {
+        foreach ($request->role_ids as $role_id) {
             $employee->assignRole(Role::findById($role_id)->name);
         }
         $roles = $employee->getRoleNames();
@@ -83,10 +81,29 @@ class EmployeeController
         $employees = new EmployeeService();
         $departments = Department::all();
         $roles = Role::all();
+        $rolesMultiSelect = Role::get(['name', 'id'])->toArray();
+        $oldkeyName = 'name';
+        $newkeyName = 'label';
+        $oldkeyId = 'id';
+        $newkeyId = 'value';
+        $i = 0;
+        foreach ($rolesMultiSelect as $roleMultiSelectSingle) {
+            $arrayKeys = array_keys($roleMultiSelectSingle);
+            //Replace the key in our $arrayKeys array.
+            $oldKeyIndexName = array_search($oldkeyName, $arrayKeys);
+            $oldKeyIndexId = array_search($oldkeyId, $arrayKeys);
+            $arrayKeys[$oldKeyIndexName] = $newkeyName;
+            $arrayKeys[$oldKeyIndexId] = $newkeyId;
+            //Combine them back into one array.
+            $newArray = array_combine($arrayKeys, $roleMultiSelectSingle);
+            $rolesMultiSelect[$i] = $newArray;
+            $i += 1;
+        }
         return view('employees.index', [
             'employees' => $employees->getAppropriateEmployees(),
             'departments' => $departments,
-            'roles' => $roles
+            'roles' => $roles,
+            'rolesMultiSelect' => json_encode($rolesMultiSelect)
         ]);
     }
 
@@ -95,8 +112,7 @@ class EmployeeController
         $departments = Department::all();
         $roles = Role::all();
         $loggedInUser = auth()->user();
-        $loggedInUserRoleName = $loggedInUser->roles()->first()->name;
-        if($loggedInUser->hasRole('supervisor')) {
+        if($loggedInUser->is_supervisor) {
             if($employee->department->id == $loggedInUser->department->id)
                 return view('employees.show', [
                     'employee' => $employee,
@@ -138,8 +154,7 @@ class EmployeeController
             'phone_number' => $validated['phone_number'],
             'nb_of_days' => $validated['nb_of_days'],
         ]);
-        $role_ids = explode(',', $request->values);
-        foreach ($role_ids as $role_id) {
+        foreach ($request->role_ids as $role_id) {
             $role_names[] = Role::findById($role_id)->name;
         }
         $employee->syncRoles($role_names);
@@ -154,7 +169,7 @@ class EmployeeController
             $employee['department_id'] = NULL;
         }
         $employee->save();
-        return redirect()->route('employees.index');
+        return back();
     }
 
     public function editPassword(Employee $employee)

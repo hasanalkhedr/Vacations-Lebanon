@@ -57,17 +57,17 @@ class RolesAndPermissionsSeeder extends Seeder
             'cancel_leave_request',
         ]);
 
-        $role = Role::create(['name' => 'supervisor']);
-        $role->display_name = "Supervisor";
-        $role->save();
-        $role->givePermissionTo([
-            'submit_leave_request',
-            'view_leave_status',
-            'view_direct_employees',
-            'view_direct_vacations',
-            'accept_leave_request',
-            'cancel_leave_request',
-        ]);
+//        $role = Role::create(['name' => 'supervisor']);
+//        $role->display_name = "Supervisor";
+//        $role->save();
+//        $role->givePermissionTo([
+//            'submit_leave_request',
+//            'view_leave_status',
+//            'view_direct_employees',
+//            'view_direct_vacations',
+//            'accept_leave_request',
+//            'cancel_leave_request',
+//        ]);
 
         $role = Role::create(['name' => 'sg']);
         $role->display_name = "SG";

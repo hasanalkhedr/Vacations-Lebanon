@@ -107,9 +107,9 @@ class LeaveController extends Controller
         $leave_types = LeaveType::all();
         $today = now();
         if($employee->hasRole("human_resource")) {
-            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('supervisor')->id)->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('employee')->id)->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
-        if($employee->hasRole("supervisor")){
+        if($employee->hasRole("employee") && $employee->is_supervisor){
             $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
         }
         if($employee->hasRole("sg")) {
@@ -120,7 +120,13 @@ class LeaveController extends Controller
             $substitutes = Employee::role('human_resource')->get()->except($employee->id);
         }
         else {
-            $substitutes = Employee::where('department_id', $employee->department_id)->get()->except($employee->id);
+            if($employee->is_supervisor){
+                $substitutes = Employee::where('department_id', $employee->department_id)->get()->except($employee->id);
+            }
+            else {
+                $substitutes = Employee::where('department_id', $employee->department_id)->where('is_supervisor', false)->get()->except($employee->id);
+            }
+
         }
         return view('leaves.index', [
             'leaves' => $leaves,

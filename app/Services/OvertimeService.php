@@ -24,7 +24,7 @@ class OvertimeService
         }
         else {
             foreach ($processing_officers as $processing_officer) {
-                dispatch(new SendLeaveRequestIncomingEmailJob($processing_officer));
+                dispatch(new SendOvertimeRequestAcceptedEmailJob($processing_officer));
             }
         }
     }
@@ -42,8 +42,8 @@ class OvertimeService
                     $processing_officers = NULL;
                     break;
                 }
-                if($employee->hasRole("employee")){
-                    $officer_role = Role::findByName('supervisor');
+                if(!$employee->is_supervisor){
+                    $officer_role = Role::findByName('employee');
                     $supervisor_id = $overtime->employee->department->manager->id;
                     $processing_officers = Employee::where('id', $supervisor_id)->get();
                 }
@@ -53,7 +53,7 @@ class OvertimeService
                 }
                 $overtime->processing_officer_role = $officer_role->id;
                 break;
-            case ('supervisor'):
+            case ('employee'):
                 $role_sg = Role::findByName('sg');
                 $overtime->processing_officer_role = $role_sg->id;
                 $processing_officers = Employee::role('sg')->get();
@@ -69,7 +69,7 @@ class OvertimeService
                 break;
         }
         $overtime->save();
-        $this->sendEmailToInvolvedEmployees($overtime, $processing_officers);
+//        $this->sendEmailToInvolvedEmployees($overtime, $processing_officers);
     }
 
     public function rejectLeaveRequest($request, $overtime) {
@@ -78,7 +78,7 @@ class OvertimeService
             $overtime->cancellation_reason = $request['cancellation_reason'];
         }
         $overtime->save();
-        $this->sendEmailToInvolvedEmployees($overtime);
+//        $this->sendEmailToInvolvedEmployees($overtime);
     }
 
     public function acceptLeave($overtime) {

@@ -41,16 +41,16 @@
                 <tbody x-ref="tbody">
                 @foreach ($overtimes as $overtime)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                             {{ $overtime->date }}
                         </td>
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                             {{ $overtime->from }}
                         </td>
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                             {{ $overtime->to }}
                         </td>
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                             @if($overtime->overtime_status == 0)
                                 Pending
                             @elseif($overtime->overtime_status == 1)

@@ -47,31 +47,14 @@ class DepartmentController extends Controller
     {
         $validated = $request->validated();
         $supervisor_old = Employee::where('id', $department->manager_id)->first();
-        $old_roles = $supervisor_old->getRoleNames();
-        foreach ($old_roles as $role) {
-            if($role == "supervisor") {
-                $old_roles_names[] = "employee";
-            }
-            else{
-                $old_roles_names[] = $role;
-            }
-        }
-        $supervisor_old->syncRoles($old_roles_names);
-
+        $supervisor_old->is_supervisor = false;
+        $supervisor_old->save();
         $department->update($validated);
         $supervisor_new = Employee::where('id', $department->manager_id)->first();
-        $new_roles = $supervisor_new->getRoleNames();
-        foreach ($new_roles as $role) {
-            if($role == "employee") {
-                $new_roles_names[] = "supervisor";
-            }
-            else{
-                $new_roles_names[] = $role;
-            }
-        }
-        $supervisor_new->syncRoles($new_roles_names);
+        $supervisor_new->is_supervisor = true;
+        $supervisor_new->save();
 
-        return redirect()->route('departments.index');
+        return back();
     }
 
     public function destroy(Department $department)

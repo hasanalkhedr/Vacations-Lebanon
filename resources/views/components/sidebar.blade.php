@@ -39,8 +39,7 @@
             </button>
             <aside class="hidden w-full md:block md:w-auto" id="aside-default">
                 <ul>
-                    @unless(auth()->user()->hasRole('employee') ||
-                        auth()->user()->hasRole('supervisor'))
+                    @unless(auth()->user()->hasRole('employee'))
                         <li>
                             <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                href="{{ route('departments.index') }}">
@@ -123,7 +122,7 @@
                             </a>
                         </li>
                     @endif
-                    @if (auth()->user()->hasRole('supervisor') || auth()->user()->hasRole('human_resource') || auth()->user()->hasRole('sg'))
+                    @if (auth()->user()->is_supervisor || auth()->user()->hasRole('human_resource') || auth()->user()->hasRole('sg'))
                         <li>
                             <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                 href="{{ route('leaves.getCalendarForm') }}">

@@ -41,13 +41,13 @@
                 <tbody x-ref="tbody">
                 @foreach ($leaves as $leave)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             {{ $leave->from }}
                         </td>
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             {{ $leave->to }}
                         </td>
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             @if($leave->leave_status == 0)
                                 Pending
                             @elseif($leave->leave_status == 1)
@@ -60,8 +60,13 @@
                                 </div>
                             @endif
                         </td>
-                        <td class="py-4 px-6" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            {{ $leave->processing_officer->display_name }}
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                            @if($leave->processing_officer->name == 'employee' && $leave->employee->is_supervisor)
+                                Supervisor
+                            @else
+                                {{ $leave->processing_officer->display_name }}
+                            @endif
+
                         </td>
                         @if($leave->leave_status == 0)
                             <td class="py-4 px-6 text-right">

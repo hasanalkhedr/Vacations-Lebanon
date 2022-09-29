@@ -46,8 +46,8 @@ class LeaveService
                     $processing_officers = NULL;
                     break;
                 }
-                if ($employee->hasRole("employee")) {
-                    $officer_role = Role::findByName('supervisor');
+                if (!$employee->is_supervisor) {
+                    $officer_role = Role::findByName('employee');
                     $supervisor_id = $leave->employee->department->manager->id;
                     $processing_officers = Employee::where('id', $supervisor_id)->get();
                 } else {
@@ -56,7 +56,7 @@ class LeaveService
                 }
                 $leave->processing_officer_role = $officer_role->id;
                 break;
-            case ('supervisor'):
+            case ('employee'):
                 $role_sg = Role::findByName('sg');
                 $leave->processing_officer_role = $role_sg->id;
                 $processing_officers = Employee::role('sg')->get();
@@ -84,11 +84,6 @@ class LeaveService
         $leave->save();
 //        $this->sendEmailToInvolvedEmployees($leave);
     }
-
-    public function downloadAttachment($leave) {
-
-    }
-
 
     public function acceptLeave($leave)
     {

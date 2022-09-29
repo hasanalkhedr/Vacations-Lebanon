@@ -34,17 +34,17 @@
                 <tbody x-ref="tbody">
                 @foreach ($leaves as $leave)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             @if($leave->employee->department)
                                 {{$leave->employee->department->name}}
                             @else
                                 -
                             @endif
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             @if($leave->employee->department)
                                 @if($leave->employee->id == $leave->employee->department->manager->id)
                                     -

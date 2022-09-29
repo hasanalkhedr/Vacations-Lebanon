@@ -40,13 +40,13 @@
                 <tbody x-ref="tbody">
                 @foreach ($holidays as $holiday)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
+                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white cursor-pointer" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
                             {{ $holiday->name }}
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
+                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
                             {{$holiday->from}}
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
+                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
                             {{$holiday->to}}
                         </td>
                         @hasanyrole('human_resource|sg')

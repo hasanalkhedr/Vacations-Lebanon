@@ -34,17 +34,17 @@
                 <tbody x-ref="tbody">
                 @foreach ($overtimes as $overtime)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                             {{ $overtime->employee->first_name }} {{ $overtime->employee->last_name }}
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                             @if($overtime->employee->department)
                                 {{$overtime->employee->department->name}}
                             @else
                                 -
                             @endif
                         </td>
-                        <td class="py-4 px-6 border-b" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                             @if($overtime->employee->department)
                                 @if($overtime->employee->id == $overtime->employee->department->manager->id)
                                     -
