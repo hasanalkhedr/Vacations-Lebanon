@@ -62,13 +62,26 @@
                         @endif
                         <td class="py-4 px-6 border-b">
                             @if($employee->getRoleNames()->count() == 1)
-                                {{ $employee->roles()->first()->name }}
+                                @if($employee->hasRole('employee') && $employee->is_supervisor)
+                                    Supervisor
+                                @else
+                                    {{ $employee->roles()->first()->display_name }}
+                                @endif
                             @else
                                 @foreach($employee->getRoleNames() as $role_name)
                                     @if($employee->getRoleNames()->last() == $role_name)
-                                        {{ $role_name }}
+                                        @if($role_name == "$employee" && $employee->is_supervisor)
+                                            Supervisor
+                                        @else
+                                            {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }}
+                                        @endif
+
                                     @else
-                                        {{ $role_name }} |
+                                        @if($role_name == "$employee" && $employee->is_supervisor)
+                                            Supervisor |
+                                        @else
+                                            {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }} |
+                                        @endif
                                     @endif
                                 @endforeach
                             @endif

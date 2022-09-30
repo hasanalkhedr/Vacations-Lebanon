@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Leaves;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LeaveRequests\StoreLeaveRequest;
 use App\Models\Department;
@@ -103,6 +104,10 @@ class LeaveController extends Controller
 
     public function index() {
         $employee=auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($employee)) {
+            return back();
+        }
         $leave_durations = LeaveDuration::all();
         $leave_types = LeaveType::all();
         $today = now();
@@ -145,14 +150,14 @@ class LeaveController extends Controller
             $loggedInRole = auth()->user()->roles()->first();
             $roles = auth()->user()->getRoleNames();
 
-            if($leave->employee_id != auth()->user()->id) {
+            if($leave->employee_id == auth()->user()->id) {
                 return view('leaves.show', [
                     'leave' => $leave,
                     'processing_officer' => $processing_officer
                 ]);
             }
             foreach ($roles as $role) {
-                if (Role::findByName($role)->id != $leave->processing_officer_role) {
+                if (Role::findByName($role)->id == $leave->processing_officer_role) {
                     return view('leaves.show', [
                         'leave' => $leave,
                         'processing_officer' => $processing_officer
@@ -167,7 +172,12 @@ class LeaveController extends Controller
     }
 
     public function accept(Leave $leave) {
-        if(!auth()->user()->hasRole($leave->processing_officer->name)) {
+        $employee=auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($employee)) {
+            return back();
+        }
+        if(!$employee->hasRole($leave->processing_officer->name)) {
             return back();
         }
         $leave_service = new LeaveService();
@@ -176,7 +186,12 @@ class LeaveController extends Controller
     }
 
     public function reject(Request $request, Leave $leave) {
-        if(!auth()->user()->hasRole($leave->processing_officer->name)) {
+        $employee=auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($employee)) {
+            return back();
+        }
+        if(!$employee->hasRole($leave->processing_officer->name)) {
             return back();
         }
         $leave_service = new LeaveService();

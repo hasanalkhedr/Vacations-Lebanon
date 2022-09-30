@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Employees;
 
+use App\Helpers\Helper;
 use App\Http\Requests\EmployeesRequests\AuthenticateEmployeeRequest;
 use App\Http\Requests\EmployeesRequests\StoreEmployeeRequest;
 use App\Http\Requests\EmployeesRequests\UpdateEmployeePasswordRequest;
@@ -78,6 +79,11 @@ class EmployeeController
     }
 
     public function index() {
+        $user = auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($user)) {
+            return back();
+        }
         $employees = new EmployeeService();
         $departments = Department::all();
         $roles = Role::all();

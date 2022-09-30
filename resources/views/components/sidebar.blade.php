@@ -48,7 +48,7 @@
 
                         </li>
                     @endunless
-                    @unless(auth()->user()->hasRole('employee'))
+                    @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
                         <li>
                             <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                href="{{ route('employees.index') }}">
@@ -71,7 +71,7 @@
                             </svg>
                         </button>
                         <ul id="dropdown-leave-requests" class="hidden py-2 space-y-2">
-                            @unless(auth()->user()->hasRole('employee'))
+                            @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <a href="{{ url(route('leaves.index')) }}"
                                         class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming
@@ -100,7 +100,7 @@
                             </svg>
                         </button>
                         <ul id="dropdown-overtime-requests" class="hidden py-2 space-y-2">
-                            @unless(auth()->user()->hasRole('employee'))
+                            @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <a href="{{ url(route('overtimes.index')) }}"
                                         class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming
@@ -142,13 +142,25 @@
                     </div>
                     <div class="px-2 text-md italic text-black">
                         @if(auth()->user()->getRoleNames()->count() == 1)
-                            {{ auth()->user()->roles()->first()->display_name }}
+                            @if(auth()->user()->roles()->first()->name == "employee" && auth()->user()->is_supervisor)
+                                Supervisor
+                            @else
+                                {{ auth()->user()->roles()->first()->display_name }}
+                            @endif
                         @else
                             @foreach(auth()->user()->getRoleNames() as $role_name)
                                 @if(auth()->user()->getRoleNames()->last() == $role_name)
-                                    {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }}
+                                    @if(auth()->user()->roles()->first() == "employee" && auth()->user()->is_supervisor)
+                                        Supervisor
+                                    @else
+                                        {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }}
+                                    @endif
                                 @else
-                                    {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }} |
+                                    @if(auth()->user()->roles()->first() == "employee" && auth()->user()->is_supervisor)
+                                        Supervisor |
+                                    @else
+                                        {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }} |
+                                    @endif
                                 @endif
                             @endforeach
                         @endif

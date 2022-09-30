@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Overtimes;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Overtime;
@@ -77,6 +78,10 @@ class OvertimeController extends Controller
 
     public function index() {
         $employee=auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($employee)) {
+            return back();
+        }
         $today = now();
         if($employee->hasRole("human_resource")) {
             $overtimes = Overtime::whereNot('processing_officer_role', Role::findByName('employee')->id)->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('overtime_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
@@ -124,7 +129,12 @@ class OvertimeController extends Controller
     }
 
     public function accept(Overtime $overtime) {
-        if(!auth()->user()->hasRole($overtime->processing_officer->name)) {
+        $user = auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($user)) {
+            return back();
+        }
+        if(!$user->hasRole($overtime->processing_officer->name)) {
             return back();
         }
         $overtime_service = new OvertimeService();
@@ -133,7 +143,12 @@ class OvertimeController extends Controller
     }
 
     public function reject(Request $request, Overtime $overtime) {
-        if(!auth()->user()->hasRole($overtime->processing_officer->name)) {
+        $user = auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($user)) {
+            return back();
+        }
+        if(!$user->hasRole($overtime->processing_officer->name)) {
             return back();
         }
         $overtime_service = new OvertimeService();
