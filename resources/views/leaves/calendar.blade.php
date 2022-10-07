@@ -13,9 +13,8 @@
     <div class="my-2 mx-4 grid grid-cols-3 gap-4">
         <div class="bg-gray-500 text-white p-2 text-center rounded">Weekend</div>
         <div class="bg-green-600 text-white p-2 text-center rounded">National Holiday</div>
-        <div class="bg-red-500 text-white p-2 text-center rounded">Half Day AM</div>
-        <div class="bg-blue-600 text-white p-2 text-center rounded">Half Day PM</div>
-        <div class="bg-yellow-600 text-white p-2 text-center rounded">One or More Full Days</div>
+        <div class="text-white p-2 text-center rounded" style="background: #6B9ADA;">Approved</div>
+        <div class="text-white p-2 text-center rounded" style="background: #e0a614;">Pending</div>
     </div>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
         <table class="mx-4 w-full text-sm text-left text-gray-500 dark:text-gray-400" style="display: table-caption;">
@@ -32,7 +31,7 @@
             <tbody>
                 @foreach ($employees as $employee)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border px-2 py-3 sm:text-sm font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        <td class="border-2 px-2 py-3 sm:text-sm font-bold text-gray-900 whitespace-nowrap dark:text-white">
                             <div>
                                 {{ $employee->first_name }} {{ $employee->last_name }}
                             </div>
@@ -46,14 +45,19 @@
                                 </td>
                             @elseif(array_key_exists($employee->id . '&' . $date->format('Y-m-d'), $leaveId_dates_pairs))
                                 @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->employee->id == $employee->id)
-                                    @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
-                                        <td class="border py-1 px-5 text-gray-900 bg-red-500 whitespace-nowrap dark:text-white">
-                                        </td>
-                                    @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
-                                        <td class="border py-1 px-5 text-gray-900 bg-blue-600 whitespace-nowrap dark:text-white">
-                                        </td>
+                                    @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_status == 1)
+                                        @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
+                                            <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #6B9ADA 50%,#ffffff 50%)">
+                                            </td>
+                                        @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
+                                            <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #ffffff 50%,#6B9ADA 50%)">
+                                            </td>
+                                        @else
+                                            <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white" style="background: #6B9ADA;">
+                                            </td>
+                                        @endif
                                     @else
-                                        <td class="border py-1 px-5 text-gray-900 bg-yellow-600 whitespace-nowrap dark:text-white">
+                                        <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white" style="background: #e0a614;">
                                         </td>
                                     @endif
                                 @else
