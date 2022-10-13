@@ -21,6 +21,7 @@ class LeaveController extends Controller
 {
     const PENDING_STATUS = 0;
     const ACCEPTED_STATUS = 1;
+    const REJECTED_STATUS = 2;
 
     public function create() {
         $employee = auth()->user();
@@ -207,9 +208,19 @@ class LeaveController extends Controller
     }
 
     public function getCalendarForm() {
+        $startOfYear = Carbon::now()->startOfYear();
+        $endOfYear = Carbon::now()->endOfYear();
+        $period = CarbonPeriod::create($startOfYear, '1 month', $endOfYear);
+        $months = [];
+
+        for ($monthNum=1; $monthNum<=12; $monthNum++) {
+            $dateObj = \DateTime::createFromFormat('!m', $monthNum);
+            $months[] = [$dateObj->format('m'), $dateObj->format('F')];
+        }
         $departments = Department::all();
         return view('leaves.calendar-form', [
             'departments' => $departments,
+            'months' => $months
         ]);
     }
 
@@ -234,7 +245,7 @@ class LeaveController extends Controller
             $dates[] = $date;
         }
         if($request->department_id == 'all') {
-            $leaves = Leave::where('leave_status', self::ACCEPTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
+            $leaves = Leave::whereNot('leave_status', self::REJECTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
             $employees = Employee::all();
         }
         else {
@@ -244,7 +255,7 @@ class LeaveController extends Controller
             else {
                 $department = Department::where('id', $request->department_id)->first();
             }
-            $leaves = Leave::whereIn('employee_id', $department->employees->pluck('id')->toarray())->where('leave_status', self::ACCEPTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
+            $leaves = Leave::whereIn('employee_id', $department->employees->pluck('id')->toarray())->whereNot('leave_status', self::REJECTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
             $employees = $department->employees;
         }
         $leaveId_dates_pairs = [];
