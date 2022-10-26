@@ -56,35 +56,45 @@
                             </a>
                         </li>
                     @endunless
+                    @unlessrole('sg')
+                        <li>
+                            <button type="button"
+                                class="flex items-center px-4 py-2 mt-5 w-full text-base font-normal text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                                aria-controls="dropdown-leave-requests" data-collapse-toggle="dropdown-leave-requests">
+                                <span class="flex-1 text-left whitespace-nowrap font-medium mx-2" sidebar-toggle-item>Leave
+                                    Requests</span>
+                                <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
 
-                    <li>
-                        <button type="button"
-                            class="flex items-center px-4 py-2 mt-5 w-full text-base font-normal text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                            aria-controls="dropdown-leave-requests" data-collapse-toggle="dropdown-leave-requests">
-                            <span class="flex-1 text-left whitespace-nowrap font-medium mx-2" sidebar-toggle-item>Leave
-                                Requests</span>
-                            <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </button>
-                        <ul id="dropdown-leave-requests" class="hidden py-2 space-y-2">
-                            @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
+                            <ul id="dropdown-leave-requests" class="hidden py-2 space-y-2">
+                                @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
+                                    <li>
+                                        <a href="{{ url(route('leaves.index')) }}"
+                                            class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming
+                                            Leave Requests</a>
+                                    </li>
+                                @endunless
                                 <li>
-                                    <a href="{{ url(route('leaves.index')) }}"
-                                        class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming
+                                    <a href="{{ url(route('leaves.submitted')) }}"
+                                        class="usersTitle flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Outgoing
                                         Leave Requests</a>
                                 </li>
-                            @endunless
-                            <li>
-                                <a href="{{ url(route('leaves.submitted')) }}"
-                                    class="usersTitle flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Outgoing
-                                    Leave Requests</a>
-                            </li>
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    @else
+                        <li>
+                            <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                               href="{{ route('leaves.index') }}">
+                                <span class="mx-2 font-medium">Incoming
+                            Leave Requests</span>
+                            </a>
+                        </li>
+                    @endunlessrole
                     <li>
                         <button type="button"
                             class="flex items-center px-4 py-2 mt-5 w-full text-base font-normal text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
@@ -119,6 +129,12 @@
                             <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                href="{{ route('holidays.index') }}">
                                 <span class="mx-2 font-medium">Holidays</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                               href="{{ route('confessionnels.index') }}">
+                                <span class="mx-2 font-medium">Confessionnels</span>
                             </a>
                         </li>
                     @endif

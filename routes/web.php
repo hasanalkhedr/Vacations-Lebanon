@@ -7,6 +7,7 @@ use \App\Http\Controllers\Overtimes\OvertimeController;
 use \App\Http\Controllers\Holidays\HolidayController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\Confessionnels\ConfessionnelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,6 +99,16 @@ Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => H
     Route::put('/update/{holiday}', 'update')->name('update');
     Route::get('/{holiday}', 'show')->name('show');
     Route::delete('/{holiday}', 'destroy')->name('destroy');
+    Route::get('/', 'index')->name('index');
+
+});
+
+Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => ConfessionnelController::class, 'prefix' => 'confessionnels', 'as' => 'confessionnels.'], function () {
+    Route::post('/store', 'store')->name('store');
+    Route::get('/edit/{confessionnel}', 'edit')->name('edit');
+    Route::put('/update/{confessionnel}', 'update')->name('update');
+    Route::get('/{confessionnel}', 'show')->name('show');
+    Route::delete('/{confessionnel}', 'destroy')->name('destroy');
     Route::get('/', 'index')->name('index');
 
 });

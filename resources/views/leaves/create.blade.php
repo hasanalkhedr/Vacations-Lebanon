@@ -14,23 +14,6 @@
                         @endif
                     </select>
                 </div>
-                <div class="grid md:grid-cols-2 md:gap-6">
-                    <div class="relative z-0 w-full group flex flex-col">
-                        <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
-                        <input type="text" name="from" id="fromDate" placeholder="Please select Date Range" data-input onload="disableDates(this)">
-                        @error('from')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="relative z-0 mb-6 w-full group flex flex-col">
-                        <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
-                        <input type="text" name="to" id="toDate" placeholder="Please select Date Range" data-input>
-                        @error('to')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-                <span id="error"></span>
 
                 <div class="relative z-0 mb-6 w-full group">
                     <p>Use Confessionnels</p>
@@ -41,6 +24,24 @@
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div class="grid md:grid-cols-2 md:gap-6">
+                    <div class="relative z-0 w-full group flex flex-col">
+                        <label id="fromDateLabel" for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
+                        <input type="text" name="from" id="fromDate" placeholder="Please Select Date Range" data-input onload="disableDates(this)">
+                        @error('from')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="relative z-0 mb-6 w-full group flex flex-col" id="toDateDiv">
+                        <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
+                        <input type="text" name="to" id="toDate" placeholder="Please Select Date Range" data-input>
+                        @error('to')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                <span id="error"></span>
 
                 <div class="relative z-0 mb-6 w-full group">
                     <p>Travelling</p>
@@ -173,42 +174,50 @@
     </div>
 
     <script type="text/javascript">
-        $('#fromDate').change(function(){
+        $('#fromDate').change(function() {
             $('#createButton').attr('disabled', false);
             $("#error").text("");
-            let fromDate = $('#fromDate').val();
-            let toDate = $('#toDate').val();
-            if(fromDate>toDate) {
+            if ($('#confessionnels')[0].checked) {
+                if ({{  auth()->user()->confessionnels }} === 0) {
+                    $('#createButton').attr('disabled', true)
+                    $('#error').css("color", "red");
+                    $("#error").text("You don't have any confessionnel days left");
+                }
+                let fromDate = $('#fromDate').val();
                 $("#toDate").val(fromDate);
-                toDate = $('#toDate').val();
-            }
-            let newFromDate = new Date(fromDate);
-            let newToDate = new Date(toDate);
-            dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000*3600*24)) + 1;
-            let tempDate = new Date(newFromDate.getTime());
-            while(tempDate <= newToDate){
-                newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
-                if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)){
-                    dateDifference = dateDifference - 1;
+            } else {
+                let fromDate = $('#fromDate').val();
+                let toDate = $('#toDate').val();
+                if (fromDate > toDate) {
+                    $("#toDate").val(fromDate);
+                    toDate = $('#toDate').val();
                 }
-                tempDate.setDate(tempDate.getDate() + 1);
-            }
-            if($('#confessionnels')[0].checked) {
-                console.log(dateDifference + ' ' + {{  auth()->user()->confessionnels }})
-                if(dateDifference > {{  auth()->user()->confessionnels }}) {
-
-                    $('#createButton').attr('disabled', true)
-                    $('#error').css("color", "red");
-                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                let newFromDate = new Date(fromDate);
+                let newToDate = new Date(toDate);
+                dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000 * 3600 * 24)) + 1;
+                let tempDate = new Date(newFromDate.getTime());
+                while (tempDate <= newToDate) {
+                    newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
+                    if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
+                        dateDifference = dateDifference - 1;
+                    }
+                    tempDate.setDate(tempDate.getDate() + 1);
                 }
-            }
-            else {
-                console.log(dateDifference + ' ' + {{  auth()->user()->nb_of_days }})
-                if(dateDifference > {{  auth()->user()->nb_of_days }}) {
+                if ($('#confessionnels')[0].checked) {
+                    if (dateDifference > {{  auth()->user()->confessionnels }}) {
 
-                    $('#createButton').attr('disabled', true)
-                    $('#error').css("color", "red");
-                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                        $('#createButton').attr('disabled', true)
+                        $('#error').css("color", "red");
+                        $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                    }
+                } else {
+                    console.log(dateDifference + ' ' + {{  auth()->user()->nb_of_days }})
+                    if (dateDifference > {{  auth()->user()->nb_of_days }}) {
+
+                        $('#createButton').attr('disabled', true)
+                        $('#error').css("color", "red");
+                        $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                    }
                 }
             }
         });
@@ -298,18 +307,18 @@
         let frompicker = $("#fromDate").flatpickr({
             minDate: "today",
             dateFormat: "Y-m-d",
-            disable:[
-                function(date) {
+            disable: [
+                function (date) {
                     let date_temp = new Date(date.getTime());
-                    let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate()+1)))).toISOString().split('T')[0];
-                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
+                    let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                 }],
 
             locale: {
                 firstDayOfWeek: 1
             },
-            onClose: function(selectedDates, dateStr, instance) {
-                if(dateStr) {
+            onClose: function (selectedDates, dateStr, instance) {
+                if (dateStr) {
                     topicker.set('minDate', dateStr);
                 }
             },
@@ -318,17 +327,61 @@
         let topicker = $("#toDate").flatpickr({
             minDate: "today",
             dateFormat: "Y-m-d",
-            disable:[
-                function(date) {
+            disable: [
+                function (date) {
                     let date_temp = new Date(date.getTime());
-                    let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate()+1)))).toISOString().split('T')[0];
-                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
+                    let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                 }],
             locale: {
                 firstDayOfWeek: 1
             }
         });
 
+        $("#confessionnels").change(function() {
+            console.log(this.checked)
+            if(this.checked) {
+                flatpickr("#fromDate", {}).clear();
+                flatpickr("#toDate", {}).clear();
+                $("#fromDateLabel").html("Date");
+                $("#toDateDiv").addClass("invisible");
+                $("#fromDate").attr("placeholder", "Please Select Date");
+                $("#fromDate").flatpickr({
+                    dateFormat: "Y-m-d",
+                    enable: [
+                        function (date) {
+                            let date_temp = new Date(date.getTime());
+                            let enable_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                            return ({!! json_encode($confessionnel_dates) !!}.includes(enable_date));
+                        }],
+                    locale: {
+                        firstDayOfWeek: 1
+                    },
+                });
+            }
+            else{
+                flatpickr("#fromDate", {}).clear();
+                $("#fromDate").attr("placeholder", "Please Select Date Range");
+                $("#fromDateLabel").html("Start Date");
+                $("#toDateDiv").removeClass("invisible");
+                let fromDate = $('#fromDate').val();
+                $("#toDate").val(fromDate);
+                $("#fromDate").flatpickr({
+                    minDate: "today",
+                    dateFormat: "Y-m-d",
+                    disable: [
+                        function (date) {
+                            let date_temp = new Date(date.getTime());
+                            let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                            return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                        }],
+
+                    locale: {
+                        firstDayOfWeek: 1
+                    },
+                });
+            }
+        });
     </script>
 
 </x-sidebar>
