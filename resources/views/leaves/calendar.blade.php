@@ -38,34 +38,34 @@
                         </td>
                         @foreach($dates as $date)
                             @if(in_array($date->format('Y-m-d'), $weekends))
-                                <td class="border border-b py-1 px-5 text-gray-900 bg-gray-500 whitespace-nowrap dark:text-white">
+                                <td class="border border-b py-1 2xl:px-5 xl:px-3 text-gray-900 bg-gray-500 whitespace-nowrap dark:text-white">
                                 </td>
                             @elseif(in_array($date->format('Y-m-d'), $holidays))
-                                <td class="border border-b py-1 px-5 text-gray-900 bg-green-600 whitespace-nowrap dark:text-white">
+                                <td class="border border-b py-1 2xl:px-5 xl:px-3 text-gray-900 bg-green-600 whitespace-nowrap dark:text-white">
                                 </td>
                             @elseif(array_key_exists($employee->id . '&' . $date->format('Y-m-d'), $leaveId_dates_pairs))
                                 @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->employee->id == $employee->id)
                                     @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_status == 1)
                                         @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
-                                            <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #6B9ADA 50%,#ffffff 50%)">
+                                            <td class="border py-1 2xl:px-5 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #6B9ADA 50%,#ffffff 50%)">
                                             </td>
                                         @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
-                                            <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #ffffff 50%,#6B9ADA 50%)">
+                                            <td class="border py-1 2xl:px-5 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #ffffff 50%,#6B9ADA 50%)">
                                             </td>
                                         @else
-                                            <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white" style="background: #6B9ADA;">
+                                            <td class="border py-1 2xl:px-5 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="background: #6B9ADA;">
                                             </td>
                                         @endif
                                     @else
-                                        <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white" style="background: #e0a614;">
+                                        <td class="border py-1 2xl:px-5 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="background: #e0a614;">
                                         </td>
                                     @endif
                                 @else
-                                    <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white">
+                                    <td class="border py-1 2xl:px-5 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white">
                                     </td>
                                 @endif
                             @else
-                                <td class="border py-1 px-5 text-gray-900 whitespace-nowrap dark:text-white">
+                                <td class="border py-1 2xl:px-5 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white">
                                 </td>
                             @endif
                         @endforeach
