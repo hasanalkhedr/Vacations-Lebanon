@@ -31,7 +31,7 @@
             <tbody>
                 @foreach ($employees as $employee)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-2 px-2 py-3 sm:text-sm font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        <td class="border-2 px-2 py-2 sm:text-sm font-bold text-gray-900 whitespace-nowrap dark:text-white">
                             <div>
                                 {{ $employee->first_name }} {{ $employee->last_name }}
                             </div>
