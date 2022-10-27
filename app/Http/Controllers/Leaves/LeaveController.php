@@ -43,6 +43,7 @@ class LeaveController extends Controller
         $leave_service = new LeaveService();
         $disabled_dates = $leave_service->getDisabledDates($employee);
         $holiday_dates = $leave_service->getHolidays();
+        $confessionnel_dates = $leave_service->getConfessionnels();
         return view('leaves.create',[
             'employee' => $employee,
             'leave_durations' => $leave_durations,
@@ -51,7 +52,8 @@ class LeaveController extends Controller
             'department' => $employee->department,
             'substitutes' => $substitutes,
             'disabled_dates' => $disabled_dates,
-            'holiday_dates' => $holiday_dates
+            'holiday_dates' => $holiday_dates,
+            'confessionnel_dates' => $confessionnel_dates,
         ]);
     }
 
@@ -98,7 +100,7 @@ class LeaveController extends Controller
             $leave->processing_officer_role = $role->id;
             $leave->save();
         }
-//        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers);
+        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
         return redirect()->route('leaves.submitted');
     }
 
@@ -201,6 +203,9 @@ class LeaveController extends Controller
     }
 
     public function submitted() {
+        if(auth()->user()->hasRole("sg")) {
+            return back();
+        }
         $leaves = auth()->user()->leaves;
         return view('leaves.submitted', [
             'leaves' => $leaves
@@ -296,8 +301,40 @@ class LeaveController extends Controller
     }
 
     public function destroy(Leave $leave) {
+        $processing_officers=[];
+        if($leave->employee->hasRole('employee') && $leave->employee->is_supervisor == false) {
+            $supervisor = $leave->employee->department->manager;
+            $processing_officers[] = $supervisor;
+            $hrs = Employee::role('human_resource')->get();
+            foreach ($hrs as $hr) {
+                $processing_officers[] = $hr;
+            }
+            $sgs = Employee::role('sg')->get();
+            foreach ($sgs as $sg) {
+                $processing_officers[] = $sg;
+            }
+        }
+        elseif($leave->employee->hasRole('employee') && $leave->employee->is_supervisor) {
+            $hrs = Employee::role('human_resource')->get();
+            foreach ($hrs as $hr) {
+                $processing_officers[] = $hr;
+            }
+            $sgs = Employee::role('sg')->get();
+            foreach ($sgs as $sg) {
+                $processing_officers[] = $sg;
+            }
+        }
+        else {
+        $sgs = Employee::role('sg')->get();
+            foreach ($sgs as $sg) {
+                $processing_officers[] = $sg;
+            }
+        }
+        $leave_service = new LeaveService();
+        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee, true);
         $leave->delete();
         return redirect()->route('leaves.submitted');
+
     }
 
 

@@ -154,10 +154,6 @@
 
     </div>
 
-{{--    <div class="mt-6 p-4">--}}
-{{--        {{ $leaves->links() }}--}}
-{{--    </div>--}}
-
     <script type="text/javascript">
         function data() {
             return {

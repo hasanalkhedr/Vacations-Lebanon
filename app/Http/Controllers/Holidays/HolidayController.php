@@ -17,7 +17,7 @@ class HolidayController extends Controller
 
     public function store(StoreHolidayRequest $request) {
         $validated = $request->validated();
-        $leave = Holiday::create([
+        $holiday = Holiday::create([
             'name' => $validated['name'],
             'from' => $validated['from'],
             'to' => $validated['to'],

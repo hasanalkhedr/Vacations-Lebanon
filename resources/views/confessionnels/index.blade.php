@@ -1,33 +1,30 @@
 <x-sidebar>
-    @section('title', 'Holidays')
+    @section('title', 'Confessionnels')
     @push('head')
         <script src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
     @endpush
     <nav class="flex justify-between items-center p-2 text-black font-bold">
         <div class="text-lg">
-            Holidays
+            Confessionnels
         </div>
         <div>
             <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
                     data-modal-toggle="createModal">
-                Add Holiday
+                Add Confessionnel
             </button>
         </div>
     </nav>
-    @include('partials.searches._search-holidays')
+    @include('partials.searches._search-confessionnels')
     <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="holidayData">
-            @unless($holidays->isEmpty())
+        <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="confessionnelData">
+            @unless($confessionnels->isEmpty())
                 <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
                         Name
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        From
-                    </th>
-                    <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        To
+                        Date
                     </th>
                     <th scope="col" class="py-3 px-6">
                         <span class="sr-only">Edit</span>
@@ -38,33 +35,30 @@
                 </tr>
                 </thead>
                 <tbody x-ref="tbody">
-                @foreach ($holidays as $holiday)
+                @foreach ($confessionnels as $confessionnel)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white cursor-pointer" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
-                            {{ $holiday->name }}
+                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white cursor-pointer" onclick="window.location.href = '{{ url(route('confessionnels.show', ['confessionnel' => $confessionnel->id])) }}'">
+                            {{ $confessionnel->name }}
                         </td>
-                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
-                            {{$holiday->from}}
-                        </td>
-                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
-                            {{$holiday->to}}
+                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('confessionnels.show', ['confessionnel' => $confessionnel->id])) }}'">
+                            {{$confessionnel->date}}
                         </td>
                         @hasanyrole('human_resource|sg')
                         <td class="py-4 px-6 text-right border-b">
                             <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline" type="button"
-                                    data-modal-toggle="editProfileModal-{{$holiday->id}}">
+                                    data-modal-toggle="editProfileModal-{{$confessionnel->id}}">
                                 Edit
                             </button>
                         </td>
                         <td class="py-4 px-6 text-right border-b">
                             <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
-                                    data-modal-toggle="deleteModal-{{$holiday->id}}">
+                                    data-modal-toggle="deleteModal-{{$confessionnel->id}}">
                                 Delete
                             </button>
                         </td>
                         @endhasanyrole
 
-                        <div id="deleteModal-{{$holiday->id}}" tabindex="-1" aria-hidden="true"
+                        <div id="deleteModal-{{$confessionnel->id}}" tabindex="-1" aria-hidden="true"
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
                                 <!-- Modal content -->
@@ -82,12 +76,12 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Delete Holiday: {{ $holiday->name }}
+                                            Delete Confessionnel: {{ $confessionnel->name }}
                                         </div>
                                         <div>
                                             <button type="button"
                                                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                                    data-modal-toggle="deleteModal-{{$holiday->id}}">
+                                                    data-modal-toggle="deleteModal-{{$confessionnel->id}}">
                                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
                                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd"
@@ -101,24 +95,24 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                            Are you sure you want to delete this holiday? This action cannot be undone.
+                                            Are you sure you want to delete this confessionnel? This action cannot be undone.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
                                     <div
                                         class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
                                         <div>
-                                            <button data-modal-toggle="deleteModal-{{$holiday->id}}" type="button"
+                                            <button data-modal-toggle="deleteModal-{{$confessionnel->id}}" type="button"
                                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                                                 Cancel
                                             </button>
                                         </div>
                                         <div>
                                             <form method="POST"
-                                                  action="{{ route('holidays.destroy', ['holiday' => $holiday->id]) }}">
+                                                  action="{{ route('confessionnels.destroy', ['confessionnel' => $confessionnel->id]) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button data-modal-toggle="deleteModal-{{$holiday->id}}"
+                                                <button data-modal-toggle="deleteModal-{{$confessionnel->id}}"
                                                         class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                                                     Delete
                                                 </button>
@@ -129,7 +123,7 @@
                             </div>
                         </div>
 
-                        <div id="editProfileModal-{{$holiday->id}}" tabindex="-1" aria-hidden="true"
+                        <div id="editProfileModal-{{$confessionnel->id}}" tabindex="-1" aria-hidden="true"
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
                                 <!-- Modal content -->
@@ -138,12 +132,12 @@
                                     <div
                                         class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Edit Holiday: {{ $holiday->name }}
+                                            Edit Confessionnel: {{ $confessionnel->name }}
                                         </div>
                                         <div>
                                             <button type="button"
                                                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                                    data-modal-toggle="editProfileModal-{{$holiday->id}}">
+                                                    data-modal-toggle="editProfileModal-{{$confessionnel->id}}">
                                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
                                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd"
@@ -157,36 +151,27 @@
                                     <!-- Modal body -->
                                     <div class="p-6">
                                         <form method="POST"
-                                              action="{{ route('holidays.update', ['holiday' => $holiday->id]) }}">
+                                              action="{{ route('confessionnels.update', ['confessionnel' => $confessionnel->id]) }}">
                                             @csrf
                                             @method('PUT')
                                             <div class="relative z-0 w-full group flex flex-col">
                                                 <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Name</label>
-                                                <input type="text" name="name" placeholder="Please enter holiday's name" value="{{ $holiday->name }}">
+                                                <input type="text" name="name" placeholder="Please enter confessionnel's name" value="{{ $confessionnel->name }}">
                                                 @error('name')
                                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                                 @enderror
                                             </div>
-                                            <div class="grid md:grid-cols-2 md:gap-6">
-                                                <div class="relative z-0 w-full group flex flex-col">
-                                                    <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
-                                                    <input type="text" name="from" id="fromDateEdit" placeholder="Please select Date Range" data-input value="{{ $holiday->from }}">
-                                                    @error('from')
-                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                                <div class="relative z-0 mb-6 w-full group flex flex-col">
-                                                    <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
-                                                    <input type="text" name="to" id="toDateEdit" placeholder="Please select Date Range" data-input value="{{ $holiday->to }}">
-                                                    @error('to')
-                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
+                                            <div class="relative z-0 w-full group flex flex-col">
+                                                <label for="date" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Date</label>
+                                                <input type="text" name="date" id="dateEdit" placeholder="Please select Date" data-input value="{{ $confessionnel->date }}">
+                                                @error('date')
+                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                                @enderror
                                             </div>
                                             <div
                                                 class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
                                                 <div>
-                                                    <button data-modal-toggle="editProfileModal-{{$holiday->id}}"
+                                                    <button data-modal-toggle="editProfileModal-{{$confessionnel->id}}"
                                                             type="button"
                                                             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                                                         Cancel
@@ -195,7 +180,7 @@
                                                 <div>
                                                     <button
                                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        data-modal-toggle="editProfileModal-{{$holiday->id}}">Edit
+                                                        data-modal-toggle="editProfileModal-{{$confessionnel->id}}">Edit
                                                     </button>
                                                 </div>
                                             </div>
@@ -209,7 +194,7 @@
                 @else
                     <tr class="border-gray-300">
                         <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                            <p class="text-center">No Holidays Found</p>
+                            <p class="text-center">No Confessionnels Found</p>
                         </td>
                     </tr>
                 @endunless
@@ -224,7 +209,7 @@
                     <!-- Modal header -->
                     <div class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                            Create Holiday
+                            Create Confessionnel
                         </div>
                         <div>
                             <button type="button"
@@ -242,30 +227,21 @@
                     </div>
                     <!-- Modal body -->
                     <div class="p-6">
-                        <form method="POST" action="{{ route('holidays.store') }}">
+                        <form method="POST" action="{{ route('confessionnels.store') }}">
                             @csrf
                             <div class="relative z-0 w-full group flex flex-col">
-                                <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Name</label>
-                                <input type="text" name="name" placeholder="Please enter holiday's name">
+                                <label for="name" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Name</label>
+                                <input type="text" name="name" placeholder="Please enter confessionnel's name">
                                 @error('name')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="grid md:grid-cols-2 md:gap-6">
-                                <div class="relative z-0 w-full group flex flex-col">
-                                    <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
-                                    <input type="text" name="from" id="fromDateStore" placeholder="Please select Date Range" data-input >
-                                    @error('from')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div class="relative z-0 mb-6 w-full group flex flex-col">
-                                    <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
-                                    <input type="text" name="to" id="toDateStore" placeholder="Please select Date Range" data-input>
-                                    @error('to')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                            <div class="relative z-0 w-full group flex flex-col">
+                                <label for="date" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Date</label>
+                                <input type="text" name="date" id="dateStore" placeholder="Please select Date" data-input >
+                                @error('date')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div
                                 class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
@@ -291,7 +267,7 @@
     </div>
 
     <div class="mt-6 p-4">
-        {{ $holidays->links() }}
+        {{ $confessionnels->links() }}
     </div>
 
 
@@ -349,64 +325,18 @@
 
     </script>
 
-    <script>
-        $('#fromDateEdit').change(function () {
-            let fromDate = $('#fromDateEdit').val();
-            let toDate = $('#toDateEdit').val();
-            if(!toDate) {
-                $("#toDateEdit").val(fromDate);
-                toDate = $('#toDateEdit').val();
-            }
-        })
-
-        $('#toDateEdit').change(function () {
-            let fromDate = $('#fromDateEdit').val();
-            let toDate = $('#toDateEdit').val();
-            if(!fromDate) {
-                $("#fromDateEdit").val(toDate);
-                fromDate = $('#fromDateEdit').val();
-            }
-        })
-
-        $('#fromDateStore').change(function () {
-            let fromDate = $('#fromDateStore').val();
-            let toDate = $('#toDateStore').val();
-            if(!toDate) {
-                $("#toDateStore").val(fromDate);
-                toDate = $('#toDateStore').val();
-            }
-        })
-
-        $('#toDateStore').change(function () {
-            let fromDate = $('#fromDateStore').val();
-            let toDate = $('#toDateStore').val();
-            if(!fromDate) {
-                $("#fromDateStore").val(toDate);
-                fromDate = $('#fromDateStore').val();
-            }
-        })
-    </script>
-
     <script type="text/javascript">
-        let frompicker = $("#fromDateStore").flatpickr({
+        let editPicker = $("#dateEdit").flatpickr({
             dateFormat: "Y-m-d",
             locale: {
                 firstDayOfWeek: 1
             },
-            onClose: function(selectedDates, dateStr, instance) {
-                topicker.set('minDate', dateStr);
-            },
-            onChange: function(selectedDates, dateStr, instance) {
-                topicker.set('minDate', dateStr);
-            },
         });
-
-        let topicker = $("#toDateStore").flatpickr({
+        let storePicker = $("#dateStore").flatpickr({
             dateFormat: "Y-m-d",
             locale: {
                 firstDayOfWeek: 1
-            }
+            },
         });
-
     </script>
 </x-sidebar>

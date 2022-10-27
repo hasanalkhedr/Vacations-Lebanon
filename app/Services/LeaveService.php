@@ -3,13 +3,19 @@
 namespace App\Services;
 
 use App\Jobs\LeaveJobs\SendLeaveRequestAcceptedEmailJob;
+use App\Jobs\LeaveJobs\SendLeaveRequestAcceptedEmailReplacementJob;
+use App\Jobs\LeaveJobs\SendLeaveRequestCanceledEmailJob;
 use App\Jobs\LeaveJobs\SendLeaveRequestIncomingEmailJob;
+use App\Jobs\LeaveJobs\SendLeaveRequestIncomingEmailReplacementJob;
 use App\Jobs\LeaveJobs\SendLeaveRequestRejectedEmailJob;
+use App\Jobs\LeaveJobs\SendLeaveRequestRejectedEmailProcessingOfficersJob;
+use App\Jobs\LeaveJobs\SendLeaveRequestRejectedEmailReplacementJob;
+use App\Mail\LeaveMails\SendLeaveRequestRejectedEmailProcessingOfficers;
+use App\Models\Confessionnel;
 use App\Models\Employee;
 use App\Models\Holiday;
 use App\Models\Leave;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 class LeaveService
@@ -17,17 +23,32 @@ class LeaveService
     const ACCEPTED_STATUS = 1;
     const REJECTED_STATUS = 2;
 
-    public function sendEmailToInvolvedEmployees($leave, $processing_officers = NULL)
+    public function sendEmailToInvolvedEmployees($leave, $processing_officers = NULL, $substitute_employee = NULL, $delete = false)
     {
-        if ($leave->leave_status == self::ACCEPTED_STATUS) {
-            $employee = Employee::where('id', $leave->employee_id)->first();
-            dispatch(new SendLeaveRequestAcceptedEmailJob($employee));
-        } elseif ($leave->leave_status == self::REJECTED_STATUS) {
-            $employee = Employee::where('id', $leave->employee_id)->first();
-            dispatch(new SendLeaveRequestRejectedEmailJob($employee));
-        } else {
+        if ($delete) {
+            if($substitute_employee) {
+                dispatch(new SendLeaveRequestCanceledEmailJob($substitute_employee));
+            }
             foreach ($processing_officers as $processing_officer) {
-                dispatch(new SendLeaveRequestIncomingEmailJob($processing_officer));
+                dispatch(new SendLeaveRequestCanceledEmailJob($processing_officer));
+            }
+        }
+        else {
+            if ($leave->leave_status == self::ACCEPTED_STATUS) {
+                $employee = Employee::where('id', $leave->employee_id)->first();
+                dispatch(new SendLeaveRequestAcceptedEmailJob($employee));
+                dispatch(new SendLeaveRequestAcceptedEmailReplacementJob($substitute_employee));
+            } elseif ($leave->leave_status == self::REJECTED_STATUS) {
+                $employee = Employee::where('id', $leave->employee_id)->first();
+                dispatch(new SendLeaveRequestRejectedEmailJob($employee));
+                dispatch(new SendLeaveRequestRejectedEmailReplacementJob($substitute_employee));
+            } else {
+                foreach ($processing_officers as $processing_officer) {
+                    dispatch(new SendLeaveRequestIncomingEmailJob($processing_officer));
+                }
+                if ($substitute_employee) {
+                    dispatch(new SendLeaveRequestIncomingEmailReplacementJob($substitute_employee));
+                }
             }
         }
     }
@@ -72,7 +93,13 @@ class LeaveService
                 break;
         }
         $leave->save();
-//        $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
+        if($leave->leave_status == self::ACCEPTED_STATUS){
+            $this->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
+        }
+        else{
+            $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
+        }
+
     }
 
     public function rejectLeaveRequest($request, $leave)
@@ -82,7 +109,7 @@ class LeaveService
             $leave->cancellation_reason = $request['cancellation_reason'];
         }
         $leave->save();
-//        $this->sendEmailToInvolvedEmployees($leave);
+        $this->sendEmailToInvolvedEmployees($leave, NULL, $leave->substitute_employee);
     }
 
     public function acceptLeave($leave)
@@ -95,24 +122,26 @@ class LeaveService
     public function updateNbOfDaysOff($leave)
     {
         $employee = $leave->employee;
-        $period = CarbonPeriod::create($leave->from, $leave->to);
-        $nb_of_days_off = 0;
-        $disabled_dates = unserialize($leave->disabled_dates);
-        foreach ($period as $date) {
-            $date = $date->toDateString();
-            if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date)) {
-                $nb_of_days_off = $nb_of_days_off + 1;
-            }
-        }
-        $leave_duration_name = $leave->leave_duration->name;
-        if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
-            $nb_of_days_off = $nb_of_days_off / 2;
-        }
         if ($leave->use_confessionnels) {
-            $employee->confessionnels = $employee->confessionnels - $nb_of_days_off;
-        } else {
+            $employee->confessionnels = $employee->confessionnels - 1;
+        }
+        else{
+            $period = CarbonPeriod::create($leave->from, $leave->to);
+            $nb_of_days_off = 0;
+            $disabled_dates = unserialize($leave->disabled_dates);
+            foreach ($period as $date) {
+                $date = $date->toDateString();
+                if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date)) {
+                    $nb_of_days_off = $nb_of_days_off + 1;
+                }
+            }
+            $leave_duration_name = $leave->leave_duration->name;
+            if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
+                $nb_of_days_off = $nb_of_days_off / 2;
+            }
             $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
         }
+
         $employee->save();
     }
 
@@ -155,5 +184,15 @@ class LeaveService
     public function isHoliday($date) {
         $holidays = $this->getHolidays();
         return (in_array($date, $holidays));
+    }
+
+    public function getConfessionnels()
+    {
+        $confessionnels = Confessionnel::all();
+        $confessionnel_dates = [];
+        foreach ($confessionnels as $confessionnel) {
+            $confessionnel_dates[] = $confessionnel->date;
+        }
+        return $confessionnel_dates;
     }
 }
