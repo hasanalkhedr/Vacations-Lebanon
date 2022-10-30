@@ -43,4 +43,6 @@ class Confessionnel extends Model
             $query->where('name', 'like', '%' . request('search') . '%');
         };
     }
+
+
 }

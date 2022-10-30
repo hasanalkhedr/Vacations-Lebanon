@@ -188,7 +188,7 @@ class LeaveService
 
     public function getConfessionnels()
     {
-        $confessionnels = Confessionnel::all();
+        $confessionnels = Confessionnel::whereNotIn('date', Leave::where('employee_id', auth()->user()->id)->where('use_confessionnels', true)->get('from'))->get();
         $confessionnel_dates = [];
         foreach ($confessionnels as $confessionnel) {
             $confessionnel_dates[] = $confessionnel->date;

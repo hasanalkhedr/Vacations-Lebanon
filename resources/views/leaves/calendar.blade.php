@@ -17,7 +17,7 @@
         <div class="text-white p-2 text-center rounded" style="background: #e0a614;">Pending</div>
     </div>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table class="mx-4 w-full text-sm text-left text-gray-500 dark:text-gray-400" style="display: table-caption;">
+        <table class="mx-4 my-4 w-full text-sm text-left text-gray-500 dark:text-gray-400" style="display: table-caption;">
             <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th class="border"></th>
@@ -57,8 +57,16 @@
                                             </td>
                                         @endif
                                     @else
-                                        <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="background: #e0a614;">
-                                        </td>
+                                        @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #e0a614 50%,#ffffff 50%)">
+                                            </td>
+                                        @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #ffffff 50%,#e0a614 50%)">
+                                            </td>
+                                        @else
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="background: #e0a614;">
+                                            </td>
+                                        @endif
                                     @endif
                                 @else
                                     <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white">
