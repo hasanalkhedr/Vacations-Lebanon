@@ -194,11 +194,12 @@
                                     <!-- Modal body -->
                                     <div class="p-6">
                                         <form method="POST"
-                                              action="{{ route('employees.updateProfile', ['employee' => $employee->id]) }}">
+                                              action="{{ route('employees.updateProfile', ['employee' => $employee->id]) }}"
+                                              id="edit_form--{{$employee->id}}">
                                             @csrf
                                             @method('PUT')
                                             <div class="grid md:grid-cols-2 md:gap-6">
-                                                <div class="relative z-0 mb-6 w-full group">
+                                                <div class="relative z-0 mb-4 w-full group">
                                                     <input type="text" name="first_name"
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                            value="{{$employee->first_name}}" required/>
@@ -206,7 +207,7 @@
                                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First
                                                         name</label>
                                                 </div>
-                                                <div class="relative z-0 mb-6 w-full group">
+                                                <div class="relative z-0 mb-4 w-full group">
                                                     <input type="text" name="last_name"
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                            value="{{$employee->last_name}}" required/>
@@ -215,7 +216,7 @@
                                                         name</label>
                                                 </div>
                                             </div>
-                                            <div class="relative z-0 mb-6 w-full group">
+                                            <div class="relative z-0 mb-4 w-full group">
                                                 <input type="email" name="email"
                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                        value="{{$employee->email}}" required/>
@@ -223,7 +224,7 @@
                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label>
                                             </div>
                                             <div class="grid md:grid-cols-2 md:gap-6">
-                                                <div class="relative z-0 mb-6 w-full group">
+                                                <div class="relative z-0 mb-4 w-full group">
                                                     <input type="text" name="phone_number"
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                            value="{{$employee->phone_number}}" required/>
@@ -231,7 +232,7 @@
                                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Phone
                                                         number</label>
                                                 </div>
-                                                <div class="relative z-0 mb-6 w-full group">
+                                                <div class="relative z-0 mb-4 w-full group">
                                                     <input type="number" name="nb_of_days"
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                            value="{{$employee->nb_of_days}}" required/>
@@ -244,7 +245,7 @@
                                                 <label for="role_ids"
                                                        class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                                     Role(s)</label>
-                                                <select multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                <select id="role_ids--{{$employee->id}}" multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                                     @if(count($roles))
                                                         @foreach($roles as $role)
                                                             @if($employee->hasRole($role->name))
@@ -256,7 +257,26 @@
                                                     @endif
                                                 </select>
                                             </div>
-                                            <div class="relative z-0 mb-6 w-full group">
+                                            @if($employee->department)
+                                                <div class="hidden relative z-0 mb-4 w-full group" id="new_manager--{{$employee->id}}">
+                                                    <label for="manager_id"
+                                                           class="mb-2 italic text-sm font-medium text-red-900 dark:text-gray-400">*Please assign a
+                                                        new supervisor for the department*</label>
+                                                    <select name="manager_id"
+                                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                        <option value="" disabled>Choose New Supervisor</option>
+                                                        @if(count($employee->department->employees))
+                                                            @foreach ($employee->department->employees as $department_employee)
+                                                                @unless($department_employee->id == $employee->id)
+                                                                    <option
+                                                                    value={{ $department_employee->id }}>{{ $department_employee->first_name }} {{ $department_employee->last_name }}</option>
+                                                                @endunless
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                            @endif
+                                            <div class="relative z-0 mb-4 w-full group">
                                                 <label for="department_id"
                                                        class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                                     Department</label>
@@ -292,7 +312,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </tr>
                 @endforeach
             @else
@@ -542,5 +561,22 @@
 
     </script>
 
-
+    <script type="text/javascript">
+        let role_ids_names_pairs = {};
+        {!! $roles !!}.forEach((role) => {
+            role_ids_names_pairs[role.id] = role.name;
+        })
+        $("[id*=role_ids]").change(function () {
+            let role_ids = $(this).val()
+            let employee_role_id = Object.keys(role_ids_names_pairs).find(key => role_ids_names_pairs[key] === 'employee')
+            employee_id= $(this)[0].id.split('--')[1]
+            if(!role_ids.includes(employee_role_id)) {
+                $('#new_manager--' + employee_id)[0].classList.remove('hidden')
+            }
+            else {
+                if(!$('#new_manager--' + employee_id)[0].classList.contains('hidden'))
+                    $('#new_manager--' + employee_id)[0].classList.add('hidden')
+            }
+        })
+    </script>
 </x-sidebar>

@@ -172,6 +172,14 @@ class EmployeeController
             $employee['department_id'] = $request['department_id'];
         }
         else {
+            if($employee->is_supervisor){
+                $employee->department->manager_id = $request->manager_id;
+                $employee->department->save();
+                $new_manager = Employee::where('id', $request->manager_id)->first();
+                $new_manager->is_supervisor = true;
+                $new_manager->save();
+            }
+            $employee->is_supervisor = false;
             $employee['department_id'] = NULL;
         }
         $employee->save();
