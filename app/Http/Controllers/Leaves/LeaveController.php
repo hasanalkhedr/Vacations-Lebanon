@@ -10,6 +10,7 @@ use App\Models\Employee;
 use App\Models\Leave;
 use App\Models\LeaveDuration;
 use App\Models\LeaveType;
+use App\Services\EmployeeService;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Storage;
@@ -25,6 +26,11 @@ class LeaveController extends Controller
 
     public function create() {
         $employee = auth()->user();
+        $employee_service = new EmployeeService();
+        $normal_pending_days = $employee_service->getNormalNbofDaysPending($employee);
+        $confessionnel_pending_days = $employee_service->getConfessionnelNbofDaysPending($employee);
+        $normal_accepted_days = $employee_service->getNormalNbofDaysAccepted($employee);
+        $confessionnel_accepted_days = $employee_service->getConfessionnelNbofDaysAccepted($employee);
         if($employee->hasRole("sg")) {
             return back();
         }
@@ -54,6 +60,10 @@ class LeaveController extends Controller
             'disabled_dates' => $disabled_dates,
             'holiday_dates' => $holiday_dates,
             'confessionnel_dates' => $confessionnel_dates,
+            'normal_pending_days' => $normal_pending_days,
+            'confessionnel_pending_days' => $confessionnel_pending_days,
+            'normal_accepted_days' => $normal_accepted_days,
+            'confessionnel_accepted_days' => $confessionnel_accepted_days,
         ]);
     }
 

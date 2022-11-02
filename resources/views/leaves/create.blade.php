@@ -1,18 +1,56 @@
 <x-sidebar>
     <div class="relative w-full h-full md:h-auto">
+        <div>
+            <table class="mt-4 w-full text-sm text-left text-gray-500 dark:text-gray-400 border">
+                <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr class="border-b">
+                    <th scope="col" class="text-center py-3 px-2"></th>
+                    <th scope="col" class="text-center py-3 px-2">
+                        Remaining
+                    </th>
+                    <th scope="col" class="text-center py-3 px-2">
+                        Pending
+                    </th>
+                    <th scope="col" class="text-center py-3 px-2">
+                        Accepted
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <th scope="col" class="border-r-2 text-center py-3 px-2">
+                        Leave Days
+                    </th>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $employee->nb_of_days }}
+                    </td>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $normal_pending_days }}
+                    </td>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $normal_accepted_days }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="border-r-2 text-center py-3 px-2">
+                        Confessionnel Days
+                    </th>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $employee->confessionnels }}
+                    </td>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $confessionnel_pending_days }}
+                    </td>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $confessionnel_accepted_days }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="p-6">
             <form method="POST" action="{{ route('leaves.store') }}" enctype="multipart/form-data">
                 @csrf
-                <div class="grid md:grid-cols-2 md:gap-6">
-                    <div class="relative z-0 mb-6 w-full group">
-                        <input type="number" name="nb_of_days" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $employee->nb_of_days }}" />
-                        <label for="nb_of_days" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nb of Days Off Remaining</label>
-                    </div>
-                    <div class="relative z-0 mb-6 w-full group">
-                        <input type="number" name="confessionnels" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $employee->confessionnels }}" />
-                        <label for="confessionnels" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confessionnel Days Remaining</label>
-                    </div>
-                </div>
                 <div class="relative z-0 mb-6 w-full group">
                     <label for="leave_duration_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Leave Duration</label>
                     <select name="leave_duration_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">

@@ -146,6 +146,12 @@
                             </a>
                         </li>
                     @endif
+                    <li>
+                        <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                           href="{{ route('employees.show', ['employee' => auth()->user()->id]) }}">
+                            <span class="mx-2 font-medium">Show Profile</span>
+                        </a>
+                    </li>
                 </ul>
             </aside>
         </div>

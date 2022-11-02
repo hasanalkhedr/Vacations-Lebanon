@@ -245,7 +245,8 @@
                                                 <label for="role_ids"
                                                        class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                                     Role(s)</label>
-                                                <select id="role_ids--{{$employee->id}}" multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                <select id="role_ids--{{$employee->id}}" multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                        onchange="checkSupervisorRoles(this, {{$employee}})">
                                                     @if(count($roles))
                                                         @foreach($roles as $role)
                                                             @if($employee->hasRole($role->name))
@@ -253,6 +254,22 @@
                                                             @else
                                                                 <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                             @endif
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="relative z-0 mb-4 w-full group">
+                                                <label for="department_id"
+                                                       class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
+                                                    Department</label>
+                                                <select id="department_id--{{$employee->id}}" name="department_id" id="department_id"
+                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                        onchange="checkSupervisorDepartment(this, {{$employee}})">
+                                                    <option value="" disabled>Choose Department</option>
+                                                    @if(count($departments))
+                                                        @foreach ($departments as $department)
+                                                            <option
+                                                                value="{{ $department->id }}" {{ ( $department->id == $employee->department_id) ? 'selected' : '' }}>{{ $department->name }}</option>
                                                         @endforeach
                                                     @endif
                                                 </select>
@@ -269,28 +286,13 @@
                                                             @foreach ($employee->department->employees as $department_employee)
                                                                 @unless($department_employee->id == $employee->id)
                                                                     <option
-                                                                    value={{ $department_employee->id }}>{{ $department_employee->first_name }} {{ $department_employee->last_name }}</option>
+                                                                        value={{ $department_employee->id }}>{{ $department_employee->first_name }} {{ $department_employee->last_name }}</option>
                                                                 @endunless
                                                             @endforeach
                                                         @endif
                                                     </select>
                                                 </div>
                                             @endif
-                                            <div class="relative z-0 mb-4 w-full group">
-                                                <label for="department_id"
-                                                       class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                                    Department</label>
-                                                <select name="department_id" id="department_id"
-                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                    <option value="" disabled>Choose Department</option>
-                                                    @if(count($departments))
-                                                        @foreach ($departments as $department)
-                                                            <option
-                                                                value="{{ $department->id }}" {{ ( $department->id == $employee->department_id) ? 'selected' : '' }}>{{ $department->name }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
                                             <div
                                                 class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
                                                 <div>
@@ -566,17 +568,32 @@
         {!! $roles !!}.forEach((role) => {
             role_ids_names_pairs[role.id] = role.name;
         })
-        $("[id*=role_ids]").change(function () {
-            let role_ids = $(this).val()
+        function checkSupervisorRoles(that, employee) {
+            employee_id= $(that)[0].id.split('--')[1]
+            let role_ids = $(that).val()
             let employee_role_id = Object.keys(role_ids_names_pairs).find(key => role_ids_names_pairs[key] === 'employee')
-            employee_id= $(this)[0].id.split('--')[1]
-            if(!role_ids.includes(employee_role_id)) {
+            if(!role_ids.includes(employee_role_id) && employee.is_supervisor) {
                 $('#new_manager--' + employee_id)[0].classList.remove('hidden')
             }
             else {
                 if(!$('#new_manager--' + employee_id)[0].classList.contains('hidden'))
                     $('#new_manager--' + employee_id)[0].classList.add('hidden')
             }
-        })
+        }
+
+        function checkSupervisorDepartment(that, employee) {
+            let department_id = employee.department_id
+            employee_id= $(that)[0].id.split('--')[1]
+            console.log("employee_id " + employee_id)
+            let selected_department_id = $(that).val()
+            if(department_id != selected_department_id && employee.is_supervisor) {
+                $('#new_manager--' + employee_id)[0].classList.remove('hidden')
+            }
+            else {
+                if(!$('#new_manager--' + employee_id)[0].classList.contains('hidden'))
+                    $('#new_manager--' + employee_id)[0].classList.add('hidden')
+            }
+        }
+
     </script>
 </x-sidebar>

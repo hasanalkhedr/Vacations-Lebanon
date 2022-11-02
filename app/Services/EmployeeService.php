@@ -6,6 +6,10 @@ use App\Models\Employee;
 
 class EmployeeService
 {
+    const PENDING_STATUS = 0;
+    const ACCEPTED_STATUS = 1;
+    const REJECTED_STATUS = 2;
+
     public function getAppropriateEmployees() {
         $loggedInUser = auth()->user();
         $loggedInUserRoleName = $loggedInUser->roles()->first()->name;
@@ -15,6 +19,51 @@ class EmployeeService
         else {
             return Employee::whereNot('id', auth()->id())->where('department_id', $loggedInUser->department_id)->search(request(['search']))->paginate(10);
         }
+    }
+
+    public function assignNewSupervisorIfCurrentChanges ($old_supervisor, $new_manager_id) {
+        $old_supervisor->department->manager_id = $new_manager_id;
+        $old_supervisor->department->save();
+        $new_manager = Employee::where('id', $new_manager_id)->first();
+        $new_manager->is_supervisor = true;
+        $new_manager->save();
+        $old_supervisor->is_supervisor = false;
+    }
+
+    public function getNormalNbofDaysPending($employee) {
+        $normal_pending_days = 0;
+        $leave_service = new LeaveService();
+        $normal_pending_leaves = $employee->leaves->where('leave_status', self::PENDING_STATUS)->where('use_confessionnels', false);
+        foreach ($normal_pending_leaves as $normal_pending_leave) {
+            $normal_pending_days += $leave_service->findNbofDaysOff($normal_pending_leave);
+        }
+        return $normal_pending_days;
+    }
+
+    public function getConfessionnelNbofDaysPending($employee) {
+        $confessionnel_pending_days = 0;
+        $leave_service = new LeaveService();
+        $confessionnel_pending_leaves = $employee->leaves->where('leave_status', self::PENDING_STATUS)->where('use_confessionnels', true);
+        $confessionnel_pending_days = count($confessionnel_pending_leaves);
+        return $confessionnel_pending_days;
+    }
+
+    public function getNormalNbofDaysAccepted($employee) {
+        $normal_accepted_days = 0;
+        $leave_service = new LeaveService();
+        $normal_accepted_leaves = $employee->leaves->where('leave_status', self::ACCEPTED_STATUS)->where('use_confessionnels', false);
+        foreach ($normal_accepted_leaves as $normal_accepted_leave) {
+            $normal_accepted_days += $leave_service->findNbofDaysOff($normal_accepted_leave);
+        }
+        return $normal_accepted_days;
+    }
+
+    public function getConfessionnelNbofDaysAccepted($employee) {
+        $confessionnel_accepted_days = 0;
+        $leave_service = new LeaveService();
+        $confessionnel_accepted_leaves = $employee->leaves->where('leave_status', self::ACCEPTED_STATUS)->where('use_confessionnels', true);
+        $confessionnel_accepted_days = count($confessionnel_accepted_leaves);
+        return $confessionnel_accepted_days;
     }
 
 }

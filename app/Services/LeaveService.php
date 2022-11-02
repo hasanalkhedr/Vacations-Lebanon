@@ -126,19 +126,7 @@ class LeaveService
             $employee->confessionnels = $employee->confessionnels - 1;
         }
         else{
-            $period = CarbonPeriod::create($leave->from, $leave->to);
-            $nb_of_days_off = 0;
-            $disabled_dates = unserialize($leave->disabled_dates);
-            foreach ($period as $date) {
-                $date = $date->toDateString();
-                if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date)) {
-                    $nb_of_days_off = $nb_of_days_off + 1;
-                }
-            }
-            $leave_duration_name = $leave->leave_duration->name;
-            if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
-                $nb_of_days_off = $nb_of_days_off / 2;
-            }
+            $nb_of_days_off = $this->findNbofDaysOff($leave);
             $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
         }
 
@@ -194,5 +182,22 @@ class LeaveService
             $confessionnel_dates[] = $confessionnel->date;
         }
         return $confessionnel_dates;
+    }
+
+    public function findNbofDaysOff($leave) {
+        $period = CarbonPeriod::create($leave->from, $leave->to);
+        $nb_of_days_off = 0;
+        $disabled_dates = unserialize($leave->disabled_dates);
+        foreach ($period as $date) {
+            $date = $date->toDateString();
+            if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date)) {
+                $nb_of_days_off = $nb_of_days_off + 1;
+            }
+        }
+        $leave_duration_name = $leave->leave_duration->name;
+        if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
+            $nb_of_days_off = $nb_of_days_off / 2;
+        }
+        return $nb_of_days_off;
     }
 }

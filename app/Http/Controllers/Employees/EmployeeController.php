@@ -115,29 +115,23 @@ class EmployeeController
 
     public function show(Employee $employee)
     {
+        $employee_service = new EmployeeService();
+        $normal_pending_days = $employee_service->getNormalNbofDaysPending($employee);
+        $confessionnel_pending_days = $employee_service->getConfessionnelNbofDaysPending($employee);
+        $normal_accepted_days = $employee_service->getNormalNbofDaysAccepted($employee);
+        $confessionnel_accepted_days = $employee_service->getConfessionnelNbofDaysAccepted($employee);
         $departments = Department::all();
         $roles = Role::all();
         $loggedInUser = auth()->user();
-        if($loggedInUser->is_supervisor) {
-            if($employee->department->id == $loggedInUser->department->id)
-                return view('employees.show', [
-                    'employee' => $employee,
-                    'departments' => $departments,
-                    'roles' => $roles
-                ]);
-        }
-        if($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole("sg")) {
+        if($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole("sg") || $loggedInUser == $employee || ($loggedInUser->is_supervisor && $employee->department->id == $loggedInUser->department->id)) {
             return view('employees.show', [
                 'employee' => $employee,
                 'departments' => $departments,
-                'roles' => $roles
-            ]);
-        }
-        if($loggedInUser == $employee) {
-            return view('employees.show', [
-                'employee' => $employee,
-                'departments' => $departments,
-                'roles' => $roles
+                'roles' => $roles,
+                'normal_pending_days' => $normal_pending_days,
+                'confessionnel_pending_days' => $confessionnel_pending_days,
+                'normal_accepted_days' => $normal_accepted_days,
+                'confessionnel_accepted_days' => $confessionnel_accepted_days,
             ]);
         }
         return redirect()->route('employees.index');
@@ -152,6 +146,7 @@ class EmployeeController
 
     public function updateProfile(UpdateEmployeeProfileRequest $request, Employee $employee)
     {
+        $employee_service = new EmployeeService();
         $validated = $request->validated();
         $employee->update([
             'first_name' => $validated['first_name'],
@@ -169,17 +164,15 @@ class EmployeeController
             $roles_names[] = $role;
         }
         if(in_array('employee', $roles_names)){
+            if($employee->department_id != $request['department_id'] && $employee->is_supervisor){
+                $employee_service->assignNewSupervisorIfCurrentChanges($employee, $request->manager_id);
+            }
             $employee['department_id'] = $request['department_id'];
         }
         else {
             if($employee->is_supervisor){
-                $employee->department->manager_id = $request->manager_id;
-                $employee->department->save();
-                $new_manager = Employee::where('id', $request->manager_id)->first();
-                $new_manager->is_supervisor = true;
-                $new_manager->save();
+                $employee_service->assignNewSupervisorIfCurrentChanges($employee, $request->manager_id);
             }
-            $employee->is_supervisor = false;
             $employee['department_id'] = NULL;
         }
         $employee->save();

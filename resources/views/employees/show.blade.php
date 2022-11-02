@@ -72,10 +72,59 @@
             @endif
                 <label for="department_id" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Department</label>
         </div>
-        @hasanyrole('human_resource|sg')
-        <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-toggle="editProfileModal">Edit Profile</button>
-        <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-toggle="editPasswordModal">Edit Password</button>
-        @endhasanyrole
+        @unless(auth()->user()->id == $employee->id)
+            @hasanyrole('human_resource|sg')
+            <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-toggle="editProfileModal">Edit Profile</button>
+            <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-toggle="editPasswordModal">Edit Password</button>
+            @endhasanyrole
+        @endif
+
+        <table class="mt-4 w-full text-sm text-left text-gray-500 dark:text-gray-400 border">
+            <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr class="border-b">
+                <th scope="col" class="text-center py-3 px-2"></th>
+                <th scope="col" class="text-center py-3 px-2">
+                    Remaining
+                </th>
+                <th scope="col" class="text-center py-3 px-2">
+                    Pending
+                </th>
+                <th scope="col" class="text-center py-3 px-2">
+                    Accepted
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <th scope="col" class="border-r-2 text-center py-3 px-2">
+                        Leave Days
+                    </th>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $employee->nb_of_days }}
+                    </td>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $normal_pending_days }}
+                    </td>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $normal_accepted_days }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="border-r-2 text-center py-3 px-2">
+                        Confessionnel Days
+                    </th>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $employee->confessionnels }}
+                    </td>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $confessionnel_pending_days }}
+                    </td>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $confessionnel_accepted_days }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div id="editProfileModal" tabindex="-1" aria-hidden="true"
@@ -156,7 +205,8 @@
                             <label for="role_ids"
                                    class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                 Role(s)</label>
-                            <select multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <select id="role_ids--{{$employee->id}}" multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    onchange="checkSupervisorRoles(this, {{$employee}})">
                                 @if(count($roles))
                                     @foreach($roles as $role)
                                         @if($employee->hasRole($role->name))
@@ -172,9 +222,9 @@
                             <label for="department_id"
                                    class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
                                 Department</label>
-                                @hasanyrole('sg'|'human_resource')
-                                <select name="department_id" id="department_id"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <select name="department_id" id="department_id--{{$employee->id}}"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        onchange="checkSupervisorDepartment(this, {{$employee}})">
                                     <option value="" disabled>Choose Department</option>
                                     @if(count($departments))
                                         @foreach ($departments as $department)
@@ -183,19 +233,26 @@
                                         @endforeach
                                     @endif
                                 </select>
-                            @else
-                                <select name="department_id" id="department_id"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="" disabled>Choose Department</option>
-                                    @if(count($departments))
-                                        @foreach ($departments as $department)
-                                            <option
-                                                value="{{ $department->id }}" {{ ( $department->id == $employee->department_id) ? 'selected' : '' }}>{{ $department->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            @endhasanyrole
-                        </div>
+                            </div>
+                            @if($employee->department)
+                                <div class="hidden relative z-0 mb-4 w-full group" id="new_manager--{{$employee->id}}">
+                                    <label for="manager_id"
+                                           class="mb-2 italic text-sm font-medium text-red-900 dark:text-gray-400">*Please assign a
+                                        new supervisor for the department*</label>
+                                    <select name="manager_id"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option value="" disabled>Choose New Supervisor</option>
+                                        @if(count($employee->department->employees))
+                                            @foreach ($employee->department->employees as $department_employee)
+                                                @unless($department_employee->id == $employee->id)
+                                                    <option
+                                                        value={{ $department_employee->id }}>{{ $department_employee->first_name }} {{ $department_employee->last_name }}</option>
+                                                @endunless
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            @endif
                         <div
                             class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
                             <div>
@@ -349,6 +406,39 @@
                         return this.options[option].value;
                     })
                 }
+            }
+        }
+    </script>
+
+    <script>
+        let role_ids_names_pairs = {};
+        {!! $roles !!}.forEach((role) => {
+            role_ids_names_pairs[role.id] = role.name;
+        })
+        function checkSupervisorRoles(that, employee) {
+            employee_id= $(that)[0].id.split('--')[1]
+            let role_ids = $(that).val()
+            let employee_role_id = Object.keys(role_ids_names_pairs).find(key => role_ids_names_pairs[key] === 'employee')
+            if(!role_ids.includes(employee_role_id) && employee.is_supervisor) {
+                $('#new_manager--' + employee_id)[0].classList.remove('hidden')
+            }
+            else {
+                if(!$('#new_manager--' + employee_id)[0].classList.contains('hidden'))
+                    $('#new_manager--' + employee_id)[0].classList.add('hidden')
+            }
+        }
+
+        function checkSupervisorDepartment(that, employee) {
+            let department_id = employee.department_id
+            employee_id= $(that)[0].id.split('--')[1]
+            console.log("employee_id " + employee_id)
+            let selected_department_id = $(that).val()
+            if(department_id != selected_department_id && employee.is_supervisor) {
+                $('#new_manager--' + employee_id)[0].classList.remove('hidden')
+            }
+            else {
+                if(!$('#new_manager--' + employee_id)[0].classList.contains('hidden'))
+                    $('#new_manager--' + employee_id)[0].classList.add('hidden')
             }
         }
     </script>
