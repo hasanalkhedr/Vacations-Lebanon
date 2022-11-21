@@ -6,6 +6,8 @@ use App\Jobs\LeaveJobs\SendLeaveRequestIncomingEmailJob;
 use App\Jobs\OvertimeJobs\SendOvertimeRequestAcceptedEmailJob;
 use App\Jobs\OvertimeJobs\SendOvertimeRequestRejectedEmailJob;
 use App\Models\Employee;
+use App\Models\Holiday;
+use Carbon\CarbonPeriod;
 use Spatie\Permission\Models\Role;
 
 class OvertimeService
@@ -42,26 +44,23 @@ class OvertimeService
                     $processing_officers = NULL;
                     break;
                 }
-                if(!$employee->is_supervisor){
-                    $officer_role = Role::findByName('employee');
-                    $supervisor_id = $overtime->employee->department->manager->id;
-                    $processing_officers = Employee::where('id', $supervisor_id)->get();
-                }
                 else {
-                    $officer_role = Role::findByName('sg');
+                    $role = Role::findByName('sg');
+                    $overtime->processing_officer_role = $role->id;
                     $processing_officers = Employee::role('sg')->get();
                 }
-                $overtime->processing_officer_role = $officer_role->id;
                 break;
             case ('employee'):
-                $role_sg = Role::findByName('sg');
-                $overtime->processing_officer_role = $role_sg->id;
-                $processing_officers = Employee::role('sg')->get();
                 if(auth()->user()->hasRole('sg')) {
+                    $role_sg = Role::findByName('sg');
+                    $overtime->processing_officer_role = $role_sg->id;
                     $this->acceptLeave($overtime);
                     $processing_officers = NULL;
                     break;
                 }
+                $role = Role::findByName('human_resource');
+                $overtime->processing_officer_role = $role->id;
+                $processing_officers = Employee::role('human_resource')->get();
                 break;
             case ('sg'):
                 $this->acceptLeave($overtime);
@@ -86,4 +85,18 @@ class OvertimeService
         $overtime->save();
     }
 
+    public function getHolidays()
+    {
+        $holidays = Holiday::all();
+        $holiday_dates = [];
+        foreach ($holidays as $holiday) {
+            $period = CarbonPeriod::create($holiday->from, $holiday->to);
+            // Iterate over the period
+            foreach ($period as $date) {
+                if (!in_array($date->toDateString(), $holiday_dates))
+                    $holiday_dates[] = $date->toDateString();
+            }
+        }
+        return $holiday_dates;
+    }
 }

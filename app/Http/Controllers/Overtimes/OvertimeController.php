@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Overtimes;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Holiday;
 use App\Models\Overtime;
 use App\Services\OvertimeService;
 use Illuminate\Http\Request;
@@ -12,13 +13,20 @@ use Spatie\Permission\Models\Role;
 
 class OvertimeController extends Controller
 {
-
     const PENDING_STATUS = 0;
+    const ACCEPTED_STATUS = 1;
+    const REJECTED_STATUS = 2;
 
     public function create() {
+        $overtime_service = new OvertimeService();
         $employee = auth()->user();
+        if($employee->hasAnyRole(['human_resource', 'sg']) || $employee->is_supervisor) {
+            return back();
+        }
+        $holiday_dates = $overtime_service->getHolidays();
         return view('overtimes.create',[
             'employee' => $employee,
+            'holiday_dates' => $holiday_dates,
         ]);
     }
 
@@ -40,25 +48,10 @@ class OvertimeController extends Controller
             }
             $overtime->date_of_submission = now()->format('Y-m-d');
             $overtime_employee_role = $overtime->employee->roles()->first()->name;
-            if($overtime->employee->hasRole('sg')) {
-                $role = Role::findByName('sg');
-                $overtime->processing_officer_role = $role->id;
-                $overtime->save();
-                $processing_officers = NULL;
-                $overtime_service->acceptLeave($overtime);
-            }
-            elseif($overtime->employee->hasRole('human_resource')) {
-                $role = Role::findByName('sg');
-                $processing_officers = Employee::role('sg')->get();
-                $overtime->processing_officer_role = $role->id;
-                $overtime->save();
-            }
-            else {
-                $role = Role::findByName('human_resource');
-                $processing_officers = Employee::role('human_resource')->get();
-                $overtime->processing_officer_role = $role->id;
-                $overtime->save();
-            }
+            $role = Role::findByName('employee');
+            $processing_officers = auth()->user()->department->manager;
+            $overtime->processing_officer_role = $role->id;
+            $overtime->save();
 //            $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
         }
             return redirect()->route('overtimes.submitted');
@@ -101,7 +94,22 @@ class OvertimeController extends Controller
         ]);
     }
 
+    public function acceptedIndex() {
+        $ROLES_ASCENDING = array(Role::findByName('employee')->id, Role::findByName('human_resource')->id, Role::findByName('sg')->id);
+        $employee=auth()->user();
+        $leaves = Overtime::where('leave_status', self::REJECTED_STATUS)->orWhere('processing_officer' , ">", array_search(Role::findByName($employee->getRoleNames()->first()->name)->id, $ROLES_ASCENDING));
+        return view('leaves.acceptedIndex', [
+            'leaves' => $leaves
+        ]);
+    }
 
+    public function rejectedIndex() {
+        $employee=auth()->user();
+        $leaves = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('processing_officer', $employee->id);
+        return view('leaves.rejectedIndex', [
+            'leaves' => $leaves
+        ]);
+    }
 
     public function show(Overtime $overtime) {
         {

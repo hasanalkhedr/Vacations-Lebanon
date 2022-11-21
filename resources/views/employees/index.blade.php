@@ -501,7 +501,6 @@
         function enableOrDisableDepartment(that) {
             let select = document.getElementById('role_id');
             let role = select.options[select.selectedIndex].text;
-            console.log(role);
             if (role == "employee") {
                 document.getElementById("department_id").disabled = false;
             } else {
@@ -584,7 +583,6 @@
         function checkSupervisorDepartment(that, employee) {
             let department_id = employee.department_id
             employee_id= $(that)[0].id.split('--')[1]
-            console.log("employee_id " + employee_id)
             let selected_department_id = $(that).val()
             if(department_id != selected_department_id && employee.is_supervisor) {
                 $('#new_manager--' + employee_id)[0].classList.remove('hidden')

@@ -20,7 +20,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css"
         integrity="sha512-MQXduO8IQnJVq1qmySpN87QQkiR1bZHtorbJBD0tzy7/0U9+YIC93QWHeGTEoojMVHWWNkoCp8V6OzVSYrX0oQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('vendor/megaphone/css/megaphone.css') }}">
     @stack('head')
+
+    @livewireStyles
 </head>
 
 <body>
@@ -41,7 +44,7 @@
                 <ul>
                     @unless(auth()->user()->hasRole('employee'))
                         <li>
-                            <a class="flex items-center px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                            <a class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                href="{{ route('departments.index') }}">
                                 <span class="mx-2 font-medium">Departments</span>
                             </a>
@@ -50,89 +53,91 @@
                     @endunless
                     @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
                         <li>
-                            <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                            <a class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                href="{{ route('employees.index') }}">
                                 <span class="mx-2 font-medium">Users</span>
                             </a>
                         </li>
                     @endunless
-                    @unlessrole('sg')
+                    @if(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                         <li>
-                            <button type="button"
-                                class="flex items-center px-4 py-2 mt-5 w-full text-base font-normal text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                                aria-controls="dropdown-leave-requests" data-collapse-toggle="dropdown-leave-requests">
-                                <span class="flex-1 text-left whitespace-nowrap font-medium mx-2" sidebar-toggle-item>Leave
-                                    Requests</span>
-                                <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                            </button>
-
-                            <ul id="dropdown-leave-requests" class="hidden py-2 space-y-2">
-                                @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
-                                    <li>
-                                        <a href="{{ url(route('leaves.index')) }}"
-                                            class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming
-                                            Leave Requests</a>
-                                    </li>
-                                @endunless
-                                <li>
-                                    <a href="{{ url(route('leaves.submitted')) }}"
-                                        class="usersTitle flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Outgoing
-                                        Leave Requests</a>
-                                </li>
-                            </ul>
+                            <a href="{{ url(route('leaves.submitted')) }}"
+                               class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <span class="mx-2 font-medium">Leave Requests</span>
+                            </a>
                         </li>
                     @else
                         <li>
-                            <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                               href="{{ route('leaves.index') }}">
-                                <span class="mx-2 font-medium">Incoming
-                            Leave Requests</span>
+                            <button type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-leaves" data-collapse-toggle="dropdown-leaves">
+                                <span class="flex-1 mx-2 text-left whitespace-nowrap font-medium text-gray-700" sidebar-toggle-item>Leave Requests</span>
+                                <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            </button>
+                            <ul id="dropdown-leaves" class="hidden py-2 space-y-2">
+                                <li>
+                                    <a href="{{ url(route('leaves.index')) }}"
+                                       class="flex items-center p-2 ml-6 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                        <span>Incoming</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ url(route('leaves.acceptedIndex')) }}"
+                                       class="flex items-center p-2 ml-6 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                        <span>Accepted</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ url(route('leaves.rejectedIndex')) }}"
+                                       class="flex items-center p-2 ml-6 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                        <span>Rejected</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+                    @if(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                        <li>
+                            <a href="{{ url(route('overtimes.submitted')) }}"
+                               class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <span class="mx-2 font-medium">Overtime Requests</span>
                             </a>
                         </li>
-                    @endunlessrole
-                    <li>
-                        <button type="button"
-                            class="flex items-center px-4 py-2 mt-5 w-full text-base font-normal text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                            aria-controls="dropdown-overtime-requests"
-                            data-collapse-toggle="dropdown-overtime-requests">
-                            <span class="flex-1 text-left whitespace-nowrap font-medium mx-2"
-                                sidebar-toggle-item>Overtime Requests</span>
-                            <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </button>
-                        <ul id="dropdown-overtime-requests" class="hidden py-2 space-y-2">
-                            @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
+                    @else
+                        <li>
+                            <button type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-overtimes" data-collapse-toggle="dropdown-overtimes">
+                                <span class="flex-1 mx-2 text-left whitespace-nowrap font-medium text-gray-700" sidebar-toggle-item>Overtime Requests</span>
+                                <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            </button>
+                            <ul id="dropdown-overtimes" class="hidden py-2 space-y-2">
                                 <li>
                                     <a href="{{ url(route('overtimes.index')) }}"
-                                        class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Incoming
-                                        Overtime Requests</a>
+                                       class="flex items-center p-2 ml-6 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                        <span>Incoming</span>
+                                    </a>
                                 </li>
-                            @endunless
-                            <li>
-                                <a href="{{ url(route('overtimes.submitted')) }}"
-                                    class="usersTitle flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Outgoing
-                                    Overtime Requests</a>
-                            </li>
-                        </ul>
-                    </li>
+                                <li>
+                                    <a href="{{ url(route('overtimes.acceptedIndex')) }}"
+                                       class="flex items-center p-2 ml-6 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                        <span>Accepted</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ url(route('overtimes.rejectedIndex')) }}"
+                                       class="flex items-center p-2 ml-6 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                        <span>Rejected</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
                     @if (auth()->user()->hasRole('human_resource') || auth()->user()->hasRole('sg'))
                         <li>
-                            <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                            <a class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                href="{{ route('holidays.index') }}">
                                 <span class="mx-2 font-medium">Holidays</span>
                             </a>
                         </li>
                         <li>
-                            <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                            <a class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                href="{{ route('confessionnels.index') }}">
                                 <span class="mx-2 font-medium">Confessionnels</span>
                             </a>
@@ -140,14 +145,22 @@
                     @endif
                     @if (auth()->user()->is_supervisor || auth()->user()->hasRole('human_resource') || auth()->user()->hasRole('sg'))
                         <li>
-                            <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                            <a class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                 href="{{ route('leaves.getCalendarForm') }}">
                                 <span class="mx-2 font-medium">Calendar</span>
                             </a>
                         </li>
                     @endif
+                        @if (auth()->user()->hasRole('human_resource'))
+                            <li>
+                                <a class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                                   href="{{ route('employees.sendMessage') }}">
+                                    <span class="mx-2 font-medium">Send Message</span>
+                                </a>
+                            </li>
+                        @endif
                     <li>
-                        <a class="flex items-center mt-5 px-4 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        <a class="flex items-center px-2 py-2 text-gray-700 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                            href="{{ route('employees.show', ['employee' => auth()->user()->id]) }}">
                             <span class="mx-2 font-medium">Show Profile</span>
                         </a>
@@ -188,13 +201,20 @@
                         @endif
                     </div>
                 </div>
-                <div class="px-6 py-3 text-xl font-bold text-black">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit">
-                            <i class="fa-solid fa-right-from-bracket"></i> Logout
-                        </button>
-                    </form>
+                <div class="flex">
+                    @if(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
+                        <div class="flex justify-center items-center">
+                            <livewire:megaphone></livewire:megaphone>
+                        </div>
+                    @endif
+                    <div class="px-6 py-2 text-xl font-bold text-black">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit">
+                                <i class="fa-solid fa-right-from-bracket"></i> Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </nav>
             <div>
@@ -203,6 +223,7 @@
         </div>
     </div>
     <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+    @livewireScripts
 </body>
 
 </html>

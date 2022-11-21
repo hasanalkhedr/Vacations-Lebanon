@@ -23,12 +23,16 @@ class StoreLeaveRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'leave_duration_id' => ['required'],
-            'from' => ['required', 'date'],
-            'to' => ['required', 'date'],
-            'travelling' => ['required'],
-            'leave_type_id' => 'required',
-        ];
+        if($this->leave_type_id == 1)
+        {
+            $rules['attachment_path'] = ['required'];
+        }
+        $rules['leave_duration_id'] = ['required'];
+        $rules['from'] = ['required', 'date'];
+        $rules['to'] = ['required', 'date'];
+        $rules['travelling'] = ['required'];
+        $rules['leave_type_id'] = ['required'];
+
+        return $rules;
     }
 }

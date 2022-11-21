@@ -63,4 +63,19 @@ class Overtime extends Model
     public function processing_officer() {
         return $this->belongsTo(Role::class, 'processing_officer_role');
     }
+
+    public function scopePending($query)
+    {
+        $query->where('leave_status', 0);
+    }
+
+    public function scopeAccepted($query)
+    {
+        $query->where('overtime_status', 1);
+    }
+
+    public function scopeRejected($query)
+    {
+        $query->where('overtime_status', 2);
+    }
 }

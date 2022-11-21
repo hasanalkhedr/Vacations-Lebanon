@@ -32,87 +32,100 @@
 
     <script>
         let overtimes = 0;
+        let multiplyHours = false;
+        let MULTIPLIER = 1.5;
         function addOvertime() {
-            console.log('entered add overtime');
-                overtimes++;
+            overtimes++;
 
-                let html = "<tr class='bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'>";
-                html += "<td class='py-4 border-b'><input type='text' class='date border-none' placeholder='Please select Date' name='date[]' data-input></td>";
-                html += "<td class='py-4 border-b'><input type='time' class='from border-none' id='overtimeFrom' name='from[]'></td>";
-                html += "<td class='py-4 border-b'><input type='time' class='to border-none' name='to[]'></td>";
-                html += "<td class='py-4 border-b'><input type='text' class='focus:ring-0 border-none' name='hours[]' readonly></td>";
-                html += "<td class='py-4 border-b'><textarea type='text' name='objective[]'></textarea></td>";
-                html += "<td class='py-4 border-b text-red-500'><button type='button' onclick='deleteRow(this);'>Delete</button></td>"
-                html += "</tr>";
+            let html = "<tr class='bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'>";
+            html += "<td class='py-4 border-b'><input type='text' class='date border-none' placeholder='Please select Date' name='date[]' data-input></td>";
+            html += "<td class='py-4 border-b'><input type='time' class='from border-none' id='overtimeFrom' name='from[]'></td>";
+            html += "<td class='py-4 border-b'><input type='time' class='to border-none' name='to[]'></td>";
+            html += "<td class='py-4 border-b'><input type='text' class='focus:ring-0 border-none' name='hours[]' readonly></td>";
+            html += "<td class='py-4 border-b'><textarea type='text' name='objective[]'></textarea></td>";
+            html += "<td class='py-4 border-b text-red-500'><button type='button' onclick='deleteRow(this);'>Delete</button></td>"
+            html += "</tr>";
 
-                var row = document.getElementById("tbody").insertRow();
-                row.innerHTML = html;
-                let frompicker = $(".date").flatpickr({
-                    function() {
-                        console.log('hi');
-                    },
-                    minDate: "today",
-                    dateFormat: "Y-m-d",
-                    locale: {
-                        firstDayOfWeek: 1
-                    },
-                });
-            }
+            var row = document.getElementById("tbody").insertRow();
+            row.innerHTML = html;
+            let frompicker = $(".date").flatpickr({
+                dateFormat: "Y-m-d",
+                locale: {
+                    firstDayOfWeek: 1
+                },
+            });
+        }
 
-            function deleteRow(button) {
-                overtimes--
-                button.parentElement.parentElement.remove();
-                // first parentElement will be td and second will be tr.
-            }
+        function deleteRow(button) {
+            overtimes--
+            button.parentElement.parentElement.remove();
+            // first parentElement will be td and second will be tr.
+        }
 
-            $('.table').on('change', '.from', function () {
-                let $row = $(this).closest("tr");
-                let from = $row.find("input[name^='from']");
-                let to = $row.find("input[name^='to']");
-                if(to.val() != '') {
-                    console.log(to)
-                    from = from.val().split(':');
-                    to = to.val().split(':');
-                    var startDate = new Date(0, 0, 0, from[0], from[1], 0);
-                    var endDate = new Date(0, 0, 0, to[0], to[1], 0);
-                    var diff = endDate.getTime() - startDate.getTime();
-                    var hours = Math.floor(diff / 1000 / 60 / 60);
-                    diff -= hours * 1000 * 60 * 60;
-                    var minutes = Math.floor(diff / 1000 / 60);
+        $('.table').on('change', '.date', function () {
+            multiplyHours = false;
+            let $row = $(this).closest("tr");
+            let date = $row.find("input[name^='date']");
+            let day = new Date(date.val())
+            if(day.getDay() == 0 || {!! json_encode($holiday_dates) !!}.includes(string_day))
+                multiplyHours = true;
+        })
 
-                    // If using time pickers with 24 hours format, add the below line get exact hours
-                    if (hours < 0)
-                        hours = hours + 24;
-
-                    let val = (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
-                    $row.find("input[name^='hours']").val(val);
-                }
-            })
-
-        $('.table').on('change', '.to', function () {
+        $('.table').on('change', '.from', function () {
             let $row = $(this).closest("tr");
             let from = $row.find("input[name^='from']");
             let to = $row.find("input[name^='to']");
-            if(from.val() != '') {
-                console.log(from)
+            if(to.val() != '') {
                 from = from.val().split(':');
                 to = to.val().split(':');
-                var startDate = new Date(0, 0, 0, from[0], from[1], 0);
-                var endDate = new Date(0, 0, 0, to[0], to[1], 0);
-                var diff = endDate.getTime() - startDate.getTime();
-                var hours = Math.floor(diff / 1000 / 60 / 60);
+                let startDate = new Date(0, 0, 0, from[0], from[1], 0);
+                let endDate = new Date(0, 0, 0, to[0], to[1], 0);
+                let diff = endDate.getTime() - startDate.getTime();
+                let hours = Math.floor(diff / 1000 / 60 / 60);
                 diff -= hours * 1000 * 60 * 60;
-                var minutes = Math.floor(diff / 1000 / 60);
+                let minutes = Math.floor(diff / 1000 / 60);
 
                 // If using time pickers with 24 hours format, add the below line get exact hours
                 if (hours < 0)
                     hours = hours + 24;
-
+                if(multiplyHours) {
+                    let total_minutes = Math.ceil((hours*60 + minutes) * MULTIPLIER);
+                    hours = Math.floor(total_minutes/60);
+                    minutes = total_minutes % 60;
+                }
                 let val = (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
                 $row.find("input[name^='hours']").val(val);
             }
         })
 
+        $('.table').on('change', '.to', function () {
+            let $row = $(this).closest("tr");
+            let date = $row.find("input[name^='date']");
+            let from = $row.find("input[name^='from']");
+            let to = $row.find("input[name^='to']");
+            if(from.val() != '') {
+                from = from.val().split(':');
+                to = to.val().split(':');
+                let startDate = new Date(0, 0, 0, from[0], from[1], 0);
+                let endDate = new Date(0, 0, 0, to[0], to[1], 0);
+                let diff = endDate.getTime() - startDate.getTime();
+                let hours = Math.floor(diff / 1000 / 60 / 60);
+                diff -= hours * 1000 * 60 * 60;
+                let minutes = Math.floor(diff / 1000 / 60);
+
+                // If using time pickers with 24 hours format, add the below line get exact hours
+                if (hours < 0)
+                    hours = hours + 24;
+                if(multiplyHours) {
+                    let total_minutes = Math.ceil((hours*60 + minutes) * MULTIPLIER);
+                    hours = Math.floor(total_minutes/60);
+                    minutes = total_minutes % 60;
+                }
+                let val = (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
+
+                $row.find("input[name^='hours']").val(val);
+            }
+        })
     </script>
 
 

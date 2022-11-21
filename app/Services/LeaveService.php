@@ -67,25 +67,23 @@ class LeaveService
                     $processing_officers = NULL;
                     break;
                 }
-                if (!$employee->is_supervisor) {
-                    $officer_role = Role::findByName('employee');
-                    $supervisor_id = $leave->employee->department->manager->id;
-                    $processing_officers = Employee::where('id', $supervisor_id)->get();
-                } else {
-                    $officer_role = Role::findByName('sg');
+                else {
+                    $role = Role::findByName('sg');
+                    $leave->processing_officer_role = $role->id;
                     $processing_officers = Employee::role('sg')->get();
                 }
-                $leave->processing_officer_role = $officer_role->id;
                 break;
             case ('employee'):
-                $role_sg = Role::findByName('sg');
-                $leave->processing_officer_role = $role_sg->id;
-                $processing_officers = Employee::role('sg')->get();
                 if (auth()->user()->hasRole('sg')) {
+                    $role_sg = Role::findByName('sg');
+                    $leave->processing_officer_role = $role_sg->id;
                     $this->acceptLeave($leave);
                     $processing_officers = NULL;
                     break;
                 }
+                $role = Role::findByName('human_resource');
+                $leave->processing_officer_role = $role->id;
+                $processing_officers = Employee::role('human_resource')->get();
                 break;
             case ('sg'):
                 $this->acceptLeave($leave);
@@ -127,6 +125,10 @@ class LeaveService
         }
         else{
             $nb_of_days_off = $this->findNbofDaysOff($leave);
+            if($leave->mix_of_leaves) {
+                $nb_of_days_off_confessionnels = $this->findNbofDaysOffConfessionnels($leave);
+                $employee->confessionnels = $employee->confessionnels - $nb_of_days_off_confessionnels;
+            }
             $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
         }
 
@@ -140,7 +142,7 @@ class LeaveService
 
     public function getDisabledDates($employee)
     {
-        $leaves = Leave::where('employee_id', $employee->id)->whereDate('to', '>=', now()->format('Y-m-d'))->get();
+        $leaves = Leave::all();
         $disabled_dates = [];
         foreach ($leaves as $leave) {
             $period = CarbonPeriod::create($leave->from, $leave->to);
@@ -156,7 +158,7 @@ class LeaveService
 
     public function getHolidays()
     {
-        $holidays = Holiday::whereDate('to', '>=', now()->format('Y-m-d'))->get();
+        $holidays = Holiday::all();
         $holiday_dates = [];
         foreach ($holidays as $holiday) {
             $period = CarbonPeriod::create($holiday->from, $holiday->to);
@@ -169,17 +171,43 @@ class LeaveService
         return $holiday_dates;
     }
 
+    public function getConfessionnelDates()
+    {
+        $confessionnels = Confessionnel::all();
+        $confessionnel_dates = [];
+        foreach ($confessionnels as $confessionnel) {
+            $confessionnel_dates[] = $confessionnel->date;
+        }
+        return $confessionnel_dates;
+    }
+
     public function isHoliday($date) {
         $holidays = $this->getHolidays();
         return (in_array($date, $holidays));
     }
 
+    public function isConfessionnel($date) {
+        $confessionnels = $this->getConfessionnelDates();
+        return (in_array($date, $confessionnels));
+    }
+
     public function getConfessionnels()
     {
         $confessionnels = Confessionnel::whereNotIn('date', Leave::where('employee_id', auth()->user()->id)->where('use_confessionnels', true)->get('from'))->get();
+        $mix_leaves = Leave::where('employee_id', auth()->user()->id)->where('mix_of_leaves', true)->get();
+        $mix_confessionnels = [];
+        foreach ($mix_leaves as $mix_leave) {
+            $period = CarbonPeriod::create($mix_leave->from, $mix_leave->to);
+            // Iterate over the period
+            foreach ($period as $date) {
+                if (!in_array($date->toDateString(), $mix_confessionnels))
+                    $mix_confessionnels[] = $date->toDateString();
+            }
+        }
         $confessionnel_dates = [];
         foreach ($confessionnels as $confessionnel) {
-            $confessionnel_dates[] = $confessionnel->date;
+            if(!in_array($confessionnel->date, $mix_confessionnels))
+                $confessionnel_dates[] = $confessionnel->date;
         }
         return $confessionnel_dates;
     }
@@ -190,7 +218,7 @@ class LeaveService
         $disabled_dates = unserialize($leave->disabled_dates);
         foreach ($period as $date) {
             $date = $date->toDateString();
-            if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date)) {
+            if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date) && !$this->isConfessionnel($date)) {
                 $nb_of_days_off = $nb_of_days_off + 1;
             }
         }
@@ -199,5 +227,22 @@ class LeaveService
             $nb_of_days_off = $nb_of_days_off / 2;
         }
         return $nb_of_days_off;
+    }
+
+    public function findNbofDaysOffConfessionnels($leave) {
+        $period = CarbonPeriod::create($leave->from, $leave->to);
+        $nb_of_days_off_confessionnels = 0;
+        $disabled_dates = unserialize($leave->disabled_dates);
+        foreach ($period as $date) {
+            $date = $date->toDateString();
+            if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date) && $this->isConfessionnel($date)) {
+                $nb_of_days_off_confessionnels = $nb_of_days_off_confessionnels + 1;
+            }
+        }
+        $leave_duration_name = $leave->leave_duration->name;
+        if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
+            $nb_of_days_off_confessionnels = $nb_of_days_off_confessionnels / 2;
+        }
+        return $nb_of_days_off_confessionnels;
     }
 }
