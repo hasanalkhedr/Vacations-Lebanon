@@ -5,7 +5,7 @@
     @endpush
     <nav class="flex justify-between items-center p-2 text-black font-bold">
         <div class="text-lg">
-            Outgoing Leave Requests
+            Submitted Leave Requests
         </div>
         <div>
             <a href="{{ url(route('leaves.create')) }}">

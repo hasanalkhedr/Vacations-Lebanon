@@ -28,9 +28,9 @@
 
 <body>
     <div class="lg:flex h-full min-h-screen">
-        <div class="lg:pt-12 w-1/6 border-gray-200 px-2 py-2.5 dark:bg-gray-900 sm:pt-4 lg:bg-gray-200">
+        <div class="lg:pt-12 w-full lg:w-1/6 border-gray-200 px-2 py-2.5 dark:bg-gray-900 sm:pt-4 lg:bg-gray-200">
             <button data-collapse-toggle="aside-default" type="button"
-                class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                 aria-controls="navbar-default" aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
                 <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
@@ -40,7 +40,7 @@
                         clip-rule="evenodd"></path>
                 </svg>
             </button>
-            <aside class="hidden w-full md:block md:w-auto" id="aside-default">
+            <aside class="hidden w-full lg:inline" id="aside-default">
                 <ul>
                     @unless(auth()->user()->hasRole('employee'))
                         <li>
@@ -201,13 +201,14 @@
                         @endif
                     </div>
                 </div>
-                <div class="flex">
+                <div class="flex mx-2">
                     @if(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
                         <div class="flex justify-center items-center">
                             <livewire:megaphone></livewire:megaphone>
                         </div>
                     @endif
-                    <div class="px-6 py-2 text-xl font-bold text-black">
+
+                    <div class="py-2 text-xl font-bold text-black">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit">

@@ -13,7 +13,6 @@ class Notification extends Model
     public function prunable(): Builder
     {
         return static::whereNotNull('read_at')
-            ->where('read_at', '<=', now()->subDays(4))
-            ->orWhere('created_at', '<=', now()->subWeeks(2));
+            ->where('read_at', '<=', now()->subWeek());
     }
 }
