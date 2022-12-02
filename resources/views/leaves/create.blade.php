@@ -2,24 +2,24 @@
     <div class="relative w-full h-full md:h-auto">
         <div class="mx-4">
             <table class="mt-4 w-full text-sm text-left text-gray-500 dark:text-gray-400 border">
-                <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-s uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 blue-color">
                 <tr class="border-b">
                     <th scope="col" class="text-center py-3 px-2"></th>
                     <th scope="col" class="text-center py-3 px-2">
-                        Remaining
+                        {{__("Remaining")}}
                     </th>
                     <th scope="col" class="text-center py-3 px-2">
-                        Pending
+                        {{__("Pending")}}
                     </th>
                     <th scope="col" class="text-center py-3 px-2">
-                        Accepted
+                        {{__("Accepted")}}
                     </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th scope="col" class="border-r-2 text-center py-3 px-2">
-                        Leave Days
+                    <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
+                        {{__("Leave Days")}}
                     </th>
                     <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
                         {{ $employee->nb_of_days }}
@@ -32,8 +32,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="col" class="border-r-2 text-center py-3 px-2">
-                        Confessionnel Days
+                    <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
+                        {{__("Confessionnel Days")}}
                     </th>
                     <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap dark:text-white">
                         {{ $employee->confessionnels }}
@@ -52,15 +52,15 @@
             <form method="POST" action="{{ route('leaves.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="relative z-0 mb-6 w-full group">
-                    <label for="leave_duration_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Leave Duration</label>
-                    <select name="leave_duration_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option value="" disabled>Choose Leave Duration</option>
+                    <label for="leave_duration_id" class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">Leave Duration</label>
+                    <select id="leave_duration_id" name="leave_duration_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="" disabled>{{__("Choose Leave Duration")}}</option>
                         @if(count($leave_durations))
                             @foreach ($leave_durations as $leave_duration)
                                 @if($leave_duration->name == "One or More Full Days")
-                                    <option value="{{ $leave_duration->id }}" selected>{{ $leave_duration->name }}</option>
+                                    <option value="{{ $leave_duration->id }}" selected>{{ __($leave_duration->name) }}</option>
                                 @else
-                                    <option value="{{ $leave_duration->id }}">{{ $leave_duration->name }}</option>
+                                    <option value="{{ $leave_duration->id }}">{{ __($leave_duration->name) }}</option>
                                 @endif
                             @endforeach
                         @endif
@@ -69,7 +69,7 @@
 
                 <div class="grid md:grid-cols-2 md:gap-6">
                     <div class="relative z-0 mb-6 w-full group">
-                        <p>Use Confessionnels Only</p>
+                        <p class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">{{__("Use Confessionnels Only")}}</p>
                         <div class="mt-2 flex flex-row">
                             <input type="checkbox" name="confessionnels" id="confessionnels">
                         </div>
@@ -79,7 +79,7 @@
                     </div>
 
                     <div class="relative z-0 mb-6 w-full group" id="mix_of_leaves_div">
-                        <p>Include Both</p>
+                        <p class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">{{__("Include Both")}}</p>
                         <div class="mt-2 flex flex-row">
                             <input type="checkbox" name="mix_of_leaves" id="mix_of_leaves">
                         </div>
@@ -91,15 +91,19 @@
 
                 <div class="grid md:grid-cols-2 md:gap-6">
                     <div class="relative z-0 w-full group flex flex-col">
-                        <label id="fromDateLabel" for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date <span class="text-red-500">*</span></label>
-                        <input type="text" name="from" id="fromDate" placeholder="Please Select Date Range" data-input onload="disableDates(this)">
+                        <label id="fromDateLabel" for="fromDate" class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                            {{__("Start Date")}} <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="from" id="fromDate" placeholder="{{__("Please select date range")}}" data-input >
                         @error('from')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div class="relative z-0 mb-6 w-full group flex flex-col" id="toDateDiv">
-                        <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date <span class="text-red-500">*</span></label>
-                        <input type="text" name="to" id="toDate" placeholder="Please Select Date Range" data-input>
+                        <label for="toDate" class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                            {{__("End Date")}} <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="to" id="toDate" placeholder="{{__("Please select date range")}}" data-input>
                         @error('to')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -108,22 +112,23 @@
                 <span id="error"></span>
 
                 <div class="relative z-0 mb-6 w-full group">
-                    <p>Travelling</p>
+                    <p class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">{{__("Travelling")}}</p>
                     <div class="mt-2 flex flex-row">
-                        <input type="radio" name="travelling" value=1>
-                        <label for="travelling" class="mx-2">Yes</label><br>
-                        <input type="radio" name="travelling" value=0 checked>
-                        <label for="travelling" class="mx-2">No</label>
+                        <input type="radio" id="travelling-yes" name="travelling" value=1>
+                        <label for="travelling-yes" class="mx-2">{{__("Yes")}}</label><br>
+                        <input type="radio" id="travelling-no" name="travelling" value=0 checked>
+                        <label for="travelling-no" class="mx-2">{{__("No")}}</label>
                     </div>
                     @error('travelling')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="relative z-0 mb-6 w-full group">
-                    <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                        Leave Type</label>
+                    <label for="leave_type" class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                        {{__("Select Leave Type")}}
+                    </label>
                     <select id="leave_type" name="leave_type_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option value="" disabled>Choose Leave Type</option>
+                        <option value="" disabled>{{__("Select Leave Type")}}</option>
                         @if(count($leave_types))
                             @foreach ($leave_types as $leave_type)
                                 <option value="{{ $leave_type->id }}">{{ $leave_type->name }}</option>
@@ -135,17 +140,20 @@
                     <input type="file" name="attachment_path" id="attachment_path"
                            class="block pt-2.5 px-0 w-full text-sm text-gray-900 bg-transparent appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
                     <label for="attachment_path"
-                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Attachment <span id="attachment_file_span" class="text-red-500">*</span></label>
+                           class="font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6  top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                        {{__("Attachment")}} <span id="attachment_file_span" class="text-red-500">*</span>
+                    </label>
                     @error('attachment_path')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="relative z-0 mb-6 w-full group">
-                    <label for="substitute_employee_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                        Substitute</label>
-                    <select name="substitute_employee_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option value="" disabled>Choose Substitute Employee</option>
-                        <option value="">No Replacement</option>
+                    <label for="substitute_employee_id" class="mb-2 text-sm font-medium dark:text-gray-400">
+                        {{__("Select Substitute")}}
+                    </label>
+                    <select id="substitute_employee_id" name="substitute_employee_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 blue-color">
+                        <option value="" disabled>{{__("Choose Substitute Employee")}}</option>
+                        <option value="">{{__("No Replacement")}}</option>
                         @if(count($substitutes))
                             @foreach ($substitutes as $substitute)
                                 <option value="{{ $substitute->id }}">{{ $substitute->first_name }} {{ $substitute->last_name }}</option>
@@ -159,15 +167,15 @@
                         <a href="{{ url(route('leaves.submitted')) }}">
                             <button type="button"
                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                Cancel
+                                {{__("Cancel")}}
                             </button>
                         </a>
                     </div>
                     <div>
                         <button
                             id="createButton"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Create
+                            class="text-white hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 blue-bg">
+                            {{__("Create")}}
                         </button>
                     </div>
                 </div>
@@ -184,7 +192,7 @@
                 if ({{  auth()->user()->confessionnels }} === 0) {
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You don't have any confessionnel days left");
+                    $("#error").text("{{__("You don't have any confessionnel days left")}}");
                 }
                 let fromDate = $('#fromDate').val();
                 $("#toDate").val(fromDate);
@@ -222,20 +230,20 @@
 
                         $('#createButton').attr('disabled', true)
                         $('#error').css("color", "red");
-                        $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                        $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnel days left")}}");
                     }
                 } else {
                     if (dateDifference > {{  auth()->user()->nb_of_days }}) {
 
                         $('#createButton').attr('disabled', true)
                         $('#error').css("color", "red");
-                        $("#error").text("You chose a range of " + dateDifference + " days but you only have" + {{  auth()->user()->nb_of_days }} + " leave days left");
+                        $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}}" + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}");
                     }
                     if (dateDifference_confessionnels > {{  auth()->user()->confessionnels }}) {
 
                         $('#createButton').attr('disabled', true)
                         $('#error').css("color", "red");
-                        $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                        $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}");
                     }
                 }
             }
@@ -277,7 +285,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}");
                 }
             }
             else {
@@ -285,15 +293,13 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}");
                 }
                 if (dateDifference_confessionnels > {{  auth()->user()->confessionnels }}) {
-                    console.log("DATE_DIFF_CONF : " + dateDifference_confessionnels);
-                    console.log("CONF : " + {{  auth()->user()->confessionnels }});
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}");
                 }
             }
         });
@@ -309,10 +315,10 @@
             }
             let newFromDate = new Date(fromDate);
             let newToDate = new Date(toDate);
-            dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000*3600*24)) + 1;
+            let dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000*3600*24)) + 1;
             let tempDate = new Date(newFromDate.getTime());
             while(tempDate <= newToDate){
-                newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
+                let newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
                 if({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)){
                     dateDifference = dateDifference - 1;
                 }
@@ -323,7 +329,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->confessionnels }} + " confessionnels days left");
+                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}");
                 }
             }
             else {
@@ -331,7 +337,7 @@
 
                     $('#createButton').attr('disabled', true)
                     $('#error').css("color", "red");
-                    $("#error").text("You chose a range of " + dateDifference + " days but you only have " + {{  auth()->user()->nb_of_days }} + " leave days left");
+                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}");
                 }
             }
         });
@@ -378,7 +384,7 @@
                 $("#toDateDiv").addClass("invisible");
                 $("#mix_of_leaves_div").addClass("invisible");
                 $('#mix_of_leaves')[0].checked = false;
-                $("#fromDate").attr("placeholder", "Please Select Date");
+                $("#fromDate").attr("placeholder", "{{__("Please select date")}}");
                 $("#fromDate").flatpickr({
                     dateFormat: "Y-m-d",
                     enable: [
@@ -394,7 +400,7 @@
             }
             else{
                 flatpickr("#fromDate", {}).clear();
-                $("#fromDate").attr("placeholder", "Please Select Date Range");
+                $("#fromDate").attr("placeholder", "{{__("Please select date range")}}");
                 $("#fromDateLabel").html("Start Date");
                 $("#toDateDiv").removeClass("invisible");
                 $("#mix_of_leaves_div").removeClass("invisible");
@@ -480,7 +486,7 @@
 
     <script>
         $("#leave_type").change(function () {
-            if(this.options[this.selectedIndex].text === "recovery") {
+            if(this.options[this.selectedIndex].text === "{{__("recovery")}}") {
                 $('#attachment_file_span')[0].classList.remove('hidden')
             }
             else {

@@ -1,17 +1,17 @@
 <x-sidebar>
-    @section('title', 'Submitted Overtime Requests')
+    @section('title', __("Submitted Overtime Requests"))
     @push('head')
         <script src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
     @endpush
-    <nav class="flex justify-between items-center p-2 text-black font-bold">
+    <nav class="flex justify-between items-center p-2 font-bold blue-color">
         <div class="text-lg">
-            Outgoing Overtime Requests
+            {{__("Submitted Overtime Requests")}}
         </div>
         <div>
             <a href="{{ url(route('overtimes.create')) }}">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
+            <button class="hover:bg-blue-400 text-white py-2 px-4 rounded-full blue-bg"
                     >
-                Submit Overtime Request
+                {{__("Submit Overtime Request")}}
             </button>
             </a>
         </div>
@@ -19,22 +19,22 @@
     <div class="rounded-lg p-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()" class="rounded-lg border-collapse border border-slate-200 w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="leaveData">
             @unless($overtimes->isEmpty())
-                <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-s uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 blue-color">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Date
+                        {{__("Date")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        From
+                        {{__("From")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        To
+                        {{__("To")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Status
+                        {{__("Status")}}
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Remove</span>
+                        <span class="sr-only">{{__("Remove")}}</span>
                     </th>
                 </tr>
                 </thead>
@@ -55,11 +55,11 @@
                                 Pending
                             @elseif($overtime->overtime_status == 1)
                                 <div class="text-green-500">
-                                    Accepted
+                                    {{__("Accepted")}}
                                 </div>
                             @else
                                 <div class="text-red-500">
-                                    Rejected
+                                    {{__("Rejected")}}
                                 </div>
                             @endif
                         </td>
@@ -67,7 +67,7 @@
                             <td class="py-4 px-6 text-right">
                                 <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
                                         data-modal-toggle="deleteModal-{{$overtime->id}}">
-                                    Remove
+                                    {{__("Remove")}}
                                 </button>
                             </td>
                         @endif
@@ -90,7 +90,7 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Delete Overtime Request
+                                            {{__("Delete Overtime Request")}}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -109,7 +109,8 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                            Are you sure you want to delete this overtime request? This action cannot be undone.
+                                            {{__("Are you sure you want to delete this overtime request")}}? {{__("This
+                                            action cannot be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
@@ -118,7 +119,7 @@
                                         <div>
                                             <button data-modal-toggle="deleteModal-{{$overtime->id}}" type="button"
                                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                Cancel
+                                                {{__("Cancel")}}
                                             </button>
                                         </div>
                                         <div>
@@ -127,7 +128,7 @@
                                                 @csrf
                                                 <button data-modal-toggle="deleteModal-{{$overtime->id}}"
                                                         class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    Delete
+                                                    {{__("Delete")}}
                                                 </button>
                                             </form>
                                         </div>
@@ -140,7 +141,7 @@
                 @else
                     <tr class="border-gray-300">
                         <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                            <p class="text-center">No Overtime Requests Found</p>
+                            <p class="text-center">{{__("No Overtime Requests Found")}}</p>
                         </td>
                     </tr>
                 @endunless

@@ -1,16 +1,16 @@
 <x-sidebar>
-    @section('title', 'Holidays')
+    @section('title', __("Holidays"))
     @push('head')
         <script src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
     @endpush
-    <nav class="flex justify-between items-center p-2 text-black font-bold">
+    <nav class="flex justify-between items-center p-2 font-bold blue-color">
         <div class="text-lg">
-            Holidays
+            {{__("Holidays")}}
         </div>
         <div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
+            <button class="bg-blue-500 hover:bg-blue-400 text-white py-2 px-4 rounded-full"
                     data-modal-toggle="createModal">
-                Add Holiday
+                {{__("Add Holiday")}}
             </button>
         </div>
     </nav>
@@ -18,22 +18,22 @@
     <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="holidayData">
             @unless($holidays->isEmpty())
-                <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-s blue-color uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Name
+                        {{__("Name")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        From
+                        {{__("From")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        To
+                        {{__("To")}}
+                    </th>
+                    <th scope="col" class="py-3 px-6 blue-color">
+                        <span class="sr-only">{{__("Edit")}}</span>
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Edit</span>
-                    </th>
-                    <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Delete</span>
+                        <span class="sr-only">{{__("Delete")}}</span>
                     </th>
                 </tr>
                 </thead>
@@ -53,13 +53,13 @@
                         <td class="py-4 px-6 text-right border-b">
                             <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline" type="button"
                                     data-modal-toggle="editProfileModal-{{$holiday->id}}">
-                                Edit
+                                {{__("Edit")}}
                             </button>
                         </td>
                         <td class="py-4 px-6 text-right border-b">
                             <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
                                     data-modal-toggle="deleteModal-{{$holiday->id}}">
-                                Delete
+                                {{__("Delete")}}
                             </button>
                         </td>
                         @endhasanyrole
@@ -82,7 +82,7 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Delete Holiday: {{ $holiday->name }}
+                                            {{__("Delete Holiday")}}: {{ $holiday->name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -101,7 +101,8 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                            Are you sure you want to delete this holiday? This action cannot be undone.
+                                            {{__("Are you sure you want to delete this holiday")}}? {{__("This action cannot
+                                            be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
@@ -110,7 +111,7 @@
                                         <div>
                                             <button data-modal-toggle="deleteModal-{{$holiday->id}}" type="button"
                                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                Cancel
+                                                {{__("Cancel")}}
                                             </button>
                                         </div>
                                         <div>
@@ -120,7 +121,7 @@
                                                 @method('DELETE')
                                                 <button data-modal-toggle="deleteModal-{{$holiday->id}}"
                                                         class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    Delete
+                                                    {{__("Delete")}}
                                                 </button>
                                             </form>
                                         </div>
@@ -137,8 +138,8 @@
                                     <!-- Modal header -->
                                     <div
                                         class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
-                                        <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Edit Holiday: {{ $holiday->name }}
+                                        <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left blue-color">
+                                            {{__("Edit Holiday")}}: {{ $holiday->name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -161,7 +162,7 @@
                                             @csrf
                                             @method('PUT')
                                             <div class="relative z-0 w-full group flex flex-col">
-                                                <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Name</label>
+                                                <label for="from" class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">{{__("Name")}}</label>
                                                 <input type="text" name="name" placeholder="Please enter holiday's name" value="{{ $holiday->name }}">
                                                 @error('name')
                                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -169,15 +170,19 @@
                                             </div>
                                             <div class="grid md:grid-cols-2 md:gap-6">
                                                 <div class="relative z-0 w-full group flex flex-col">
-                                                    <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
-                                                    <input type="text" name="from" id="fromDateEdit" placeholder="Please select Date Range" data-input value="{{ $holiday->from }}">
+                                                    <label for="from" class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                                                        {{__("Start Date")}}
+                                                    </label>
+                                                    <input type="text" name="from" id="fromDateEdit" placeholder={{__("Please select date range")}} data-input value="{{ $holiday->from }}">
                                                     @error('from')
                                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                                     @enderror
                                                 </div>
                                                 <div class="relative z-0 mb-6 w-full group flex flex-col">
-                                                    <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
-                                                    <input type="text" name="to" id="toDateEdit" placeholder="Please select Date Range" data-input value="{{ $holiday->to }}">
+                                                    <label for="to" class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                                                        {{__("End Date")}}
+                                                    </label>
+                                                    <input type="text" name="to" id="toDateEdit" placeholder={{__("Please select date range")}} data-input value="{{ $holiday->to }}">
                                                     @error('to')
                                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                                     @enderror
@@ -189,13 +194,13 @@
                                                     <button data-modal-toggle="editProfileModal-{{$holiday->id}}"
                                                             type="button"
                                                             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                        Cancel
+                                                        {{__("Cancel")}}
                                                     </button>
                                                 </div>
                                                 <div>
                                                     <button
-                                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        data-modal-toggle="editProfileModal-{{$holiday->id}}">Edit
+                                                        class="text-white hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 blue-bg"
+                                                        data-modal-toggle="editProfileModal-{{$holiday->id}}">{{__("Edit")}}
                                                     </button>
                                                 </div>
                                             </div>
@@ -209,7 +214,7 @@
                 @else
                     <tr class="border-gray-300">
                         <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                            <p class="text-center">No Holidays Found</p>
+                            <p class="text-center">{{__("No Holidays Found")}}</p>
                         </td>
                     </tr>
                 @endunless
@@ -224,7 +229,7 @@
                     <!-- Modal header -->
                     <div class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                            Create Holiday
+                            {{__("Add Holiday")}}
                         </div>
                         <div>
                             <button type="button"
@@ -245,23 +250,28 @@
                         <form method="POST" action="{{ route('holidays.store') }}">
                             @csrf
                             <div class="relative z-0 w-full group flex flex-col">
-                                <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Name</label>
-                                <input type="text" name="name" placeholder="Please enter holiday's name">
+                                <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">{{__("Name")}}</label>
+                                <input type="text" name="name" placeholder={{__("Name")}}>
                                 @error('name')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="grid md:grid-cols-2 md:gap-6">
                                 <div class="relative z-0 w-full group flex flex-col">
-                                    <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
-                                    <input type="text" name="from" id="fromDateStore" placeholder="Please select Date Range" data-input >
+                                    <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+                                        {{__("Start Date")}}
+                                    </label>
+                                    <input type="text" name="from" id="fromDateStore" placeholder={{__("Please select date
+                                           range")}} data-input >
                                     @error('from')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div class="relative z-0 mb-6 w-full group flex flex-col">
-                                    <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
-                                    <input type="text" name="to" id="toDateStore" placeholder="Please select Date Range" data-input>
+                                    <label for="to" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+                                        {{__("End Date")}}
+                                    </label>
+                                    <input type="text" name="to" id="toDateStore" placeholder={{__("Please select date range")}} data-input>
                                     @error('to')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
@@ -272,13 +282,13 @@
                                 <div>
                                     <button data-modal-toggle="createModal" type="button"
                                             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                        Cancel
+                                        {{__("Cancel")}}
                                     </button>
                                 </div>
                                 <div>
                                     <button
                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        Create
+                                        {{__("Create")}}
                                     </button>
                                 </div>
                             </div>

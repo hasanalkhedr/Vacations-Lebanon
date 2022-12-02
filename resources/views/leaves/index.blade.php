@@ -1,33 +1,33 @@
 <x-sidebar>
-    @section('title', 'Leave Requests')
+    @section('title', __("Leave Requests"))
     @push('head')
         <script src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
     @endpush
-    <nav class="flex justify-between items-center p-2 text-black font-bold">
+    <nav class="flex justify-between items-center p-2 font-bold blue-color">
         <div class="text-lg">
-            Incoming Leave Requests
+            {{__("Incoming Leave Requests")}}
         </div>
     </nav>
     @include('partials.searches._search-leaves')
     <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="leaveData">
             @unless($leaves->isEmpty())
-                <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-s uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 blue-color">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Name
+                        {{__("Name")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Department
+                        {{__("Department")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Reports To
+                        {{__("Reports To")}}
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Edit</span>
+                        <span class="sr-only">{{__("Accept")}}</span>
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Delete</span>
+                        <span class="sr-only">{{__("Reject")}}</span>
                     </th>
                 </tr>
                 </thead>
@@ -60,13 +60,13 @@
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-green-600 dark:text-green-500 hover:underline" type="button"
                                         data-modal-toggle="acceptModal-{{$leave->id}}">
-                                    Accept
+                                    {{__("Accept")}}
                                 </button>
                             </td>
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
                                         data-modal-toggle="rejectModal-{{$leave->id}}">
-                                    Reject
+                                    {{__("Reject")}}
                                 </button>
                             </td>
                         @endif
@@ -89,7 +89,7 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Reject Leave Request from: {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
+                                            {{__("Reject Leave Request from")}}: {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -111,10 +111,12 @@
                                         @csrf
                                         <div class="p-6 space-y-6">
                                             <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                                Are you sure you want to reject this leave request? This action cannot be undone.
+                                                {{__("Are you sure you want to reject this leave request")}}? {{__("This
+                                                action cannot be undone")}}.
                                             </div>
                                             <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                                <label for="cancellation_reason" class="text-lg text-gray-600">Rejection Reason</label>
+                                                <label for="cancellation_reason" class="text-lg text-gray-600">{{__("Rejection
+                                                    Reason")}}</label>
                                                 <textarea class="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white rounded" name="cancellation_reason" ></textarea>
                                             </div>
                                         </div>
@@ -124,13 +126,13 @@
                                             <div>
                                                 <button data-modal-toggle="rejectModal-{{$leave->id}}" type="button"
                                                         class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                    Cancel
+                                                    {{__("Cancel")}}
                                                 </button>
                                             </div>
                                             <div>
                                                 <button data-modal-toggle="rejectModal-{{$leave->id}}"
                                                         class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    Reject
+                                                    {{__("Reject")}}
                                                 </button>
                                             </div>
                                         </div>
@@ -157,7 +159,7 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Accept Leave Request from: {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
+                                            {{__("Accept Leave Request from")}}: {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -176,7 +178,8 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                            Are you sure you want to accept this leave request? This action cannot be undone.
+                                            {{__("Are you sure you want to accept this leave request")}}? {{__("This action
+                                            cannot be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
@@ -185,7 +188,7 @@
                                         <div>
                                             <button data-modal-toggle="acceptModal-{{$leave->id}}" type="button"
                                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                Cancel
+                                                {{__("Cancel")}}
                                             </button>
                                         </div>
                                         <div>
@@ -194,7 +197,7 @@
                                                 @csrf
                                                 <button data-modal-toggle="acceptModal-{{$leave->id}}"
                                                         class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                                    Accept
+                                                    {{__("Accept")}}
                                                 </button>
                                             </form>
                                         </div>
@@ -207,152 +210,12 @@
                 @else
                     <tr class="border-gray-300">
                         <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                            <p class="text-center">No Leave Requests Found</p>
+                            <p class="text-center">{{__("No Leave Requests Found")}}</p>
                         </td>
                     </tr>
                 @endunless
                 </tbody>
         </table>
-
-        <div id="createModal" tabindex="-1" aria-hidden="true"
-             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
-            <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
-                <!-- Modal content -->
-                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <!-- Modal header -->
-                    <div class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
-                        <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                            Submit Leave Request
-                        </div>
-                        <div>
-                            <button type="button"
-                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                    data-modal-toggle="createModal">
-                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                          clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="sr-only">Close modal</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Modal body -->
-                    <div class="p-6">
-                        <form method="POST" action="{{ route('leaves.store') }}">
-                            @csrf
-                            <div class="relative z-0 mb-6 w-full group">
-                                <label for="leave_duration_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Leave Duration</label>
-                                <select name="leave_duration_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="" disabled>Choose Leave Duration</option>
-                                    @if(count($leave_durations))
-                                        @foreach ($leave_durations as $leave_duration)
-                                            <option value="{{ $leave_duration->id }}">{{ $leave_duration->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                            <div class="grid md:grid-cols-2 md:gap-6">
-                                <div class="relative z-0 w-full group flex flex-col">
-                                    <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Start Date</label>
-                                    <input type="text" name="from" id="fromDate" placeholder="Please select Date Range" data-input>
-                                    @error('from')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div class="relative z-0 mb-6 w-full group flex flex-col">
-                                    <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">End Date</label>
-                                    <input type="text" name="to" id="toDate" placeholder="Please select Date Range" data-input>
-                                    @error('to')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="relative z-0 mb-6 w-full group">
-                                <p>Travelling</p>
-                                <div class="mt-2 flex flex-row">
-                                    <input type="radio" name="travelling" value=1>
-                                    <label for="html" class="mx-2">Yes</label><br>
-                                    <input type="radio" name="travelling" value=0 checked>
-                                    <label for="css" class="mx-2">No</label>
-                                </div>
-                                @error('travelling')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div class="relative z-0 mb-6 w-full group">
-                                <label for="leave_type_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                    Leave Type</label>
-                                <select name="leave_type_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="" disabled>Choose Leave Type</option>
-                                    @if(count($leave_types))
-                                        @foreach ($leave_types as $leave_type)
-                                            <option value="{{ $leave_type->id }}">{{ $leave_type->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                            <div class="relative z-0 mb-6 w-full group">
-                                <input type="file" name="attachment_path"
-                                       class="block pt-2.5 px-0 w-full text-sm text-gray-900 bg-transparent appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                                <label for="attachment_path"
-                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Attachment</label>
-                                @error('attachment_path')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div class="relative z-0 mb-6 w-full group">
-                                <label for="substitute_employee_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                    Substitute</label>
-                                <select name="substitute_employee_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="" disabled>Choose Substitute Employee</option>
-                                    <option value="">No Replacement</option>
-                                    @if(count($substitutes))
-                                        @foreach ($substitutes as $substitute)
-                                            <option value="{{ $substitute->id }}">{{ $substitute->first_name }} {{ $substitute->last_name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-
-                            <div class="relative z-0 mb-6 w-full group">
-                                <label for="substitute_employee_id" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                    Substitute</label>
-                                <select name="substitute_employee_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="" disabled>Choose Substitute Employee</option>
-                                    <option value="">No Replacement</option>
-                                    @if(count($substitutes))
-                                        @foreach ($substitutes as $substitute)
-                                            <option value="{{ $substitute->id }}">{{ $substitute->first_name }} {{ $substitute->last_name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-
-                            <div
-                                class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
-                                <div>
-                                    <button data-modal-toggle="createModal" type="button"
-                                            class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                        Cancel
-                                    </button>
-                                </div>
-                                <div>
-                                    <button
-                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        Create
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
     </div>
 
     <div class="mt-6 p-4">

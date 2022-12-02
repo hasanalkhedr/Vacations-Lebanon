@@ -1,29 +1,29 @@
 <x-sidebar>
-    @section('title', 'Accepted Leave Requests')
+    @section('title', __("Accepted Leave Requests"))
     @push('head')
         <script src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
     @endpush
-    <nav class="flex justify-between items-center p-2 text-black font-bold">
+    <nav class="flex justify-between items-center p-2 font-bold blue-color">
         <div class="text-lg">
-            Accepted Leave Requests
+            {{__("Accepted Leave Requests")}}
         </div>
     </nav>
     <div class="rounded-lg p-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()" class="rounded-lg border-collapse border border-slate-200 w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="leaveData">
             @unless($leaves->isEmpty())
-                <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-s uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 blue-color">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Employee
+                        {{__("Employee")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        From
+                        {{__("From")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        To
+                        {{__("To")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Status
+                        {{__("Status")}}
                     </th>
                 </tr>
                 </thead>
@@ -44,11 +44,11 @@
                                 Pending
                             @elseif($leave->leave_status == 1)
                                 <div class="text-green-500">
-                                    Accepted
+                                    {{__("Accepted")}}
                                 </div>
                             @else
                                 <div class="text-red-500">
-                                    Rejected
+                                    {{__("Rejected")}}
                                 </div>
                             @endif
                         </td>
@@ -57,7 +57,7 @@
                 @else
                     <tr class="border-gray-300">
                         <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                            <p class="text-center">No Accepted Leave Requests Found</p>
+                            <p class="text-center">{{__("No Accepted Leave Requests Found")}}</p>
                         </td>
                     </tr>
                 @endunless

@@ -1,14 +1,14 @@
 <x-sidebar>
-    @section('title', 'Employees')
+    @section('title', __("Users"))
     <nav class="flex justify-between items-center p-2 text-black font-bold">
-        <div class="text-lg">
-            Users
+        <div class="text-lg blue-color">
+            {{__("Users")}}
         </div>
         @hasanyrole('human_resource|sg')
         <div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
+            <button class="hover:bg-blue-700 text-white py-2 px-4 rounded-full blue-bg"
                     data-modal-toggle="createModal">
-                Add User
+                {{__("Create User")}}
             </button>
         </div>
         @endhasanyrole
@@ -20,21 +20,21 @@
             @unless($employees->isEmpty())
             <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-                <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                    Name
+                <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6 blue-color">
+                    {{__("Name")}}
                 </th>
-                <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                    Department
+                <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6 blue-color">
+                    {{__("Department")}}
                 </th>
-                <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                    Role
+                <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6 blue-color">
+                    {{__("Role")}}
                 </th>
                 @if(auth()->user()->hasRole('human_resource'))
-                    <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Edit</span>
+                    <th scope="col" class="py-3 px-6 blue-color">
+                        <span class="sr-only">{{__("Edit")}}</span>
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Delete</span>
+                        <span class="sr-only">{{__("Delete")}}</span>
                     </th>
                 @endif
             </tr>
@@ -63,7 +63,7 @@
                         <td class="py-4 px-6 border-b">
                             @if($employee->getRoleNames()->count() == 1)
                                 @if($employee->hasRole('employee') && $employee->is_supervisor)
-                                    Supervisor
+                            {{__("Supervisor")}}
                                 @else
                                     {{ $employee->roles()->first()->display_name }}
                                 @endif
@@ -71,14 +71,14 @@
                                 @foreach($employee->getRoleNames() as $role_name)
                                     @if($employee->getRoleNames()->last() == $role_name)
                                         @if($role_name == "$employee" && $employee->is_supervisor)
-                                            Supervisor
+                                            {{__("Supervisor")}}
                                         @else
                                             {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }}
                                         @endif
 
                                     @else
                                         @if($role_name == "$employee" && $employee->is_supervisor)
-                                            Supervisor |
+                                            {{__("Supervisor")}} |
                                         @else
                                             {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }} |
                                         @endif
@@ -88,15 +88,15 @@
                         </td>
                         @hasanyrole('human_resource|sg')
                             <td class="py-4 px-6 text-right border-b">
-                                <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline" type="button"
+                                <button class="font-medium dark:text-blue-500 hover:underline blue-color" type="button"
                                         data-modal-toggle="editProfileModal-{{$employee->id}}">
-                                    Edit
+                                    {{__("Edit")}}
                                 </button>
                             </td>
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
                                         data-modal-toggle="deleteModal-{{$employee->id}}">
-                                    Delete
+                                    {{__("Delete")}}
                                 </button>
                             </td>
                         @endhasanyrole
@@ -119,7 +119,7 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Delete Employee: {{ $employee->first_name }} {{ $employee->last_name }}
+                                            {{__("Delete Employee")}}: {{ $employee->first_name }} {{ $employee->last_name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -138,7 +138,8 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                            Are you sure you want to delete this employee? This action cannot be undone.
+                                            {{__("Are you sure you want to delete this employee")}}? {{__("This action cannot
+                                            be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
@@ -147,7 +148,7 @@
                                         <div>
                                             <button data-modal-toggle="deleteModal-{{$employee->id}}" type="button"
                                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                Cancel
+                                                {{__("Cancel")}}
                                             </button>
                                         </div>
                                         <div>
@@ -157,7 +158,7 @@
                                                 @method('DELETE')
                                                 <button data-modal-toggle="deleteModal-{{$employee->id}}"
                                                         class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    Delete
+                                                    {{__("Delete")}}
                                                 </button>
                                             </form>
                                         </div>
@@ -174,8 +175,8 @@
                                     <!-- Modal header -->
                                     <div
                                         class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
-                                        <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Edit Employee: {{ $employee->first_name }} {{ $employee->last_name }}
+                                        <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left blue-color">
+                                            {{__("Edit Employee")}}: {{ $employee->first_name }} {{ $employee->last_name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -204,16 +205,18 @@
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                            value="{{$employee->first_name}}" required/>
                                                     <label for="first_name"
-                                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First
-                                                        name</label>
+                                                           class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                                        {{__("First name")}}
+                                                    </label>
                                                 </div>
                                                 <div class="relative z-0 mb-4 w-full group">
                                                     <input type="text" name="last_name"
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                            value="{{$employee->last_name}}" required/>
                                                     <label for="last_name"
-                                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Last
-                                                        name</label>
+                                                           class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                                        {{__("Last name")}}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div class="relative z-0 mb-4 w-full group">
@@ -221,7 +224,9 @@
                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                        value="{{$employee->email}}" required/>
                                                 <label for="email"
-                                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label>
+                                                       class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                                    {{__("Email")}}
+                                                </label>
                                             </div>
                                             <div class="grid md:grid-cols-2 md:gap-6">
                                                 <div class="relative z-0 mb-4 w-full group">
@@ -229,22 +234,25 @@
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                            value="{{$employee->phone_number}}" required/>
                                                     <label for="phone_number"
-                                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Phone
-                                                        number</label>
+                                                           class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                                        {{__("Phone number")}}
+                                                    </label>
                                                 </div>
                                                 <div class="relative z-0 mb-4 w-full group">
                                                     <input type="number" name="nb_of_days"
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                            value="{{$employee->nb_of_days}}" required/>
                                                     <label for="nb_of_days"
-                                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Number
-                                                        of Days Off</label>
+                                                           class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                                        {{__("Number of Days Off")}}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div class="relative z-40 mb-4 w-full group">
                                                 <label for="role_ids"
-                                                       class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                                    Role(s)</label>
+                                                       class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                                                    {{__("Select Role(s)")}}
+                                                </label>
                                                 <select id="role_ids--{{$employee->id}}" multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                         onchange="checkSupervisorRoles(this, {{$employee}})">
                                                     @if(count($roles))
@@ -260,12 +268,13 @@
                                             </div>
                                             <div class="relative z-0 mb-4 w-full group">
                                                 <label for="department_id"
-                                                       class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                                    Department</label>
+                                                       class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                                                    {{__("Select Department")}}
+                                                </label>
                                                 <select id="department_id--{{$employee->id}}" name="department_id" id="department_id"
                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                         onchange="checkSupervisorDepartment(this, {{$employee}})">
-                                                    <option value="" disabled>Choose Department</option>
+                                                    <option value="" disabled>{{__("Select Department")}}</option>
                                                     @if(count($departments))
                                                         @foreach ($departments as $department)
                                                             <option
@@ -277,11 +286,12 @@
                                             @if($employee->department)
                                                 <div class="hidden relative z-0 mb-4 w-full group" id="new_manager--{{$employee->id}}">
                                                     <label for="manager_id"
-                                                           class="mb-2 italic text-sm font-medium text-red-900 dark:text-gray-400">*Please assign a
-                                                        new supervisor for the department*</label>
+                                                           class="mb-2 italic text-sm font-medium text-red-900 dark:text-gray-400">
+                                                        *{{__("Please assign a new supervisor for the department")}}*
+                                                    </label>
                                                     <select name="manager_id"
                                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                        <option value="" disabled>Choose New Supervisor</option>
+                                                        <option value="" disabled>{{__("Choose New Supervisor")}}</option>
                                                         @if(count($employee->department->employees))
                                                             @foreach ($employee->department->employees as $department_employee)
                                                                 @unless($department_employee->id == $employee->id)
@@ -299,13 +309,13 @@
                                                     <button data-modal-toggle="editProfileModal-{{$employee->id}}"
                                                             type="button"
                                                             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                        Cancel
+                                                        {{__("Cancel")}}
                                                     </button>
                                                 </div>
                                                 <div>
                                                     <button
-                                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        data-modal-toggle="editProfileModal-{{$employee->id}}">Edit
+                                                        class="text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 blue-color"
+                                                        data-modal-toggle="editProfileModal-{{$employee->id}}">{{__("Edit")}}
                                                     </button>
                                                 </div>
                                             </div>
@@ -319,7 +329,7 @@
             @else
                 <tr class="border-gray-300">
                     <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                        <p class="text-center">No Employees Found</p>
+                        <p class="text-center">{{__("No Employees Found")}}</p>
                     </td>
                 </tr>
             @endunless
@@ -328,13 +338,13 @@
 
         <div id="createModal" tabindex="-1" aria-hidden="true"
              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
-            <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+            <div class="relative p-4 w-full mt-40 max-w-2xl h-full md:h-auto">
                 <!-- Modal content -->
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
-                        <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                            Create User
+                        <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left blue-color">
+                            {{__("Create User")}}
                         </div>
                         <div>
                             <button type="button"
@@ -360,8 +370,9 @@
                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder="" required/>
                                     <label for="first_name"
-                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First
-                                        name</label>
+                                           class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                        {{__("First name")}}
+                                    </label>
                                     @error('first_name')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
@@ -371,8 +382,9 @@
                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder="" required/>
                                     <label for="last_name"
-                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Last
-                                        name</label>
+                                           class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                        {{__("Last name")}}
+                                    </label>
                                     @error('last_name')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
@@ -383,7 +395,7 @@
                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        placeholder="" required/>
                                 <label for="email"
-                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label>
+                                       class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Email")}}</label>
                                 @error('email')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -393,7 +405,7 @@
                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        placeholder="" required/>
                                 <label for="password"
-                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                                       class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Password")}}</label>
                                 @error('password')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -403,8 +415,9 @@
                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        placeholder="" required/>
                                 <label for="password_confirmation"
-                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm
-                                    Password</label>
+                                       class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                    {{__("Confirm Password")}}
+                                </label>
                                 @error('password_confirmation')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -414,8 +427,9 @@
                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        placeholder="" required/>
                                 <label for="phone_number"
-                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Phone
-                                    number</label>
+                                       class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                    {{__("Phone number")}}
+                                </label>
                                 @error('phone_number')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -426,8 +440,9 @@
                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder="" required/>
                                     <label for="nb_of_days"
-                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Number
-                                        of Days Off</label>
+                                           class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                        {{__("Number of Days Off")}}
+                                    </label>
                                     @error('nb_of_days')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
@@ -437,7 +452,7 @@
                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder="" required/>
                                     <label for="confessionnels"
-                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confessionnels</label>
+                                           class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Confessionnels")}}</label>
                                     @error('confessionnels')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
@@ -445,8 +460,9 @@
                             </div>
                             <div class="relative z-40 mb-4 w-full group">
                                 <label for="role_ids"
-                                       class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                    Role(s)</label>
+                                       class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                                    {{__("Select Role(s)")}}
+                                </label>
                                 <select multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
 
                                 @if(count($roles))
@@ -458,11 +474,12 @@
                             </div>
                             <div class="relative z-0 mb-4 w-full group">
                                 <label for="department_id"
-                                       class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                    Department</label>
+                                       class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">
+                                    {{__("Select Department")}}
+                                </label>
                                 <select name="department_id" id="department_id_create"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="" disabled>Choose Department</option>
+                                    <option value="" disabled>{{__("Select Department")}}</option>
                                     @if(count($departments))
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -475,13 +492,13 @@
                                 <div>
                                     <button data-modal-toggle="createModal" type="button"
                                             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                        Cancel
+                                        {{__("Cancel")}}
                                     </button>
                                 </div>
                                 <div>
                                     <button
-                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        Create
+                                        class="text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 blue-bg">
+                                        {{__("Create")}}
                                     </button>
                                 </div>
                             </div>

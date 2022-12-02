@@ -1,23 +1,27 @@
 <x-sidebar>
-    @section('title', 'Show Department')
+    @section('title', __("Show Department"))
     <div class="m-4">
         <div class="mb-6">
             <a href="{{ url(route('departments.index')) }}">
-                <button type="button" class="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">Back</button>
+                <button class="inline-block px-6 py-2.5 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out blue-bg">Back</button>
             </a>
         </div>
         <div class="relative z-0 mb-6 w-full group">
             <input type="text" name="name" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $department->name }}" />
-            <label for="name" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
+            <label for="name" class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Name")}}</label>
         </div>
         <div class="relative z-0 mb-6 w-full group">
             <input type="text" name="supervisor" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $department->manager->first_name }} {{ $department->manager->last_name }}"/>
-            <label for="supervisor" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Supervisor</label>
+            <label for="supervisor" class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Supervisor")}}</label>
         </div>
 
         @hasanyrole('human_resource|sg')
-        <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-toggle="editModal">Edit</button>
-        <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" data-modal-toggle="deleteModal">Delete</button>
+        <button class="text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 blue-bg" data-modal-toggle="editModal">
+            {{__("Edit")}}
+        </button>
+        <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" data-modal-toggle="deleteModal">
+            {{__("Delete")}}
+        </button>
         @endhasanyrole
     </div>
 
@@ -57,15 +61,17 @@
                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                    value="{{$department->name}}" required/>
                             <label for="name"
-                                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
+                                   class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                {{__("Name")}}
+                            </label>
                         </div>
                         <div class="relative z-0 mb-6 w-full group">
                             <label for="manager_id"
-                                   class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select
-                                supervisor</label>
+                                   class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">{{__("Select
+                                supervisor")}}</label>
                             <select name="manager_id" id="manager_id"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="" disabled>Choose Supervisor</option>
+                                <option value="" disabled>{{__("Select supervisor")}}</option>
                                 @if(count($department->employees))
                                     @foreach ($department->employees as $employee)
                                         @if($employee->id === $department->manager_id)
@@ -85,13 +91,13 @@
                                 <button data-modal-toggle="editModal"
                                         type="button"
                                         class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                    Cancel
+                                    {{_("Cancel")}}
                                 </button>
                             </div>
                             <div>
                                 <button
-                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    data-modal-toggle="editModal">Edit
+                                    class="text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 blue-bg"
+                                    data-modal-toggle="editModal">{{__("Edit")}}
                                 </button>
                             </div>
                         </div>
@@ -118,7 +124,7 @@
                         </svg>
                     </div>
                     <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                        Delete Department: {{ $department->name }}
+                        {{__("Delete Department")}}: {{ $department->name }}
                     </div>
                     <div>
                         <button type="button"
@@ -137,8 +143,8 @@
                 <!-- Modal body -->
                 <div class="p-6 space-y-6">
                     <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        Are you sure you want to delete this department? This action cannot be
-                        undone.
+                        {{__("Are you sure you want to delete this department")}}? {{__("This action cannot be
+                        undone")}}.
                     </div>
                 </div>
                 <!-- Modal footer -->
@@ -147,7 +153,7 @@
                     <div>
                         <button data-modal-toggle="deleteModal" type="button"
                                 class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                            Cancel
+                            {{__("Cancel")}}
                         </button>
                     </div>
                     <div>
@@ -157,7 +163,7 @@
                             @method('DELETE')
                             <button data-modal-toggle="deleteModal"
                                     class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                Delete
+                                {{__("Delete")}}
                             </button>
                         </form>
                     </div>

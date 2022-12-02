@@ -5,12 +5,12 @@
     @endpush
     <nav class="flex justify-between items-center p-2 text-black font-bold">
         <div class="text-lg">
-            Confessionnels
+            {{__("Confessionnels")}}
         </div>
         <div>
             <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
                     data-modal-toggle="createModal">
-                Add Confessionnel
+                {{("Add Confessionnel")}}
             </button>
         </div>
     </nav>
@@ -21,16 +21,16 @@
                 <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Name
+                        {{__("Name")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Date
+                        {{__("Date")}}
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Edit</span>
+                        <span class="sr-only">{{__("Edit")}}</span>
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Delete</span>
+                        <span class="sr-only">{{__("Delete")}}</span>
                     </th>
                 </tr>
                 </thead>
@@ -47,13 +47,13 @@
                         <td class="py-4 px-6 text-right border-b">
                             <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline" type="button"
                                     data-modal-toggle="editProfileModal-{{$confessionnel->id}}">
-                                Edit
+                                {{__("Edit")}}
                             </button>
                         </td>
                         <td class="py-4 px-6 text-right border-b">
                             <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
                                     data-modal-toggle="deleteModal-{{$confessionnel->id}}">
-                                Delete
+                                {{__("Delete")}}
                             </button>
                         </td>
                         @endhasanyrole
@@ -76,7 +76,7 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Delete Confessionnel: {{ $confessionnel->name }}
+                                            {{__("Delete Confessionnel")}}: {{ $confessionnel->name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -95,7 +95,8 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                            Are you sure you want to delete this confessionnel? This action cannot be undone.
+                                            {{__("Are you sure you want to delete this confessionnel")}}? {{__("This action
+                                            cannot be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
@@ -104,7 +105,7 @@
                                         <div>
                                             <button data-modal-toggle="deleteModal-{{$confessionnel->id}}" type="button"
                                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                Cancel
+                                                {{__("Cancel")}}
                                             </button>
                                         </div>
                                         <div>
@@ -114,7 +115,7 @@
                                                 @method('DELETE')
                                                 <button data-modal-toggle="deleteModal-{{$confessionnel->id}}"
                                                         class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    Delete
+                                                    {{__("Delete")}}
                                                 </button>
                                             </form>
                                         </div>
@@ -132,7 +133,7 @@
                                     <div
                                         class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Edit Confessionnel: {{ $confessionnel->name }}
+                                            {{__("Edit Confessionnel")}}: {{ $confessionnel->name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -155,15 +156,15 @@
                                             @csrf
                                             @method('PUT')
                                             <div class="relative z-0 w-full group flex flex-col">
-                                                <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Name</label>
-                                                <input type="text" name="name" placeholder="Please enter confessionnel's name" value="{{ $confessionnel->name }}">
+                                                <label for="from" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">{{__("Name")}}</label>
+                                                <input type="text" name="name" placeholder="{{__("Please enter confessionnel's name")}}" value="{{ $confessionnel->name }}">
                                                 @error('name')
                                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                             <div class="relative z-0 w-full group flex flex-col">
                                                 <label for="date" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Date</label>
-                                                <input type="text" name="date" id="dateEdit" placeholder="Please select Date" data-input value="{{ $confessionnel->date }}">
+                                                <input type="text" name="date" id="dateEdit" placeholder="{{__("Please select date")}}" data-input value="{{ $confessionnel->date }}">
                                                 @error('date')
                                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                                 @enderror
@@ -174,13 +175,14 @@
                                                     <button data-modal-toggle="editProfileModal-{{$confessionnel->id}}"
                                                             type="button"
                                                             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                        Cancel
+                                                        {{__("Cancel")}}
                                                     </button>
                                                 </div>
                                                 <div>
                                                     <button
                                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        data-modal-toggle="editProfileModal-{{$confessionnel->id}}">Edit
+                                                        data-modal-toggle="editProfileModal-{{$confessionnel->id}}">
+                                                        {{__("Edit")}}
                                                     </button>
                                                 </div>
                                             </div>
@@ -194,7 +196,7 @@
                 @else
                     <tr class="border-gray-300">
                         <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                            <p class="text-center">No Confessionnels Found</p>
+                            <p class="text-center">{{__("No Confessionnels Found")}}</p>
                         </td>
                     </tr>
                 @endunless
@@ -209,7 +211,7 @@
                     <!-- Modal header -->
                     <div class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                            Create Confessionnel
+                            {{__("Create Confessionnel")}}
                         </div>
                         <div>
                             <button type="button"
@@ -230,15 +232,15 @@
                         <form method="POST" action="{{ route('confessionnels.store') }}">
                             @csrf
                             <div class="relative z-0 w-full group flex flex-col">
-                                <label for="name" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Name</label>
-                                <input type="text" name="name" placeholder="Please enter confessionnel's name">
+                                <label for="name" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">{{__("Name")}}</label>
+                                <input type="text" name="name" placeholder="{{__("Please enter confessionnel's name")}}">
                                 @error('name')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="relative z-0 w-full group flex flex-col">
-                                <label for="date" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Date</label>
-                                <input type="text" name="date" id="dateStore" placeholder="Please select Date" data-input >
+                                <label for="date" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">{{__("Date")}}</label>
+                                <input type="text" name="date" id="dateStore" placeholder="{{__("Please select date")}}" data-input >
                                 @error('date')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -248,13 +250,13 @@
                                 <div>
                                     <button data-modal-toggle="createModal" type="button"
                                             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                        Cancel
+                                        {{__("Cancel")}}
                                     </button>
                                 </div>
                                 <div>
                                     <button
                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        Create
+                                        {{__("Create")}}
                                     </button>
                                 </div>
                             </div>

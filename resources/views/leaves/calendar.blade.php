@@ -1,20 +1,22 @@
 <x-sidebar>
-    @section('title', 'Calendar')
-    <div class="w-full bg-white flex justify-between items-center">
+    @section('title', __("Calendar"))
+    <div class="w-full bg-white flex justify-between items-center blue-color">
         <div class="p-4 text-lg">
             {{ $month_name }}
         </div>
         <div class="px-6 py-3 text-xl font-bold text-black">
             <a href="{{ url(route('leaves.getCalendarForm')) }}">
-                <button type="button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-500 focus:ring-2 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-200 dark:focus:ring-gray-200">Generate New Calendar</button>
+                <button class="text-white border hover:bg-blue-400 focus:ring-2 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-200 dark:focus:ring-gray-200 blue-bg">
+                    {{__("Generate New Calendar")}}
+                </button>
             </a>
         </div>
     </div>
     <div class="my-2 mx-4 grid grid-cols-3 gap-4">
-        <div class="bg-gray-500 text-white p-2 text-center rounded">Weekend</div>
-        <div class="bg-green-600 text-white p-2 text-center rounded">National Holiday</div>
-        <div class="text-white p-2 text-center rounded" style="background: #6B9ADA;">Approved</div>
-        <div class="text-white p-2 text-center rounded" style="background: #e0a614;">Pending</div>
+        <div class="bg-gray-500 text-white p-2 text-center rounded">{{__("Weekend")}}</div>
+        <div class="bg-green-600 text-white p-2 text-center rounded">{{__("National Holiday")}}</div>
+        <div class="text-white p-2 text-center rounded" style="background: #6B9ADA;">{{__("Approved")}}</div>
+        <div class="text-white p-2 text-center rounded" style="background: #e0a614;">{{__("Pending")}}</div>
     </div>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
         <table class="mx-4 my-4 w-full text-sm text-left text-gray-500 dark:text-gray-400" style="display: table-caption;">
@@ -22,7 +24,7 @@
             <tr>
                 <th class="border"></th>
                 @foreach($dates as $date)
-                    <th scope="col" class="text-center border py-3">
+                    <th scope="col" class="text-center border py-3 blue-color">
                         {{ $date->day }}
                     </th>
                 @endforeach
@@ -31,7 +33,7 @@
             <tbody>
                 @foreach ($employees as $employee)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-2 px-2 py-2 sm:text-sm font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                        <td class="border-2 px-2 py-2 sm:text-sm font-bold whitespace-nowrap dark:text-white blue-color">
                             <div>
                                 {{ $employee->first_name }} {{ $employee->last_name }}
                             </div>

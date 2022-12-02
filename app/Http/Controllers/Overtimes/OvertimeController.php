@@ -31,30 +31,32 @@ class OvertimeController extends Controller
     }
 
     public function store(Request $request) {
-        for ($i=0 ; $i < count($request->date); $i++) {
-            if($request->date[$i] == NULL || $request->from[$i] == NULL || $request->to[$i] == NULL) {
-                continue;
+        if($request->has('date')) {
+            for ($i = 0; $i < count($request->date); $i++) {
+                if ($request->date[$i] == NULL || $request->from[$i] == NULL || $request->to[$i] == NULL) {
+                    continue;
+                }
+                $overtime_service = new OvertimeService();
+                $overtime = Overtime::create([
+                    'employee_id' => auth()->user()->id,
+                    'date' => $request->date[$i],
+                    'from' => $request->from[$i],
+                    'to' => $request->to[$i],
+                    'hours' => $request->hours[$i]
+                ]);
+                if ($request->objective[$i]) {
+                    $overtime->objective = $request->objective[$i];
+                }
+                $overtime->date_of_submission = now()->format('Y-m-d');
+                $overtime_employee_role = $overtime->employee->roles()->first()->name;
+                $role = Role::findByName('employee');
+                $processing_officers = auth()->user()->department->manager;
+                $overtime->processing_officer_role = $role->id;
+                $overtime->save();
+                //            $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
             }
-            $overtime_service = new OvertimeService();
-            $overtime = Overtime::create([
-                'employee_id' => auth()->user()->id,
-                'date' => $request->date[$i],
-                'from' => $request->from[$i],
-                'to' => $request->to[$i],
-                'hours' => $request->hours[$i]
-            ]);
-            if($request->objective[$i]) {
-                $overtime->objective = $request->objective[$i];
-            }
-            $overtime->date_of_submission = now()->format('Y-m-d');
-            $overtime_employee_role = $overtime->employee->roles()->first()->name;
-            $role = Role::findByName('employee');
-            $processing_officers = auth()->user()->department->manager;
-            $overtime->processing_officer_role = $role->id;
-            $overtime->save();
-//            $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
         }
-            return redirect()->route('overtimes.submitted');
+        return back();
     }
 
     public function submitted() {
@@ -97,17 +99,17 @@ class OvertimeController extends Controller
     public function acceptedIndex() {
         $ROLES_ASCENDING = array(Role::findByName('employee')->id, Role::findByName('human_resource')->id, Role::findByName('sg')->id);
         $employee=auth()->user();
-        $leaves = Overtime::where('leave_status', self::REJECTED_STATUS)->orWhere('processing_officer' , ">", array_search(Role::findByName($employee->getRoleNames()->first()->name)->id, $ROLES_ASCENDING));
-        return view('leaves.acceptedIndex', [
-            'leaves' => $leaves
+        $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->orWhere('processing_officer' , ">", array_search(Role::findByName($employee->getRoleNames()->first()->name)->id, $ROLES_ASCENDING));
+        return view('overtimes.acceptedIndex', [
+            'overtimes' => $overtimes
         ]);
     }
 
     public function rejectedIndex() {
         $employee=auth()->user();
-        $leaves = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('processing_officer', $employee->id);
-        return view('leaves.rejectedIndex', [
-            'leaves' => $leaves
+        $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('processing_officer', $employee->id);
+        return view('overtimes.rejectedIndex', [
+            'overtimes' => $overtimes
         ]);
     }
 

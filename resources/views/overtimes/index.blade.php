@@ -1,33 +1,33 @@
 <x-sidebar>
-    @section('title', 'Overtime Requests')
+    @section('title', __("Overtime Requests"))
     @push('head')
         <script src="https://unpkg.com/flowbite@1.5.3/dist/datepicker.js"></script>
     @endpush
-    <nav class="flex justify-between items-center p-2 text-black font-bold">
+    <nav class="flex justify-between items-center p-2 font-bold blue-color">
         <div class="text-lg">
-            Incoming Overtime Requests
+            {{__("Overtime Requests")}}
         </div>
     </nav>
     @include('partials.searches._search-overtimes')
     <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="leaveData">
             @unless($overtimes->isEmpty())
-                <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-s uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 blue-color">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Name
+                        {{__("Name")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Department
+                        {{__("Department")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        Reports To
+                        {{__("Reports To")}}
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Edit</span>
+                        <span class="sr-only">{{__("Accept")}}</span>
                     </th>
                     <th scope="col" class="py-3 px-6">
-                        <span class="sr-only">Delete</span>
+                        <span class="sr-only">{{__("Reject")}}</span>
                     </th>
                 </tr>
                 </thead>
@@ -60,13 +60,13 @@
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-green-600 dark:text-green-500 hover:underline" type="button"
                                         data-modal-toggle="acceptModal-{{$overtime->id}}">
-                                    Accept
+                                    {{__("Accept")}}
                                 </button>
                             </td>
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
                                         data-modal-toggle="rejectModal-{{$overtime->id}}">
-                                    Reject
+                                    {{__("Reject")}}
                                 </button>
                             </td>
                         @endhasanyrole
@@ -88,7 +88,7 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Reject Leave Request from: {{ $overtime->employee->first_name }} {{ $overtime->employee->last_name }}
+                                            {{__("Reject Overtime Request from")}}: {{ $overtime->employee->first_name }} {{ $overtime->employee->last_name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -110,10 +110,12 @@
                                         @csrf
                                         <div class="p-6 space-y-6">
                                             <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                                Are you sure you want to reject this overtime request? This action cannot be undone.
+                                                {{__("Are you sure you want to reject this overtime request")}}? {{__("This
+                                                action cannot be undone")}}.
                                             </div>
                                             <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                                <label for="cancellation_reason" class="text-lg text-gray-600">Rejection Reason</label>
+                                                <label for="cancellation_reason" class="text-lg text-gray-600">{{__("Rejection
+                                                    Reason")}}</label>
                                                 <textarea class="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white rounded" name="cancellation_reason" ></textarea>
                                             </div>
                                         </div>
@@ -123,13 +125,13 @@
                                             <div>
                                                 <button data-modal-toggle="rejectModal-{{$overtime->id}}" type="button"
                                                         class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                    Cancel
+                                                    {{__("Cancel")}}
                                                 </button>
                                             </div>
                                             <div>
                                                 <button data-modal-toggle="rejectModal-{{$overtime->id}}"
                                                         class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    Reject
+                                                    {{__("Reject")}}
                                                 </button>
                                             </div>
                                         </div>
@@ -156,7 +158,7 @@
                                             </svg>
                                         </div>
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
-                                            Accept Leave Request from: {{ $overtime->employee->first_name }} {{ $overtime->employee->last_name }}
+                                            {{__("Accept Overtime Request from")}}: {{ $overtime->employee->first_name }} {{ $overtime->employee->last_name }}
                                         </div>
                                         <div>
                                             <button type="button"
@@ -175,7 +177,8 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                            Are you sure you want to accept this overtime request? This action cannot be undone.
+                                            {{__("Are you sure you want to accept this overtime request")}}? {{__("This
+                                            action cannot be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
@@ -184,7 +187,7 @@
                                         <div>
                                             <button data-modal-toggle="acceptModal-{{$overtime->id}}" type="button"
                                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                                Cancel
+                                                {{__("Cancel")}}
                                             </button>
                                         </div>
                                         <div>
@@ -193,7 +196,7 @@
                                                 @csrf
                                                 <button data-modal-toggle="acceptModal-{{$overtime->id}}"
                                                         class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                                    Accept
+                                                    {{__("Accept")}}
                                                 </button>
                                             </form>
                                         </div>
@@ -206,7 +209,7 @@
                 @else
                     <tr class="border-gray-300">
                         <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                            <p class="text-center">No Overtime Requests Found</p>
+                            <p class="text-center">{{__("No Overtime Requests Found")}}</p>
                         </td>
                     </tr>
                 </tbody>
