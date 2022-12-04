@@ -11,8 +11,8 @@
 }
 
 .logo-container {
-    width: 100%;
-    max-width: 15%;
+    width: 14.3%;
+    /*max-width: 140px;*/
 }
 
 @media screen and (max-width:1023px)  {

@@ -10,7 +10,7 @@
         <div>
             <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full"
                     data-modal-toggle="createModal">
-                {{("Add Confessionnel")}}
+                {{__("Add Confessionnel")}}
             </button>
         </div>
     </nav>
