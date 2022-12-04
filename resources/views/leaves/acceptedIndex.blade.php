@@ -9,9 +9,9 @@
         </div>
     </nav>
     <div class="rounded-lg p-4 overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table x-data="data()" class="rounded-lg border-collapse border border-slate-200 w-full text-sm text-left text-gray-500 dark:text-gray-400" x-data="leaveData">
+        <table x-data="data()" class="rounded-lg border-collapse border border-slate-200 w-full text-sm text-left text-gray-500" x-data="leaveData">
             @unless($leaves->isEmpty())
-                <thead class="text-s uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 blue-color">
+                <thead class="text-s uppercase bg-gray-50 blue-color">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
                         {{__("Employee")}}
@@ -29,7 +29,7 @@
                 </thead>
                 <tbody x-ref="tbody">
                 @foreach ($leaves as $leave)
-                    <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <tr class="bg-white hover:bg-gray-50">
                         <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                         </td>

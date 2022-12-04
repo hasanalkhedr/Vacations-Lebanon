@@ -6,7 +6,7 @@
         </div>
         <div class="px-6 py-3 text-xl font-bold text-black">
             <a href="{{ url(route('leaves.getCalendarForm')) }}">
-                <button class="text-white border hover:bg-blue-400 focus:ring-2 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-200 dark:focus:ring-gray-200 blue-bg">
+                <button class="text-white border hover:bg-blue-400 focus:ring-2 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 blue-bg">
                     {{__("Generate New Calendar")}}
                 </button>
             </a>
@@ -19,8 +19,8 @@
         <div class="text-white p-2 text-center rounded" style="background: #e0a614;">{{__("Pending")}}</div>
     </div>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table class="mx-4 my-4 w-full text-sm text-left text-gray-500 dark:text-gray-400" style="display: table-caption;">
-            <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <table class="mx-4 my-4 w-full text-sm text-left text-gray-500" style="display: table-caption;">
+            <thead class="text-s text-gray-700 uppercase bg-gray-50">
             <tr>
                 <th class="border"></th>
                 @foreach($dates as $date)
@@ -32,50 +32,50 @@
             </thead>
             <tbody>
                 @foreach ($employees as $employee)
-                    <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-2 px-2 py-2 sm:text-sm font-bold whitespace-nowrap dark:text-white blue-color">
+                    <tr class="bg-white hover:bg-gray-50">
+                        <td class="border-2 px-2 py-2 sm:text-sm font-bold whitespace-nowrap blue-color">
                             <div>
                                 {{ $employee->first_name }} {{ $employee->last_name }}
                             </div>
                         </td>
                         @foreach($dates as $date)
                             @if(in_array($date->format('Y-m-d'), $weekends))
-                                <td class="border border-b py-1 2xl:px-4 xl:px-3 text-gray-900 bg-gray-500 whitespace-nowrap dark:text-white">
+                                <td class="border border-b py-1 2xl:px-4 xl:px-3 text-gray-900 bg-gray-500 whitespace-nowrap">
                                 </td>
                             @elseif(in_array($date->format('Y-m-d'), $holidays))
-                                <td class="border border-b py-1 2xl:px-4 xl:px-3 text-gray-900 bg-green-600 whitespace-nowrap dark:text-white">
+                                <td class="border border-b py-1 2xl:px-4 xl:px-3 text-gray-900 bg-green-600 whitespace-nowrap">
                                 </td>
                             @elseif(array_key_exists($employee->id . '&' . $date->format('Y-m-d'), $leaveId_dates_pairs))
                                 @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->employee->id == $employee->id)
                                     @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_status == 1)
                                         @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
-                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #6B9ADA 50%,#ffffff 50%)">
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap" style="clip-path: inset(3%); background: linear-gradient(135deg, #6B9ADA 50%,#ffffff 50%)">
                                             </td>
                                         @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
-                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #ffffff 50%,#6B9ADA 50%)">
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap" style="clip-path: inset(3%); background: linear-gradient(135deg, #ffffff 50%,#6B9ADA 50%)">
                                             </td>
                                         @else
-                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="background: #6B9ADA;">
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap" style="background: #6B9ADA;">
                                             </td>
                                         @endif
                                     @else
                                         @if($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day AM")
-                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #e0a614 50%,#ffffff 50%)">
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap" style="clip-path: inset(3%); background: linear-gradient(135deg, #e0a614 50%,#ffffff 50%)">
                                             </td>
                                         @elseif($leaveId_dates_pairs[$employee->id . '&' . $date->format('Y-m-d')]->leave_duration->name == "Half Day PM")
-                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="clip-path: inset(3%); background: linear-gradient(135deg, #ffffff 50%,#e0a614 50%)">
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap" style="clip-path: inset(3%); background: linear-gradient(135deg, #ffffff 50%,#e0a614 50%)">
                                             </td>
                                         @else
-                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white" style="background: #e0a614;">
+                                            <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap" style="background: #e0a614;">
                                             </td>
                                         @endif
                                     @endif
                                 @else
-                                    <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white">
+                                    <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap">
                                     </td>
                                 @endif
                             @else
-                                <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap dark:text-white">
+                                <td class="border py-1 2xl:px-4 xl:px-3 text-gray-900 whitespace-nowrap">
                                 </td>
                             @endif
                         @endforeach

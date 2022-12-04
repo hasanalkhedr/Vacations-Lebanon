@@ -4,8 +4,8 @@
         <div class="p-6">
             <form method="POST" action="{{ route('overtimes.store') }}">
                 @csrf
-                <table class="table w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="p-2 text-s uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 blue-color">
+                <table class="table w-full text-sm text-left text-gray-500">
+                    <thead class="p-2 text-s uppercase bg-gray-50 blue-color">
                     <tr>
                         <th class="py-3">{{__("Date")}}</th>
                         <th class="py-3">{{__("From")}}</th>
@@ -20,10 +20,10 @@
                     </tbody>
                 </table>
                 <div class="mx-6 flex justify-between">
-                    <button onclick="addOvertime();" class="mt-4 text-white border focus:outline-none hover:bg-blue-400 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 blue-bg">
+                    <button onclick="addOvertime();" class="mt-4 text-white border focus:outline-none hover:bg-blue-400 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 blue-bg">
                         {{__("Add Overtime")}}
                     </button>
-                    <button class="mt-4 text-white border border-blue-400 focus:outline-none hover:bg-blue-400 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-800 blue-bg">
+                    <button class="mt-4 text-white border border-blue-400 focus:outline-none hover:bg-blue-400 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 blue-bg">
                         {{__("Submit")}}
                     </button>
                 </div>
@@ -39,7 +39,7 @@
         function addOvertime() {
             overtimes++;
 
-            let html = "<tr class='bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'>";
+            let html = "<tr class='bg-white hover:bg-gray-50'>";
             html += "<td class='py-4 border-b'><input type='text' class='date border-none' placeholder='{{_("Please select date")}}' name='date[]' data-input></td>";
             html += "<td class='py-4 border-b'><input type='time' class='from border-none' id='overtimeFrom' name='from[]'></td>";
             html += "<td class='py-4 border-b'><input type='time' class='to border-none' name='to[]'></td>";

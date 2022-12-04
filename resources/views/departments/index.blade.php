@@ -13,10 +13,10 @@
     </nav>
     @include('partials.searches._search-departments')
     <div class="mx-2 overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table x-data="data()" class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+        <table x-data="data()" class="w-full text-sm text-left text-gray-500"
                x-data="departmentData">
             @unless($departments->isEmpty())
-            <thead class="text-s text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead class="text-s text-gray-700 uppercase bg-gray-50">
             <tr>
                 <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6 blue-color">
                     {{__("Name")}}
@@ -36,8 +36,8 @@
             </thead>
             <tbody x-ref="tbody">
                 @foreach ($departments as $department)
-                    <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap dark:text-white cursor-pointer" onclick="window.location.href = '{{ url(route('departments.show', ['department' => $department->id])) }}'">
+                    <tr class="bg-white hover:bg-gray-50">
+                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap cursor-pointer" onclick="window.location.href = '{{ url(route('departments.show', ['department' => $department->id])) }}'">
                             <div class="cursor-pointer">
                                 {{ $department->name }}
                             </div>
@@ -55,13 +55,13 @@
                         </td>
                         @hasanyrole('human_resource|sg')
                             <td class="py-4 px-6 text-right border-b">
-                                <button class="font-medium dark:text-blue-500 hover:underline blue-color" type="button"
+                                <button class="font-medium hover:underline blue-color" type="button"
                                         data-modal-toggle="editModal-{{$department->id}}">
                                     {{__("Edit")}}
                                 </button>
                             </td>
                             <td class="py-4 px-6 text-right border-b">
-                                <button class="font-medium text-red-600 dark:text-red-500 hover:underline" type="button"
+                                <button class="font-medium text-red-600 hover:underline" type="button"
                                         data-modal-toggle="deleteModal-{{$department->id}}">
                                     {{__("Delete")}}
                                 </button>
@@ -72,10 +72,10 @@
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
                                 <!-- Modal content -->
-                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                <div class="relative bg-white rounded-lg shadow">
                                     <!-- Modal header -->
                                     <div
-                                        class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
+                                        class="flex justify-between items-center p-4 rounded-t border-b ">
                                         <div
                                             class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                                             <svg @click="toggleModal" class="h-6 w-6 text-red-600"
@@ -90,7 +90,7 @@
                                         </div>
                                         <div>
                                             <button type="button"
-                                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                                                     data-modal-toggle="deleteModal-{{$department->id}}">
                                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
                                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -104,17 +104,17 @@
                                     </div>
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
-                                        <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                                        <div class="text-base leading-relaxed text-gray-500">
                                             {{__("Are you sure you want to delete this department")}}? {{__("This action
                                             cannot be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->
                                     <div
-                                        class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+                                        class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200">
                                         <div>
                                             <button data-modal-toggle="deleteModal-{{$department->id}}" type="button"
-                                                    class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                                                    class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
                                                 {{__("Cancel")}}
                                             </button>
                                         </div>
@@ -124,7 +124,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button data-modal-toggle="deleteModal-{{$department->id}}"
-                                                        class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                        class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                                     {{__("Delete")}}
                                                 </button>
                                             </form>
@@ -138,16 +138,16 @@
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
                                 <!-- Modal content -->
-                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                <div class="relative bg-white rounded-lg shadow ">
                                     <!-- Modal header -->
                                     <div
-                                        class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
+                                        class="flex justify-between items-center p-4 rounded-t border-b ">
                                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left blue-color">
                                             {{__("Edit Department")}} : {{ $department->name }}
                                         </div>
                                         <div>
                                             <button type="button"
-                                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                                                     data-modal-toggle="editModal-{{$department->id}}">
                                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
                                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -167,17 +167,17 @@
                                             @method('PUT')
                                             <div class="relative z-0 mb-6 w-full group">
                                                 <input type="text" name="name"
-                                                       class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                       class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                        value="{{$department->name}}" required/>
                                                 <label for="name"
-                                                       class="peer-focus:font-medium absolute text-sm dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Name")}}</label>
+                                                       class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Name")}}</label>
                                             </div>
                                             <div class="relative z-0 mb-6 w-full group">
                                                 <label for="manager_id"
-                                                       class="mb-2 text-sm font-medium dark:text-gray-400 blue-color">{{__("Select
+                                                       class="mb-2 text-sm font-medium blue-color">{{__("Select
                                                     supervisor")}}</label>
                                                 <select name="manager_id" id="manager_id"
-                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                                                     <option value="" disabled>{{__("Select Supervisor")}}</option>
                                                     @if(count($department->employees))
                                                         @foreach ($department->employees as $employee)
@@ -193,17 +193,17 @@
                                                 </select>
                                             </div>
                                             <div
-                                                class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+                                                class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200">
                                                 <div>
                                                     <button data-modal-toggle="editModal-{{$department->id}}"
                                                             type="button"
-                                                            class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                                                            class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
                                                         {{__("Cancel")}}
                                                     </button>
                                                 </div>
                                                 <div>
                                                     <button
-                                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                                                         data-modal-toggle="editModal-{{$department->id}}">{{__("Edit")}}
                                                     </button>
                                                 </div>
@@ -229,15 +229,15 @@
              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
                 <!-- Modal content -->
-                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="relative bg-white rounded-lg shadow">
                     <!-- Modal header -->
-                    <div class="flex justify-between items-center p-4 rounded-t border-b dark:border-gray-600">
+                    <div class="flex justify-between items-center p-4 rounded-t border-b">
                         <div class="text-base font-bold mt-3 sm:mt-0 sm:ml-4 sm:text-left">
                             {{__("Create Department")}}
                         </div>
                         <div>
                             <button type="button"
-                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                                     data-modal-toggle="createModal">
                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                                      xmlns="http://www.w3.org/2000/svg">
@@ -255,24 +255,24 @@
                             @csrf
                             <div class="relative z-0 mb-6 w-full group">
                                 <input type="text" name="name"
-                                       class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                       class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        placeholder="" required/>
                                 <label for="name"
-                                       class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                       class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                     {{__("Name")}}
                                 </label>
                             </div>
                             <div
-                                class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+                                class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200">
                                 <div>
                                     <button data-modal-toggle="createModal" type="button"
-                                            class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                                            class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
                                         {{__("Cancel")}}
                                     </button>
                                 </div>
                                 <div>
                                     <button
-                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                                         data-modal-toggle="createModal">{{__("Create")}}
                                     </button>
                                 </div>
