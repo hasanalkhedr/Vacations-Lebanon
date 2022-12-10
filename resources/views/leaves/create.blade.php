@@ -52,7 +52,7 @@
             <form method="POST" action="{{ route('leaves.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="relative z-0 mb-6 w-full group">
-                    <label for="leave_duration_id" class="mb-2 text-sm font-medium blue-color">Leave Duration</label>
+                    <label for="leave_duration_id" class="mb-2 text-sm font-medium blue-color">{{__("Leave Duration")}}</label>
                     <select id="leave_duration_id" name="leave_duration_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         <option value="" disabled>{{__("Choose Leave Duration")}}</option>
                         @if(count($leave_durations))
@@ -94,7 +94,7 @@
                         <label id="fromDateLabel" for="fromDate" class="mb-2 text-sm font-medium blue-color">
                             {{__("Start Date")}} <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="from" id="fromDate" placeholder="{{__("Please select date range")}}" data-input >
+                        <input required type="text" name="from" id="fromDate" placeholder="{{__("Please select date range")}}" data-input>
                         @error('from')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -103,7 +103,7 @@
                         <label for="toDate" class="mb-2 text-sm font-medium blue-color">
                             {{__("End Date")}} <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="to" id="toDate" placeholder="{{__("Please select date range")}}" data-input>
+                        <input required type="text" name="to" id="toDate" placeholder="{{__("Please select date range")}}" data-input>
                         @error('to')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -138,10 +138,10 @@
                 </div>
                 <div class="relative z-0 mb-6 w-full group">
                     <input type="file" name="attachment_path" id="attachment_path"
-                           class="block pt-2.5 px-0 w-full text-sm text-gray-900 bg-transparent appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                           class="block pt-2.5 px-0 text-sm text-gray-900 bg-transparent appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
                     <label for="attachment_path"
                            class="font-medium absolute text-sm duration-300 transform -translate-y-6  top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
-                        {{__("Attachment")}} <span id="attachment_file_span" class="text-red-500">*</span>
+                        {{__("Attachment")}} <span id="attachment_file_span" class="text-red-500 hidden">*</span>
                     </label>
                     @error('attachment_path')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -345,7 +345,7 @@
 
     <script type="text/javascript">
         let frompicker = $("#fromDate").flatpickr({
-            dateFormat: "Y-m-d",
+            dateFormat: "d/m/Y",
             disable: [
                 function (date) {
                     let date_temp = new Date(date.getTime());
@@ -356,6 +356,7 @@
             locale: {
                 firstDayOfWeek: 1
             },
+            allowInput:true,
             onClose: function (selectedDates, dateStr, instance) {
                 if (dateStr) {
                     topicker.set('minDate', dateStr);
@@ -364,7 +365,7 @@
         });
 
         let topicker = $("#toDate").flatpickr({
-            dateFormat: "Y-m-d",
+            dateFormat: "d/m/Y",
             disable: [
                 function (date) {
                     let date_temp = new Date(date.getTime());
@@ -373,7 +374,8 @@
                 }],
             locale: {
                 firstDayOfWeek: 1
-            }
+            },
+            allowInput:true,
         });
 
         $("#confessionnels").change(function() {
@@ -386,7 +388,7 @@
                 $('#mix_of_leaves')[0].checked = false;
                 $("#fromDate").attr("placeholder", "{{__("Please select date")}}");
                 $("#fromDate").flatpickr({
-                    dateFormat: "Y-m-d",
+                    dateFormat: "d/m/Y",
                     enable: [
                         function (date) {
                             let date_temp = new Date(date.getTime());
@@ -396,18 +398,19 @@
                     locale: {
                         firstDayOfWeek: 1
                     },
+                    allowInput:true,
                 });
             }
             else{
                 flatpickr("#fromDate", {}).clear();
                 $("#fromDate").attr("placeholder", "{{__("Please select date range")}}");
-                $("#fromDateLabel").html("Start Date");
+                $("#fromDateLabel").html("{{__("Start Date")}}");
                 $("#toDateDiv").removeClass("invisible");
                 $("#mix_of_leaves_div").removeClass("invisible");
                 let fromDate = $('#fromDate').val();
                 $("#toDate").val(fromDate);
                 $("#fromDate").flatpickr({
-                    dateFormat: "Y-m-d",
+                    dateFormat: "d/m/Y",
                     disable: [
                         function (date) {
                             let date_temp = new Date(date.getTime());
@@ -418,6 +421,7 @@
                     locale: {
                         firstDayOfWeek: 1
                     },
+                    allowInput:true,
                 });
             }
         });
@@ -427,7 +431,7 @@
                 flatpickr("#fromDate", {}).clear();
                 flatpickr("#toDate", {}).clear();
                 $("#fromDate").flatpickr({
-                    dateFormat: "Y-m-d",
+                    dateFormat: "d/m/Y",
                     disable: [
                         function (date) {
                             let date_temp = new Date(date.getTime());
@@ -437,10 +441,11 @@
                     locale: {
                         firstDayOfWeek: 1
                     },
+                    allowInput:true,
                 });
 
                 $("#toDate").flatpickr({
-                    dateFormat: "Y-m-d",
+                    dateFormat: "d/m/Y",
                     disable: [
                         function (date) {
                             let date_temp = new Date(date.getTime());
@@ -450,13 +455,14 @@
                     locale: {
                         firstDayOfWeek: 1
                     },
+                    allowInput:true,
                 });
             }
             else {
                 flatpickr("#fromDate", {}).clear();
                 flatpickr("#toDate", {}).clear();
                 $("#fromDate").flatpickr({
-                    dateFormat: "Y-m-d",
+                    dateFormat: "d/m/Y",
                     disable: [
                         function (date) {
                             let date_temp = new Date(date.getTime());
@@ -466,10 +472,11 @@
                     locale: {
                         firstDayOfWeek: 1
                     },
+                    allowInput:true,
                 });
 
                 $("#toDate").flatpickr({
-                    dateFormat: "Y-m-d",
+                    dateFormat: "d/m/Y",
                     disable: [
                         function (date) {
                             let date_temp = new Date(date.getTime());
@@ -479,6 +486,7 @@
                     locale: {
                         firstDayOfWeek: 1
                     },
+                    allowInput:true,
                 });
             }
         })
@@ -486,11 +494,13 @@
 
     <script>
         $("#leave_type").change(function () {
-            if(this.options[this.selectedIndex].text === "{{__("recovery")}}") {
+            if(this.options[this.selectedIndex].text === "{{__("sick leave")}}") {
                 $('#attachment_file_span')[0].classList.remove('hidden')
+                document.getElementById("attachment_path").required = true;
             }
             else {
                 $('#attachment_file_span')[0].classList.add('hidden')
+                document.getElementById("attachment_path").required = false;
             }
         })
     </script>

@@ -20,7 +20,7 @@
                     </tbody>
                 </table>
                 <div class="mx-6 flex justify-between">
-                    <button onclick="addOvertime();" class="mt-4 text-white border focus:outline-none hover:bg-blue-400 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 blue-bg">
+                    <button type="button" onclick="addOvertime();" class="mt-4 text-white border hover:bg-blue-400 focus:outline-none font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 blue-bg">
                         {{__("Add Overtime")}}
                     </button>
                     <button class="mt-4 text-white border border-blue-400 focus:outline-none hover:bg-blue-400 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 blue-bg">

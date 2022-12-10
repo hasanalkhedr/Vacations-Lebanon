@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\LeaveRequests;
 
+use App\Models\LeaveType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreLeaveRequest extends FormRequest
@@ -23,7 +24,7 @@ class StoreLeaveRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->leave_type_id == 1)
+        if(LeaveType::where('id', $this->leave_type_id)->first()->name == "sick leave")
         {
             $rules['attachment_path'] = ['required'];
         }

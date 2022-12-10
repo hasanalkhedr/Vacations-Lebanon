@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
@@ -47,6 +48,26 @@ class Leave extends Model
     protected $casts = [
         //
     ];
+
+    public function setFromAttribute($value)
+    {
+        $this->attributes['from'] = Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d');
+    }
+
+    public function getFromAttribute($value)
+    {
+        return Carbon::parse($value)->format(config('app.date_format'));
+    }
+
+    public function setToAttribute($value)
+    {
+        $this->attributes['to'] = Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d');
+    }
+
+    public function getToAttribute($value)
+    {
+        return Carbon::parse($value)->format(config('app.date_format'));
+    }
 
     public function scopeSearch($query, array $filters)
     {

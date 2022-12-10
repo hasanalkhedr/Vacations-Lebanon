@@ -191,7 +191,7 @@
                                 @if(auth()->user()->roles()->first()->name == "employee" && auth()->user()->is_supervisor)
                                     {{__("Supervisor")}}
                                 @else
-                                    {{ auth()->user()->roles()->first()->display_name }}
+                                    {{__(auth()->user()->roles()->first()->display_name) }}
                                 @endif
                             @else
                                 @foreach(auth()->user()->getRoleNames() as $role_name)
@@ -199,13 +199,13 @@
                                         @if(auth()->user()->roles()->first() == "employee" && auth()->user()->is_supervisor)
                                             {{__("Supervisor")}}
                                         @else
-                                            {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }}
+                                            {{__(\Spatie\Permission\Models\Role::findByName($role_name)->display_name) }}
                                         @endif
                                     @else
                                         @if(auth()->user()->roles()->first() == "employee" && auth()->user()->is_supervisor)
                                             {{__("Supervisor")}} |
                                         @else
-                                            {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }} |
+                                            {{__(\Spatie\Permission\Models\Role::findByName($role_name)->display_name) }} |
                                         @endif
                                     @endif
                                 @endforeach

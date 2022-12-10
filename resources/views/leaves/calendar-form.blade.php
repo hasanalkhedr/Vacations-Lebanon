@@ -9,9 +9,9 @@
             <select name="month" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                 @foreach($months as $month)
                     @if($month[0] == \Carbon\Carbon::now()->month)
-                        <option value="{{ $month[0] }}" selected>{{ $month[1] }}</option>
+                        <option value="{{ $month[0] }}" selected>{{__($month[1]) }}</option>
                     @else
-                        <option value="{{ $month[0] }}">{{ $month[1] }}</option>
+                        <option value="{{ $month[0] }}">{{__($month[1]) }}</option>
                     @endif
                 @endforeach
             </select>

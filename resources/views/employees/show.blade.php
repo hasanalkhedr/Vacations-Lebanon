@@ -65,20 +65,22 @@
                 </label>
             </div>
         </div>
-        <div class="grid md:grid-cols-2 md:gap-6">
-            <div class="relative z-0 mb-6 w-full group">
-                <input type="number" name="nb_of_days" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $employee->nb_of_days }}" />
-                <label for="nb_of_days" class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
-                    {{__("Number of Days Off")}}
-                </label>
+        @if($employee->hasRole('employee') && $employee->is_supervisor == false)
+            <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="relative z-0 mb-6 w-full group">
+                    <input type="number" name="nb_of_days" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $employee->nb_of_days }}" />
+                    <label for="nb_of_days" class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                        {{__("Number of Days Off")}}
+                    </label>
+                </div>
+                <div class="relative z-0 mb-6 w-full group">
+                    <input type="number" name="confessionnels" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $employee->confessionnels }}" />
+                    <label for="confessionnels" class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                        {{__("Confessionnels")}}
+                    </label>
+                </div>
             </div>
-            <div class="relative z-0 mb-6 w-full group">
-                <input type="number" name="confessionnels" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $employee->confessionnels }}" />
-                <label for="confessionnels" class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
-                    {{__("Confessionnels")}}
-                </label>
-            </div>
-        </div>
+        @endif
         <div class="relative z-0 mb-6 w-full group">
             @if($employee->department)
                 <input type="text" name="department_id" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $employee->department->name }}" />
@@ -97,54 +99,55 @@
             </button>
             @endhasanyrole
         @endif
-
-        <table class="mt-4 w-full text-sm text-left text-gray-500 border">
-            <thead class="text-s blue-color uppercase bg-gray-50">
-            <tr class="border-b">
-                <th scope="col" class="text-center py-3 px-2"></th>
-                <th scope="col" class="text-center py-3 px-2">
-                    {{__("Remaining")}}
-                </th>
-                <th scope="col" class="text-center py-3 px-2">
-                    {{__("Pending")}}
-                </th>
-                <th scope="col" class="text-center py-3 px-2">
-                    {{__("Accepted")}}
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr class="bg-white hover:bg-gray-50">
-                    <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
-                        {{__("Leave Days")}}
-                    </th>
-                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
-                        {{ $employee->nb_of_days }}
-                    </td>
-                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
-                        {{ $normal_pending_days }}
-                    </td>
-                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
-                        {{ $normal_accepted_days }}
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
-                        {{__("Confessionnel Days")}}
-                    </th>
-                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
-                        {{ $employee->confessionnels }}
-                    </td>
-                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
-                        {{ $confessionnel_pending_days }}
-                    </td>
-                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
-                        {{ $confessionnel_accepted_days }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     </div>
+    @if($employee->hasRole('employee') && $employee->is_supervisor == false)
+    <table class="mt-4 w-full text-sm text-left text-gray-500 border">
+        <thead class="text-s blue-color uppercase bg-gray-50">
+        <tr class="border-b">
+            <th scope="col" class="text-center py-3 px-2"></th>
+            <th scope="col" class="text-center py-3 px-2">
+                {{__("Remaining")}}
+            </th>
+            <th scope="col" class="text-center py-3 px-2">
+                {{__("Pending")}}
+            </th>
+            <th scope="col" class="text-center py-3 px-2">
+                {{__("Accepted")}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="bg-white hover:bg-gray-50">
+            <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
+                {{__("Leave Days")}}
+            </th>
+            <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                {{ $employee->nb_of_days }}
+            </td>
+            <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                {{ $normal_pending_days }}
+            </td>
+            <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                {{ $normal_accepted_days }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
+                {{__("Confessionnel Days")}}
+            </th>
+            <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                {{ $employee->confessionnels }}
+            </td>
+            <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                {{ $confessionnel_pending_days }}
+            </td>
+            <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                {{ $confessionnel_accepted_days }}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    @endif
 
     <div id="editProfileModal" tabindex="-1" aria-hidden="true"
          class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
@@ -214,14 +217,16 @@
                                     {{__("Phone number")}}
                                 </label>
                             </div>
-                            <div class="relative z-0 mb-6 w-full group">
-                                <input type="number" name="nb_of_days"
-                                       class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                       value="{{$employee->nb_of_days}}" required/>
-                                <label for="nb_of_days"
-                                       class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                    {{__("Number of Days Off")}}</label>
-                            </div>
+                            @if($employee->hasRole('employee') && $employee->is_supervisor == false)
+                                <div class="relative z-0 mb-6 w-full group">
+                                    <input type="number" name="nb_of_days"
+                                           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                           value="{{$employee->nb_of_days}}" required/>
+                                    <label for="nb_of_days"
+                                           class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                        {{__("Number of Days Off")}}</label>
+                                </div>
+                            @endif
                         </div>
                         <div class="relative z-40 mb-4 w-full group">
                             <label for="role_ids"

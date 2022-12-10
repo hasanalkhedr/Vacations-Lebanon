@@ -15,8 +15,11 @@ class LeaveTypesSeeder extends Seeder
      */
     public function run()
     {
+        LeaveType::create(['name' => 'annual leave']);
         LeaveType::create(['name' => 'recovery']);
         LeaveType::create(['name' => 'assignment']);
+        LeaveType::create(['name' => 'training']);
+        LeaveType::create(['name' => 'sick leave']);
         LeaveType::create(['name' => 'others']);
     }
 }
