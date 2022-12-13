@@ -131,7 +131,7 @@
                         <option value="" disabled>{{__("Select Leave Type")}}</option>
                         @if(count($leave_types))
                             @foreach ($leave_types as $leave_type)
-                                <option value="{{ $leave_type->id }}">{{ $leave_type->name }}</option>
+                                <option value="{{ $leave_type->id }}">{{__($leave_type->name) }}</option>
                             @endforeach
                         @endif
                     </select>

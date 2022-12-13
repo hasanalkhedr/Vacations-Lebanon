@@ -185,6 +185,11 @@
     "October": "Octobre",
     "November": "Novembre",
     "December": "Décembre",
-    "Secretary General": "Secrétaire Général(e)"
-
+    "Secretary General": "Secrétaire Général(e)",
+    "annual leave": "Congé annuel",
+    "recovery": "Récupération",
+    "assignment": "Mission",
+    "training": "Formation",
+    "sick leave": "Arrêt maladie",
+    "others": "Autres"
 }

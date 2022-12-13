@@ -174,8 +174,7 @@
                                             </div>
                                             <div class="relative z-0 mb-6 w-full group">
                                                 <label for="manager_id"
-                                                       class="mb-2 text-sm font-medium blue-color">{{__("Select
-                                                    supervisor")}}</label>
+                                                       class="mb-2 text-sm font-medium blue-color">{{__("Select supervisor")}}</label>
                                                 <select name="manager_id" id="manager_id"
                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                                                     <option value="" disabled>{{__("Select Supervisor")}}</option>
