@@ -153,8 +153,13 @@ class EmployeeController
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'phone_number' => $validated['phone_number'],
-            'nb_of_days' => $validated['nb_of_days'],
         ]);
+        if($employee->hasRole('employee') && !$employee->is_supervisor) {
+            $employee->update([
+                'nb_of_days' => $validated['nb_of_days'],
+                'confessionnels' => $validated['confessionnels'],
+            ]);
+        }
         foreach ($request->role_ids as $role_id) {
             $role_names[] = Role::findById($role_id)->name;
         }

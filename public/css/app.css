@@ -6,6 +6,10 @@
     color: var(--primary-color);
 }
 
+.blue-bg-sidebar {
+    background: var(--primary-color);
+}
+
 .blue-bg {
     background: var(--primary-color) !important;
 }

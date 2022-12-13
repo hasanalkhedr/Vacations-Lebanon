@@ -24,12 +24,16 @@ class UpdateEmployeeProfileRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'first_name' => ['required'],
-            'last_name' => ['required'],
-            'email' => ['required', 'email', Rule::unique('employees', 'email')->ignore($this->employee)],
-            'phone_number' => ['required', Rule::unique('employees', 'phone_number')->ignore($this->employee)],
-            'nb_of_days' => ['required'],
-        ];
+        if($this->employee->hasRole("employee") && !$this->employee->is_supervisor)
+        {
+            $rules['nb_of_days'] = ['required'];
+            $rules['confessionnels'] = ['required'];
+        }
+        $rules['first_name'] = ['required'];
+        $rules['last_name'] = ['required'];
+        $rules['email'] = ['required', 'email', Rule::unique('employees', 'email')->ignore($this->employee)];
+        $rules['phone_number'] = ['required', Rule::unique('employees', 'phone_number')->ignore($this->employee)];
+
+        return $rules;
     }
 }

@@ -33,7 +33,7 @@
             <img src="{{ asset('assets/images/logo-IFL.png') }}" alt="" />
         </div>
         <div class="lg:flex h-full min-h-screen">
-            <div class="lg:flex-column lg:w-1/6 border-blue-200 blue-bg">
+            <div class="lg:flex-column lg:w-1/6 border-blue-200 blue-bg-sidebar">
                 <div class="flex flex-row items-center place-content-between">
                     <div class="lg:pt-6">
                         <button data-collapse-toggle="aside-default"
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div class="lg:mt-2">
-                    <aside class="hidden w-full lg:inline blue-bg" style="margin-top: 1%" id="aside-default">
+                    <aside class="hidden w-full lg:inline blue-bg" style="margin-top: 1%;" id="aside-default">
                         <ul>
                             @unless(auth()->user()->hasRole('employee'))
                                 <li>
