@@ -92,10 +92,10 @@
         @unless(auth()->user()->id == $employee->id)
             @hasanyrole('human_resource|sg')
             <button class="text-white hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center blue-bg" data-modal-toggle="editProfileModal">
-                {{__("Edit Profile")}}
+                {{__("Edit Employee Profile")}}
             </button>
             <button class="text-white hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center blue-bg" data-modal-toggle="editPasswordModal">
-                {{__("Edit Password")}}
+                {{__("Edit Employee Password")}}
             </button>
             @endhasanyrole
         @endif
