@@ -45,7 +45,7 @@
             html += "<td class='py-4 border-b'><input type='time' class='to border-none' name='to[]'></td>";
             html += "<td class='py-4 border-b'><input type='text' class='focus:ring-0 border-none' name='hours[]' readonly></td>";
             html += "<td class='py-4 border-b'><textarea type='text' name='objective[]'></textarea></td>";
-            html += "<td class='py-4 border-b text-red-500'><button type='button' onclick='deleteRow(this);'>{{__("Delete")}}</button></td>"
+            html += "<td class='py-4 border-b font-semibold text-red-500'><button type='button' onclick='deleteRow(this);'>{{__("Delete")}}</button></td>"
             html += "</tr>";
 
             var row = document.getElementById("tbody").insertRow();
