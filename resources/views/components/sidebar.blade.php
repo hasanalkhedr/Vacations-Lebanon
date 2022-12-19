@@ -53,7 +53,7 @@
                 </div>
                 <div class="lg:mt-2">
                     <aside class="hidden w-full lg:inline blue-bg" style="margin-top: 1%;" id="aside-default">
-                        <ul>
+                        <ul class="content-between space-y-2">
                             @unless(auth()->user()->hasRole('employee'))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
