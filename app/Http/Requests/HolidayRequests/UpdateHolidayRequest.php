@@ -25,8 +25,17 @@ class UpdateHolidayRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'from' => ['required', 'date'],
-            'to' => ['required', 'date'],
+            'from' => ['required'],
+            'to' => ['required'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => __("The name is required"),
+            'from.required' => __("The date is required"),
+            'to.required' => __("The date is required"),
         ];
     }
 }

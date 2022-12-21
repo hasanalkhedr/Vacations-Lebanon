@@ -69,7 +69,7 @@
             let $row = $(this).closest("tr");
             let date = $row.find("input[name^='date']");
             let day = new Date(date.val())
-            if(day.getDay() == 0 || day.getDay() == 6 || {!! json_encode($holiday_dates) !!}.includes(string_day))
+            if(day.getDay() == 0 || {!! json_encode($holiday_dates) !!}.includes(string_day))
                 multiplyHours = true;
         })
 

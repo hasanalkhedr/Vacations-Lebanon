@@ -51,11 +51,18 @@ class EmployeeController
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'phone_number' => $validated['phone_number'],
-            'nb_of_days' => $validated['nb_of_days'],
         ]);
         foreach ($request->role_ids as $role_id) {
             $employee->assignRole(Role::findById($role_id)->name);
         }
+        if($request->nb_of_days) {
+            $employee->nb_of_days = $request->nb_of_days;
+        }
+
+        if($request->confessionnels) {
+            $employee->confessionnels = $request->confessionnels;
+        }
+
         $roles = $employee->getRoleNames();
         foreach ($roles as $role) {
             $roles_names[] = $role;

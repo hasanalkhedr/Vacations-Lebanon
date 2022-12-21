@@ -29,9 +29,7 @@ class StoreEmployeeRequest extends FormRequest
             'last_name' => ['required'],
             'email' => ['required', 'email', Rule::unique('employees', 'email')],
             'password' => ['required', 'confirmed', 'min:6'],
-            'phone_number' => ['required'],
-            'nb_of_days' => ['required'],
-//            'role_id' => ['required']
+            'phone_number' => ['required']
         ];
     }
 }

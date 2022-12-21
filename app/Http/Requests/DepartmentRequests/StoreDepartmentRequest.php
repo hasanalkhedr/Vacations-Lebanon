@@ -25,7 +25,13 @@ class StoreDepartmentRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            ''
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => __("The name is required"),
         ];
     }
 }

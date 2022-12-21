@@ -494,7 +494,8 @@
 
     <script>
         $("#leave_type").change(function () {
-            if(this.options[this.selectedIndex].text === "{{__("sick leave")}}") {
+            selected_leave_type = this.options[this.selectedIndex].text.toLowerCase();
+            if(selected_leave_type === "{{__("sick leave")}}" || selected_leave_type == "sick leave") {
                 $('#attachment_file_span')[0].classList.remove('hidden')
                 document.getElementById("attachment_path").required = true;
             }

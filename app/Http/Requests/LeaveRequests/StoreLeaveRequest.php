@@ -29,11 +29,23 @@ class StoreLeaveRequest extends FormRequest
             $rules['attachment_path'] = ['required'];
         }
         $rules['leave_duration_id'] = ['required'];
-        $rules['from'] = ['required', 'date'];
-        $rules['to'] = ['required', 'date'];
+        $rules['from'] = ['required'];
+        $rules['to'] = ['required'];
         $rules['travelling'] = ['required'];
         $rules['leave_type_id'] = ['required'];
 
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'attachment_path.required' => __("The attachment is required"),
+            'leave_duration_id.required' =>  __("The leave duration type is required"),
+            'from.required' =>  __("The date is required"),
+            'to.required' =>  __("The date is required"),
+            'travelling.required' =>  __("The leave type is required"),
+            'leave_type_id.required' =>  __(""),
+        ];
     }
 }

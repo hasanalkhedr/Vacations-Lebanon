@@ -190,5 +190,10 @@
     "assignment": "Mission",
     "training": "Formation",
     "sick leave": "Arrêt maladie",
-    "others": "Autres"
+    "others": "Autres",
+    "The attachment is required": "La pièce jointe est obligatoire",
+    "The date is required": "La date est obligatoire",
+    "The leave duration type is required": "La durée du congé est obligatoire",
+    "The leave type is required": "Le type d'absence est obligatoire",
+    "The name is required": "le nom est obligatoire"
 }

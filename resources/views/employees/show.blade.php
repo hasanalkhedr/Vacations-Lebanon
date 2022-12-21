@@ -274,15 +274,14 @@
                                 <label for="role_ids" class="mb-2 text-sm font-medium text-gray-900">
                                     {{ __('Select Role(s)') }}
                                 </label>
-                                <select id="role_ids--{{ $employee->id }}" multiple name="role_ids[]"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                    onchange="checkSupervisorRoles(this, {{ $employee }})">
-                                    @if (count($roles))
-                                        @foreach ($roles as $role)
-                                            @if ($employee->hasRole($role->name))
-                                                <option selected value="{{ $role->id }}">{{ $role->name }}</option>
+                                <select id="role_ids--{{$employee->id}}" multiple name="role_ids[]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        onchange="checkSupervisorRoles(this, {{$employee}})">
+                                    @if(count($roles))
+                                        @foreach($roles as $role)
+                                            @if($employee->hasRole($role->name))
+                                                <option selected value="{{ $role->id }}">{{__($role->name)}}</option>
                                             @else
-                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                <option value="{{ $role->id }}">{{__($role->name)}}</option>
                                             @endif
                                         @endforeach
                                     @endif

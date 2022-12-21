@@ -46,6 +46,11 @@ class Employee extends Authenticatable
         //
     ];
 
+    protected $attributes = [
+        'nb_of_days' => 30,
+        'confessionnels' => 3,
+    ];
+
     public function scopeSearch($query, array $filters)
     {
         if ($filters['search'] ?? false) {
