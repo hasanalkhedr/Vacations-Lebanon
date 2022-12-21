@@ -33,16 +33,5 @@ class DepartmentSeeder extends Seeder
                 'name' => $name
             ]);
         }
-//        Department::factory(20)->create()->each(function ($department) {
-//            $employee = Employee::create([
-//                'first_name' => 'Supervisor',
-//                'last_name' => 'N1',
-//                'email' => 'supervisor1@example.com',
-//                'password' => Hash::make('123456'),
-//                'phone_number' => '+96176030303',
-//                'departemnt_id' => $department['id']
-//            ]);
-//            $employee->assignRole('supervisor');
-//        });
     }
 }

@@ -20,6 +20,9 @@ class LeaveTypesSeeder extends Seeder
         LeaveType::create(['name' => 'assignment']);
         LeaveType::create(['name' => 'training']);
         LeaveType::create(['name' => 'sick leave']);
-        LeaveType::create(['name' => 'others']);
+        LeaveType::create(['name' => 'bereavement leave']);
+        LeaveType::create(['name' => 'maternity leave']);
+        LeaveType::create(['name' => 'paternity leave']);
+        LeaveType::create(['name' => 'marriage leave']);
     }
 }

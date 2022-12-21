@@ -69,6 +69,11 @@
             let $row = $(this).closest("tr");
             let date = $row.find("input[name^='date']");
             let day = new Date(date.val())
+
+            const offset = day.getTimezoneOffset()
+            day = new Date(day.getTime() - (offset*60*1000))
+            string_day = day.toISOString().split('T')[0]
+
             if(day.getDay() == 0 || {!! json_encode($holiday_dates) !!}.includes(string_day))
                 multiplyHours = true;
         })
