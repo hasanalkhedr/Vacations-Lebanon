@@ -73,14 +73,14 @@
                                         @if($role_name == "$employee" && $employee->is_supervisor)
                                             {{__("Supervisor")}}
                                         @else
-                                            {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }}
+                                            {{__(\Spatie\Permission\Models\Role::findByName($role_name)->display_name) }}
                                         @endif
 
                                     @else
                                         @if($role_name == "$employee" && $employee->is_supervisor)
                                             {{__("Supervisor")}} |
                                         @else
-                                            {{ \Spatie\Permission\Models\Role::findByName($role_name)->display_name }} |
+                                            {{__(\Spatie\Permission\Models\Role::findByName($role_name)->display_name) }} |
                                         @endif
                                     @endif
                                 @endforeach
