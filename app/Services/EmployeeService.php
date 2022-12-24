@@ -41,8 +41,6 @@ class EmployeeService
     }
 
     public function getConfessionnelNbofDaysPending($employee) {
-        $confessionnel_pending_days = 0;
-        $leave_service = new LeaveService();
         $confessionnel_pending_leaves = $employee->leaves->where('leave_status', self::PENDING_STATUS)->where('use_confessionnels', true);
         $confessionnel_pending_days = count($confessionnel_pending_leaves);
         return $confessionnel_pending_days;
@@ -59,8 +57,6 @@ class EmployeeService
     }
 
     public function getConfessionnelNbofDaysAccepted($employee) {
-        $confessionnel_accepted_days = 0;
-        $leave_service = new LeaveService();
         $confessionnel_accepted_leaves = $employee->leaves->where('leave_status', self::ACCEPTED_STATUS)->where('use_confessionnels', true);
         $confessionnel_accepted_days = count($confessionnel_accepted_leaves);
         return $confessionnel_accepted_days;

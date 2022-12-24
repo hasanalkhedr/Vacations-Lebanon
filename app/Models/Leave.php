@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
@@ -49,24 +50,18 @@ class Leave extends Model
         //
     ];
 
-    public function setFromAttribute($value)
+    protected function from(): Attribute
     {
-        $this->attributes['from'] = Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d');
+        return Attribute::make(
+            set: fn ($value) => Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d'),
+        );
     }
 
-    public function getFromAttribute($value)
+    protected function to(): Attribute
     {
-        return Carbon::parse($value)->format(config('app.date_format'));
-    }
-
-    public function setToAttribute($value)
-    {
-        $this->attributes['to'] = Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d');
-    }
-
-    public function getToAttribute($value)
-    {
-        return Carbon::parse($value)->format(config('app.date_format'));
+        return Attribute::make(
+            set: fn ($value) => Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d')
+        );
     }
 
     public function scopeSearch($query, array $filters)

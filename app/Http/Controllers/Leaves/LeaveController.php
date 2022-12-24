@@ -11,6 +11,7 @@ use App\Models\Leave;
 use App\Models\LeaveDuration;
 use App\Models\LeaveType;
 use App\Services\EmployeeService;
+use App\Services\OvertimeService;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Storage;
@@ -141,7 +142,7 @@ class LeaveController extends Controller
         $ROLES_ASCENDING = array(Role::findByName('employee')->id, Role::findByName('human_resource')->id, Role::findByName('sg')->id);
         $employee = auth()->user();
         $leaves = Leave::where('leave_status', self::ACCEPTED_STATUS)->orWhere('processing_officer_role' , ">", $ROLES_ASCENDING[array_search(Role::findByName($employee->getRoleNames()->first())->id, $ROLES_ASCENDING)])->paginate(10);
-        return view('leaves.acceptedIndex', [
+        return view('leaves.accepted-index', [
             'leaves' => $leaves
         ]);
     }
@@ -149,7 +150,7 @@ class LeaveController extends Controller
     public function rejectedIndex() {
         $employee=auth()->user();
         $leaves = Leave::where('leave_status', self::REJECTED_STATUS)->where('processing_officer_role', Role::findByName($employee->getRoleNames()->first())->id)->paginate(10);
-        return view('leaves.rejectedIndex', [
+        return view('leaves.rejected-index', [
             'leaves' => $leaves
         ]);
     }
@@ -341,8 +342,30 @@ class LeaveController extends Controller
         // $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee, true);
         $leave->delete();
         return redirect()->route('leaves.submitted');
-
     }
 
+    public function createReport() {
+        $employees = Employee::role('employee')->where('is_supervisor', false)->orderBy('first_name')->get();
+        return view('leaves.create-report', [
+            'employees' => $employees
+        ]);
+    }
+
+    public function generateReport(Request $request) {
+        $employee_id = $request->employee_id;
+        $employee = Employee::whereId($employee_id)->first();
+        $from_date = Carbon::createFromFormat('d/m/Y', $request->from_date)->format('Y-m-d');
+        $to_date = Carbon::createFromFormat('d/m/Y', $request->to_date)->format('Y-m-d');
+        $leave_service = new LeaveService();
+        $data = $leave_service->fetchLeaves($employee_id, $from_date, $to_date);
+        $leaves = $data['leaves'];
+        unset($data['leaves']);
+
+        return view('leaves.view-report', [
+            'leaves' => $leaves,
+            'employee' => $employee,
+            'data' => $data
+        ]);
+    }
 
 }

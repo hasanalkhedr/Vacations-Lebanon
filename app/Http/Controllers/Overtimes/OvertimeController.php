@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\Holiday;
 use App\Models\Overtime;
 use App\Services\OvertimeService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
@@ -100,7 +101,7 @@ class OvertimeController extends Controller
         $ROLES_ASCENDING = array(Role::findByName('employee')->id, Role::findByName('human_resource')->id, Role::findByName('sg')->id);
         $employee=auth()->user();
         $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->orWhere('processing_officer' , ">", array_search(Role::findByName($employee->getRoleNames()->first()->name)->id, $ROLES_ASCENDING));
-        return view('overtimes.acceptedIndex', [
+        return view('overtimes.accepted-index', [
             'overtimes' => $overtimes
         ]);
     }
@@ -108,7 +109,7 @@ class OvertimeController extends Controller
     public function rejectedIndex() {
         $employee=auth()->user();
         $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('processing_officer', $employee->id);
-        return view('overtimes.rejectedIndex', [
+        return view('overtimes.rejected-index', [
             'overtimes' => $overtimes
         ]);
     }
@@ -164,5 +165,29 @@ class OvertimeController extends Controller
         $overtime_service = new OvertimeService();
         $overtime_service->rejectLeaveRequest($request, $overtime);
         return redirect()->route('overtimes.index');
+    }
+
+    public function createReport() {
+        $employees = Employee::role('employee')->where('is_supervisor', false)->orderBy('first_name')->get();
+        return view('overtimes.create-report', [
+            'employees' => $employees
+        ]);
+    }
+
+    public function generateReport(Request $request) {
+        $employee_id = $request->employee_id;
+        $employee = Employee::whereId($employee_id)->first();
+        $from_date = Carbon::createFromFormat('d/m/Y', $request->from_date)->format('Y-m-d');
+        $to_date = Carbon::createFromFormat('d/m/Y', $request->to_date)->format('Y-m-d');
+        $overtime_service = new OvertimeService();
+        $data = $overtime_service->fetchOvertimes($employee_id, $from_date, $to_date);
+        $overtimes = $data['overtimes'];
+        $total_time = $data['total_time'];
+
+        return view('overtimes.view-report', [
+            'overtimes' => $overtimes,
+            'employee' => $employee,
+            'total_time' => $total_time
+        ]);
     }
 }

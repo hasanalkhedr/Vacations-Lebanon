@@ -34,11 +34,8 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
         Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
         Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
         Route::delete('/{employee}', 'destroy')->name('destroy');
-    });
-
-    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:employee|human_resource|sg'], function () {
-        Route::get('/', 'index')->name('index');
         Route::get('/{employee}', 'show')->name('show');
+        Route::get('/', 'index')->name('index');
     });
 });
 
@@ -46,8 +43,8 @@ Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => D
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
     Route::get('/edit/{department}', 'edit')->name('edit');
-    Route::get('/{department}', 'show')->name('show');
     Route::put('/update/{department}', 'update')->name('update');
+    Route::get('/{department}', 'show')->name('show');
     Route::delete('/{department}', 'destroy')->name('destroy');
     Route::get('/', 'index')->name('index');
 
@@ -64,6 +61,8 @@ Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'control
     Route::get('/download/{leave}', 'downloadAttachment')->name('downloadAttachment');
     Route::post('/accept/{leave}', 'accept')->name('accept');
     Route::post('/reject/{leave}', 'reject')->name('reject');
+    Route::get('/createReport', 'createReport')->name('createReport');
+    Route::post('/generateReport', 'generateReport')->name('generateReport');
     Route::get('/{leave}', 'show')->name('show');
     Route::group(['prefix' => '/calendar'], function () {
         Route::get('/get-form', 'getCalendarForm')->name('getCalendarForm');
@@ -77,15 +76,14 @@ Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'control
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
     Route::get('/submitted', 'submitted')->name('submitted');
-    Route::get('/{overtime}', 'show')->name('show');
     Route::post('/destroy/{overtime}', 'destroy')->name('destroy');
-});
-
-Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'controller' => OvertimeController::class, 'prefix' => 'overtimes', 'as' => 'overtimes.'], function () {
     Route::post('/accept/{overtime}', 'accept')->name('accept');
     Route::post('/reject/{overtime}', 'reject')->name('reject');
     Route::get('/acceptedIndex', 'acceptedIndex')->name('acceptedIndex');
     Route::get('/rejectedIndex', 'rejectedIndex')->name('rejectedIndex');
+    Route::get('/createReport', 'createReport')->name('createReport');
+    Route::post('/generateReport', 'generateReport')->name('generateReport');
+    Route::get('/{overtime}', 'show')->name('show');
     Route::get('/', 'index')->name('index');
 });
 

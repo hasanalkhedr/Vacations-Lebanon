@@ -7,7 +7,10 @@ use App\Jobs\OvertimeJobs\SendOvertimeRequestAcceptedEmailJob;
 use App\Jobs\OvertimeJobs\SendOvertimeRequestRejectedEmailJob;
 use App\Models\Employee;
 use App\Models\Holiday;
+use App\Models\Overtime;
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class OvertimeService
@@ -98,5 +101,28 @@ class OvertimeService
             }
         }
         return $holiday_dates;
+    }
+
+    public function fetchOvertimes($employee_id, $from_date, $to_date) {
+        $overtimes = Overtime::where('employee_id', $employee_id)->where('overtime_status', self::ACCEPTED_STATUS)->whereDate('date', '>=', $from_date)->whereDate('date', '<=', $to_date)->get();
+        $total_time = $this-> getTotalOvertime($overtimes);
+        $data['overtimes'] = $overtimes;
+        $data['total_time'] = $total_time;
+        return $data;
+    }
+
+    public function getTotalOvertime($overtimes) {
+        $totalMinutes = 0;
+        foreach ($overtimes as $overtime) {
+            $time = Carbon::createFromTimeString($overtime->hours);
+            $start_of_day = Carbon::createFromTimeString($overtime->hours)->startOfDay();
+            $minutes = $time->diffInMinutes($start_of_day);
+            $totalMinutes += $minutes;
+        }
+        $hours = floor($totalMinutes / 60);
+        $mins = floor($totalMinutes % 60);
+        $secs = floor($totalMinutes *60 % 60);
+        $total_time = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+        return $total_time;
     }
 }

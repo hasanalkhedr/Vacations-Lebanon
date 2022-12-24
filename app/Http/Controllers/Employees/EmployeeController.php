@@ -214,11 +214,6 @@ class EmployeeController
         return redirect()->route('employees.index');
     }
 
-
-    public function home() {
-        return view('employees.logout');
-    }
-
     public function sendMessage()
     {
         return view('employees.send-message');

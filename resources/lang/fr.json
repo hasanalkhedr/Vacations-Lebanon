@@ -198,5 +198,21 @@
     "The date is required": "La date est obligatoire",
     "The leave duration type is required": "La durée du congé est obligatoire",
     "The leave type is required": "Le type d'absence est obligatoire",
-    "The name is required": "le nom est obligatoire"
+    "The name is required": "le nom est obligatoire",
+    "Select Employee": "Sélectionner l'employé",
+    "Total": "Total",
+    "Monday": "Lundi",
+    "Tuesday": "Mardi",
+    "Wednesday": "Mercredi",
+    "Thursday": "Jeudi",
+    "Friday": "Vendredi",
+    "Saturday": "Samedi",
+    "Sunday": "Dimanche",
+    "Overtime": "d'heures supplémentaires",
+    "Reports": "Rapports",
+    "Leave Types Count": "Nombre de types de congés",
+    "No Leaves Found": "Aucune congé trouvée",
+    "Remaining Leaves": "Solde de congé",
+    "Remaining Confessionnels": "Solde des jours confessionnel",
+    "Remaining Balances": "Soldes Restants"
 }

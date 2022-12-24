@@ -214,7 +214,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
-    'date_format' => 'm/d/Y',
-    'date_format_javascript' => 'MM/DD/YYYY',
+    'date_format' => 'd/m/Y',
+    'date_format_javascript' => 'DD/MM/YYYY',
 
 ];

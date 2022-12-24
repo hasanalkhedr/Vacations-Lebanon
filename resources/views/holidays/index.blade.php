@@ -8,7 +8,7 @@
             {{ __('Holidays') }}
         </div>
         <div>
-            <button class="bg-blue-500 hover:bg-blue-400 text-white py-2 px-4 rounded-full"
+            <button class="hover:bg-blue-400 text-white py-2 px-4 rounded-full blue-bg"
                 data-modal-toggle="createModal">
                 {{ __('Add Holiday') }}
             </button>
@@ -408,6 +408,7 @@
     </script>
 
     <script type="text/javascript">
+        flatpickr.localize(flatpickr.l10ns.fr);
         let frompicker = $("#fromDateStore").flatpickr({
             dateFormat: "Y-m-d",
             locale: {

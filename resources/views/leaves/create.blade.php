@@ -344,6 +344,7 @@
     </script>
 
     <script type="text/javascript">
+        flatpickr.localize(flatpickr.l10ns.fr);
         let frompicker = $("#fromDate").flatpickr({
             dateFormat: "d/m/Y",
             disable: [
@@ -418,6 +419,24 @@
                             return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                         }],
 
+                    locale: {
+                        firstDayOfWeek: 1
+                    },
+                    allowInput:true,
+                    onClose: function (selectedDates, dateStr, instance) {
+                        if (dateStr) {
+                            topicker.set('minDate', dateStr);
+                        }
+                    },
+                });
+                let topicker = $("#toDate").flatpickr({
+                    dateFormat: "d/m/Y",
+                    disable: [
+                        function (date) {
+                            let date_temp = new Date(date.getTime());
+                            let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                            return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                        }],
                     locale: {
                         firstDayOfWeek: 1
                     },

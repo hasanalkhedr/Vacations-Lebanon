@@ -37,10 +37,11 @@
         let multiplyHours = false;
         let MULTIPLIER = 1.5;
         function addOvertime() {
+            flatpickr.localize(flatpickr.l10ns.fr);
             overtimes++;
 
             let html = "<tr class='bg-white hover:bg-gray-50'>";
-            html += "<td class='py-4 border-b'><input type='text' class='date border-none' placeholder='{{_("Please select date")}}' name='date[]' data-input></td>";
+            html += "<td class='py-4 border-b'><input type='text' class='date border-none' placeholder='{{__("Please select date")}}' name='date[]' data-input></td>";
             html += "<td class='py-4 border-b'><input type='time' class='from border-none' id='overtimeFrom' name='from[]'></td>";
             html += "<td class='py-4 border-b'><input type='time' class='to border-none' name='to[]'></td>";
             html += "<td class='py-4 border-b'><input type='text' class='focus:ring-0 border-none' name='hours[]' readonly></td>";

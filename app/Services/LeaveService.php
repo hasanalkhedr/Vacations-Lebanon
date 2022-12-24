@@ -15,6 +15,7 @@ use App\Models\Confessionnel;
 use App\Models\Employee;
 use App\Models\Holiday;
 use App\Models\Leave;
+use App\Models\LeaveType;
 use Carbon\CarbonPeriod;
 use Spatie\Permission\Models\Role;
 
@@ -244,5 +245,23 @@ class LeaveService
             $nb_of_days_off_confessionnels = $nb_of_days_off_confessionnels / 2;
         }
         return $nb_of_days_off_confessionnels;
+    }
+
+    public function fetchLeaves($employee_id, $from_date, $to_date) {
+        $leaves = Leave::where('employee_id', $employee_id)->where('leave_status', self::ACCEPTED_STATUS)->whereDate('from', '>=', $from_date)->whereDate('to', '<=', $to_date)->paginate(20);
+        $leave_types = LeaveType::all();
+        foreach ($leave_types as $leave_type) {
+            $data[$leave_type->name] = $this->filterLeaves($leaves, $leave_type);
+        }
+        $data['leaves'] = $leaves;
+        return $data;
+    }
+
+    public function filterLeaves($leaves, $leave_type) {
+        ${"$leave_type->name"}  = $leaves->filter(function($value, $key) use ($leave_type) {
+            if($value['leave_type_id'] == LeaveType::where('name', $leave_type->name)->first()->id)
+                return true;
+        });
+        return ${"$leave_type->name"};
     }
 }

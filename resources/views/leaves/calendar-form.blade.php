@@ -18,7 +18,7 @@
         </div>
         @hasanyrole('human_resource|sg')
             <div>
-                <label for="department_id" class="text-lg block mb-2 text-sm font-medium blue-color">Select Department</label>
+                <label for="department_id" class="text-lg block mb-2 text-sm font-medium blue-color">{{__("Select Department")}}</label>
                 <select name="department_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     <option value="all">All</option>
                     @if(count($departments))
