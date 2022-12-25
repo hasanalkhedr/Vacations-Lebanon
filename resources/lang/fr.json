@@ -214,5 +214,8 @@
     "No Leaves Found": "Aucune congé trouvée",
     "Remaining Leaves": "Solde de congé",
     "Remaining Confessionnels": "Solde des jours confessionnel",
-    "Remaining Balances": "Soldes Restants"
+    "Remaining Balances": "Soldes Restants",
+    "Leaves":  "Congé",
+    "Overtimes": "Heures supplémentaires",
+    "Generate Report": "Générer un rapport"
 }
