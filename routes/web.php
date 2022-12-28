@@ -25,7 +25,7 @@ Route::get('/', function () {
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
     Route::post('/authenticate', 'authenticate')->name('authenticate');
-    Route::get('/{employee}', 'show')->name('show')->middleware('role_custom:employee|human_resource|sg');
+    Route::get('/{employee}/show', 'show')->name('show')->middleware('role_custom:employee|human_resource|sg');
     Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource|sg'], function () {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
