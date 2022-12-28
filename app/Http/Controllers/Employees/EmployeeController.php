@@ -141,7 +141,7 @@ class EmployeeController
                 'confessionnel_accepted_days' => $confessionnel_accepted_days,
             ]);
         }
-        return redirect()->route('employees.index');
+        return back();
     }
 
     public function editProfile(Employee $employee)
