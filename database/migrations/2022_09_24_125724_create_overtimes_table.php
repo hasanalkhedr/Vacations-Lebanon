@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('date');
             $table->time('from');
             $table->time('to');
+            $table->string('hours');
             $table->string('objective')->nullable();
             $table->date('date_of_submission')->default(now()->format('Y/m/d'));
             $table->integer('overtime_status')->default(0);

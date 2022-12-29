@@ -95,7 +95,6 @@ class LeaveController extends Controller
         return redirect()->route('leaves.submitted');
     }
 
-
     public function index() {
         $employee=auth()->user();
         $helper = new Helper();
@@ -158,7 +157,6 @@ class LeaveController extends Controller
     public function show(Leave $leave) {
         {
             $processing_officer = Role::where('id', $leave->processing_officer_role)->first();
-            $loggedInRole = auth()->user()->roles()->first();
             $roles = auth()->user()->getRoleNames();
 
             if($leave->employee_id == auth()->user()->id) {
@@ -173,9 +171,6 @@ class LeaveController extends Controller
                         'leave' => $leave,
                         'processing_officer' => $processing_officer
                     ]);
-                }
-                else {
-                    continue;
                 }
             }
             return back();
@@ -211,19 +206,21 @@ class LeaveController extends Controller
     }
 
     public function submitted() {
-        if(auth()->user()->hasRole("sg")) {
+        if(auth()->user()->hasExactRoles("employee") && auth()->user()->is_supervisor == false) {
+            $leaves = Leave::where('employee_id', auth()->user()->id)->paginate(10);
+            return view('leaves.submitted', [
+                'leaves' => $leaves
+            ]);
+        }
+        else {
             return back();
         }
-        $leaves = Leave::where('employee_id', auth()->user()->id)->paginate(10);
-        return view('leaves.submitted', [
-            'leaves' => $leaves
-        ]);
+
     }
 
     public function getCalendarForm() {
         $startOfYear = Carbon::now()->startOfYear();
         $endOfYear = Carbon::now()->endOfYear();
-        $period = CarbonPeriod::create($startOfYear, '1 month', $endOfYear);
         $months = [];
 
         for ($monthNum=1; $monthNum<=12; $monthNum++) {

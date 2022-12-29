@@ -56,7 +56,7 @@
                 <div class="lg:mt-2">
                     <aside class="hidden w-full lg:inline blue-bg" style="margin-top: 1%;" id="aside-default">
                         <ul class="content-between space-y-2">
-                            @unless(auth()->user()->hasRole('employee'))
+                            @unless(auth()->user()->hasExactRoles('employee'))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('departments.index') }}">
@@ -65,7 +65,7 @@
 
                                 </li>
                             @endunless
-                            @unless(auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
+                            @unless(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('employees.index') }}">

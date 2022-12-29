@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->date('from');
             $table->date('to');
+            $table->boolean('use_confessionnels')->default(false);
+            $table->boolean('travelling')->default(false);
             $table->string('attachment_path')->nullable();
             $table->date('date_of_submission')->default(now()->format('Y/m/d'));
             $table->integer('leave_status')->default(0);

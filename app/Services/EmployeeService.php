@@ -12,8 +12,7 @@ class EmployeeService
 
     public function getAppropriateEmployees() {
         $loggedInUser = auth()->user();
-        $loggedInUserRoleName = $loggedInUser->roles()->first()->name;
-        if($loggedInUserRoleName == 'human_resource' || $loggedInUserRoleName == 'sg') {
+        if($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole('sg')) {
             return Employee::whereNot('id', auth()->id())->search(request(['search']))->paginate(10);
         }
         else {
@@ -61,5 +60,4 @@ class EmployeeService
         $confessionnel_accepted_days = count($confessionnel_accepted_leaves);
         return $confessionnel_accepted_days;
     }
-
 }

@@ -61,10 +61,15 @@ class OvertimeController extends Controller
     }
 
     public function submitted() {
-        $overtimes = auth()->user()->overtimes;
-        return view('overtimes.submitted', [
-            'overtimes' => $overtimes
-        ]);
+        if(auth()->user()->hasExactRoles("employee") && auth()->user()->is_supervisor == false) {
+            $overtimes = auth()->user()->overtimes;
+            return view('overtimes.submitted', [
+                'overtimes' => $overtimes
+            ]);
+        }
+        else {
+            return back();
+        }
     }
 
     public function destroy(Overtime $overtime) {

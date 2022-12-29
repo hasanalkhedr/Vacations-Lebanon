@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
-            $table->string('phone_number')->unique();
+            $table->string('phone_number')->nullable()->unique();
             $table->double('nb_of_days')->default(15);
+            $table->double('confessionnels')->default(3);
             $table->foreignId('department_id')->nullable()->constrained()->onUpdate('CASCADE')->onDelete('SET NULL');
             $table->timestamps();
             $table->softDeletes();

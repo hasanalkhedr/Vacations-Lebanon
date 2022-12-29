@@ -3,10 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Department;
-use App\Models\Employee;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DepartmentSeeder extends Seeder
 {
@@ -18,15 +15,21 @@ class DepartmentSeeder extends Seeder
     public function run()
     {
         $department_names = [
-            'AGENCE COMPTABLE',
-            'AUDIOVISUEL',
-            'CAMPUS FRANCE',
-            'COMMUNICATION',
-            'COURS DE LANGUE',
-            'CULTUREL',
-            'LINGUISTIQUE',
-            'MEDIATHEQUE',
-            'SECRETARIAT GENERALE'
+            'Agence Compatable',
+            'Audio',
+            'Bekaa',
+            'Bureau du Livre',
+            'Campus France',
+            'Centre de Langes',
+            'Communication',
+            "Culturel",
+            'Deir El Qamar',
+            'Direction',
+            'Jounieh',
+            'Linguistique',
+            'Secrétariat Général',
+            'Sud',
+            'Tripoli',
         ];
         foreach ($department_names as $name) {
             Department::create([
