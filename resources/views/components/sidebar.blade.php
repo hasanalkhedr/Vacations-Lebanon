@@ -73,7 +73,9 @@
                                     </a>
                                 </li>
                             @endunless
-                            @if ((auth()->user()->hasExactRoles('employee') || auth()->user()->hasAllRoles(['employee','human_resource'])) && auth()->user()->is_supervisor == false)
+                            @if ((auth()->user()->hasExactRoles('employee') ||
+                                auth()->user()->hasAllRoles(['employee', 'human_resource'])) &&
+                                auth()->user()->is_supervisor == false)
                                 <li>
                                     <a href="{{ url(route('leaves.submitted')) }}"
                                         class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500">
@@ -81,7 +83,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @unless (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                            @unless(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <button type="button"
                                         class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
@@ -118,7 +120,9 @@
                                     </ul>
                                 </li>
                             @endunless
-                            @if ((auth()->user()->hasExactRoles('employee') || auth()->user()->hasAllRoles(['employee','human_resource'])) && auth()->user()->is_supervisor == false)
+                            @if ((auth()->user()->hasExactRoles('employee') ||
+                                auth()->user()->hasAllRoles(['employee', 'human_resource'])) &&
+                                auth()->user()->is_supervisor == false)
                                 <li>
                                     <a href="{{ url(route('overtimes.submitted')) }}"
                                         class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500">
@@ -126,7 +130,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @unless (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                            @unless(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <button type="button"
                                         class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
@@ -202,33 +206,32 @@
                                     <span class="mx-2 font-medium">{{ __('Show Profile') }}</span>
                                 </a>
                             </li>
-                            @if (auth()->user()->is_supervisor ||
-                                auth()->user()->hasRole('human_resource') ||
+                            @if (auth()->user()->hasRole('human_resource') ||
                                 auth()->user()->hasRole('sg'))
                                 <li>
                                     <button type="button"
-                                            class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
-                                            style="width: -webkit-fill-available;" aria-controls="dropdown-reports"
-                                            data-collapse-toggle="dropdown-reports">
+                                        class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
+                                        style="width: -webkit-fill-available;" aria-controls="dropdown-reports"
+                                        data-collapse-toggle="dropdown-reports">
                                         <span class="flex-1 mx-2 text-left whitespace-nowrap font-medium text-white"
-                                              sidebar-toggle-item>{{ __('Reports') }}</span>
-                                        <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
+                                            sidebar-toggle-item>{{ __('Reports') }}</span>
+                                        <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor"
+                                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd"
-                                                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                  clip-rule="evenodd"></path>
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd"></path>
                                         </svg>
                                     </button>
                                     <ul id="dropdown-reports" class="hidden py-2 space-y-2 mx-2">
                                         <li>
                                             <a href="{{ url(route('leaves.createReport')) }}"
-                                               class="flex items-center p-2 pl-8 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500">
+                                                class="flex items-center p-2 pl-8 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500">
                                                 <span>{{ __('Leaves') }}</span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="{{ url(route('overtimes.createReport')) }}"
-                                               class="flex items-center p-2 pl-8 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500">
+                                                class="flex items-center p-2 pl-8 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500">
                                                 <span>{{ __('Overtimes') }}</span>
                                             </a>
                                         </li>
