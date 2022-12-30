@@ -27,37 +27,40 @@ class LeaveController extends Controller
 
     public function create() {
         $employee = auth()->user();
-        if($employee->hasAnyRole(['human_resource', 'sg']) || $employee->is_supervisor) {
+        if(($employee->hasExactRoles("employee") || $employee->hasAllRoles(['employee','human_resource'])) && $employee->is_supervisor == false) {
+            $employee_service = new EmployeeService();
+            $helper = new Helper();
+            $normal_pending_days = $employee_service->getNormalNbofDaysPending($employee);
+            $confessionnel_pending_days = $employee_service->getConfessionnelNbofDaysPending($employee);
+            $normal_accepted_days = $employee_service->getNormalNbofDaysAccepted($employee);
+            $confessionnel_accepted_days = $employee_service->getConfessionnelNbofDaysAccepted($employee);
+            $leave_durations = LeaveDuration::all();
+            $leave_types = LeaveType::all();
+            $today = now();
+            $substitutes = Employee::where('department_id', $employee->department_id)->where('is_supervisor', false)->get()->except($employee->id);
+            $leave_service = new LeaveService();
+            $disabled_dates = $leave_service->getDisabledDates($employee);
+            $holiday_dates = $helper->getHolidays();
+            $confessionnel_dates = $leave_service->getConfessionnels();
+            return view('leaves.create', [
+                'employee' => $employee,
+                'leave_durations' => $leave_durations,
+                'leave_types' => $leave_types,
+                'today' => $today,
+                'department' => $employee->department,
+                'substitutes' => $substitutes,
+                'disabled_dates' => $disabled_dates,
+                'holiday_dates' => $holiday_dates,
+                'confessionnel_dates' => $confessionnel_dates,
+                'normal_pending_days' => $normal_pending_days,
+                'confessionnel_pending_days' => $confessionnel_pending_days,
+                'normal_accepted_days' => $normal_accepted_days,
+                'confessionnel_accepted_days' => $confessionnel_accepted_days,
+            ]);
+        }
+        else {
             return back();
         }
-        $employee_service = new EmployeeService();
-        $normal_pending_days = $employee_service->getNormalNbofDaysPending($employee);
-        $confessionnel_pending_days = $employee_service->getConfessionnelNbofDaysPending($employee);
-        $normal_accepted_days = $employee_service->getNormalNbofDaysAccepted($employee);
-        $confessionnel_accepted_days = $employee_service->getConfessionnelNbofDaysAccepted($employee);
-        $leave_durations = LeaveDuration::all();
-        $leave_types = LeaveType::all();
-        $today = now();
-        $substitutes = Employee::where('department_id', $employee->department_id)->where('is_supervisor', false)->get()->except($employee->id);
-        $leave_service = new LeaveService();
-        $disabled_dates = $leave_service->getDisabledDates($employee);
-        $holiday_dates = $leave_service->getHolidays();
-        $confessionnel_dates = $leave_service->getConfessionnels();
-        return view('leaves.create',[
-            'employee' => $employee,
-            'leave_durations' => $leave_durations,
-            'leave_types' => $leave_types,
-            'today' => $today,
-            'department' => $employee->department,
-            'substitutes' => $substitutes,
-            'disabled_dates' => $disabled_dates,
-            'holiday_dates' => $holiday_dates,
-            'confessionnel_dates' => $confessionnel_dates,
-            'normal_pending_days' => $normal_pending_days,
-            'confessionnel_pending_days' => $confessionnel_pending_days,
-            'normal_accepted_days' => $normal_accepted_days,
-            'confessionnel_accepted_days' => $confessionnel_accepted_days,
-        ]);
     }
 
     public function store(StoreLeaveRequest $request) {
@@ -87,9 +90,16 @@ class LeaveController extends Controller
             $leave->substitute_employee_id = $request['substitute_employee_id'];
         }
         $leave->disabled_dates = $serializedArr;
-        $role = Role::findByName('employee');
-        $processing_officers = auth()->user()->department->manager;
-        $leave->processing_officer_role = $role->id;
+        if($leave->employee->hasExactRoles('employee') && $leave->employee->is_supervisor == false) {
+            $role = Role::findByName('employee');
+            $processing_officers = auth()->user()->department->manager;
+            $leave->processing_officer_role = $role->id;
+        }
+        else if($leave->employee->hasAllRoles(['employee','human_resource']) && $leave->employee->is_supervisor == false) {
+            $role = Role::findByName('sg');
+            $processing_officers = Employee::role('sg')->get();
+            $leave->processing_officer_role = $role->id;
+        }
         $leave->save();
         // $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
         return redirect()->route('leaves.submitted');
@@ -206,7 +216,7 @@ class LeaveController extends Controller
     }
 
     public function submitted() {
-        if(auth()->user()->hasExactRoles("employee") && auth()->user()->is_supervisor == false) {
+        if((auth()->user()->hasExactRoles("employee") || auth()->user()->hasAllRoles(['employee','human_resource'])) && auth()->user()->is_supervisor == false) {
             $leaves = Leave::where('employee_id', auth()->user()->id)->paginate(10);
             return view('leaves.submitted', [
                 'leaves' => $leaves
@@ -235,6 +245,7 @@ class LeaveController extends Controller
     }
 
     public function generateCalendar(Request $request) {
+        $helper = new Helper();
         $year = now()->format('Y');
         $month = Carbon::createFromDate($year, $request->month);
         $month_name = Carbon::parse($month)->monthName;
@@ -246,10 +257,10 @@ class LeaveController extends Controller
         $leave_service = new LeaveService();
         foreach($period as $date)
         {
-            if($leave_service->isWeekend($date)) {
+            if($helper->isWeekend($date)) {
                 $weekends[] = $date->format('Y-m-d');
             }
-            if($leave_service->isHoliday($date->format('Y-m-d'))) {
+            if($helper->isHoliday($date->format('Y-m-d'))) {
                 $holidays[] = $date->format('Y-m-d');
             }
             $dates[] = $date;
@@ -275,7 +286,7 @@ class LeaveController extends Controller
             if($disabled_dates){
                 foreach ($period as $date) {
                     $date = $date->toDateString();
-                    if(!$leave_service->isWeekend($date) && !in_array($date, $disabled_dates) ){
+                    if(!$helper->isWeekend($date) && !in_array($date, $disabled_dates) ){
                         $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
                     }
                 }

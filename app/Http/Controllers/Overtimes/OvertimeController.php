@@ -19,16 +19,19 @@ class OvertimeController extends Controller
     const REJECTED_STATUS = 2;
 
     public function create() {
-        $overtime_service = new OvertimeService();
+        $helper = new Helper();
         $employee = auth()->user();
-        if($employee->hasAnyRole(['human_resource', 'sg']) || $employee->is_supervisor) {
+        if(($employee->hasExactRoles("employee") || $employee->hasAllRoles(['employee','human_resource'])) && $employee->is_supervisor == false) {
+            $holiday_dates = $helper->getHolidays();
+            return view('overtimes.create',[
+                'employee' => $employee,
+                'holiday_dates' => $holiday_dates,
+            ]);
+        }
+        else {
             return back();
         }
-        $holiday_dates = $overtime_service->getHolidays();
-        return view('overtimes.create',[
-            'employee' => $employee,
-            'holiday_dates' => $holiday_dates,
-        ]);
+
     }
 
     public function store(Request $request) {
@@ -49,12 +52,18 @@ class OvertimeController extends Controller
                     $overtime->objective = $request->objective[$i];
                 }
                 $overtime->date_of_submission = now()->format('Y-m-d');
-                $overtime_employee_role = $overtime->employee->roles()->first()->name;
-                $role = Role::findByName('employee');
-                $processing_officers = auth()->user()->department->manager;
-                $overtime->processing_officer_role = $role->id;
+                if($overtime->employee->hasExactRoles('employee') && $overtime->employee->is_supervisor == false) {
+                    $role = Role::findByName('employee');
+                    $processing_officers = auth()->user()->department->manager;
+                    $overtime->processing_officer_role = $role->id;
+                }
+                else if($overtime->employee->hasAllRoles(['employee','human_resource']) && $overtime->employee->is_supervisor == false) {
+                    $role = Role::findByName('sg');
+                    $processing_officers = Employee::role('sg')->get();
+                    $overtime->processing_officer_role = $role->id;
+                }
                 $overtime->save();
-                //            $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
+                // $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
             }
         }
         return back();

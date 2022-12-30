@@ -65,7 +65,7 @@
 
                                 </li>
                             @endunless
-                            @unless(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                            @unless(auth()->user()->hasExactRoles('employee'))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('employees.index') }}">
@@ -73,21 +73,22 @@
                                     </a>
                                 </li>
                             @endunless
-                            @if (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                            @if ((auth()->user()->hasExactRoles('employee') || auth()->user()->hasAllRoles(['employee','human_resource'])) && auth()->user()->is_supervisor == false)
                                 <li>
                                     <a href="{{ url(route('leaves.submitted')) }}"
                                         class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500">
-                                        <span class="mx-2 font-medium">{{ __('Leave Requests') }}</span>
+                                        <span class="mx-2 font-medium">{{ __('Submitted Leave Requests') }}</span>
                                     </a>
                                 </li>
-                            @else
+                            @endif
+                            @unless (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <button type="button"
                                         class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         style="width: -webkit-fill-available;" aria-controls="dropdown-leaves"
                                         data-collapse-toggle="dropdown-leaves">
-                                        <span class="flex-1 mx-2 text-left whitespace-nowrap font-medium text-white"
-                                            sidebar-toggle-item>{{ __('Leave Requests') }}</span>
+                                        <span class="flex-1 mx-2 text-left font-medium text-white"
+                                            sidebar-toggle-item>{{ __('Received Leave Requests') }}</span>
                                         <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd"
@@ -116,22 +117,23 @@
                                         </li>
                                     </ul>
                                 </li>
-                            @endif
-                            @if (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                            @endunless
+                            @if ((auth()->user()->hasExactRoles('employee') || auth()->user()->hasAllRoles(['employee','human_resource'])) && auth()->user()->is_supervisor == false)
                                 <li>
                                     <a href="{{ url(route('overtimes.submitted')) }}"
                                         class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500">
-                                        <span class="mx-2 font-medium">{{ __('Overtime Requests') }}</span>
+                                        <span class="mx-2 font-medium">{{ __('Submitted Overtime Requests') }}</span>
                                     </a>
                                 </li>
-                            @else
+                            @endif
+                            @unless (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <button type="button"
                                         class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         style="width: -webkit-fill-available;" aria-controls="dropdown-overtimes"
                                         data-collapse-toggle="dropdown-overtimes">
                                         <span class="flex-1 mx-2 text-left font-medium text-white"
-                                            sidebar-toggle-item>{{ __('Overtime Requests') }}</span>
+                                            sidebar-toggle-item>{{ __('Received Overtime Requests') }}</span>
                                         <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd"
@@ -160,7 +162,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                            @endif
+                            @endunless
                             @if (auth()->user()->hasRole('human_resource') ||
                                 auth()->user()->hasRole('sg'))
                                 <li>

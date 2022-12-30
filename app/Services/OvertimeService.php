@@ -88,21 +88,6 @@ class OvertimeService
         $overtime->save();
     }
 
-    public function getHolidays()
-    {
-        $holidays = Holiday::all();
-        $holiday_dates = [];
-        foreach ($holidays as $holiday) {
-            $period = CarbonPeriod::create($holiday->from, $holiday->to);
-            // Iterate over the period
-            foreach ($period as $date) {
-                if (!in_array($date->toDateString(), $holiday_dates))
-                    $holiday_dates[] = $date->toDateString();
-            }
-        }
-        return $holiday_dates;
-    }
-
     public function fetchOvertimes($employee_id, $from_date, $to_date) {
         $overtimes = Overtime::where('employee_id', $employee_id)->where('overtime_status', self::ACCEPTED_STATUS)->whereDate('date', '>=', $from_date)->whereDate('date', '<=', $to_date)->get();
         $total_time = $this-> getTotalOvertime($overtimes);

@@ -178,8 +178,7 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500">
-                                            {{__("Are you sure you want to accept this leave request")}}? {{__("This action
-                                            cannot be undone")}}.
+                                            {{__("Are you sure you want to accept this leave request")}}? {{__("This action cannot be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->

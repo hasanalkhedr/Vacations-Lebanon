@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Helper;
 use App\Jobs\LeaveJobs\SendLeaveRequestAcceptedEmailJob;
 use App\Jobs\LeaveJobs\SendLeaveRequestAcceptedEmailReplacementJob;
 use App\Jobs\LeaveJobs\SendLeaveRequestCanceledEmailJob;
@@ -136,11 +137,6 @@ class LeaveService
         $employee->save();
     }
 
-    public function isWeekend($date)
-    {
-        return (date('N', strtotime($date)) == 7 || date('N', strtotime($date)) == 6);
-    }
-
     public function getDisabledDates($employee)
     {
         $leaves = Leave::all();
@@ -157,21 +153,6 @@ class LeaveService
         return $disabled_dates;
     }
 
-    public function getHolidays()
-    {
-        $holidays = Holiday::all();
-        $holiday_dates = [];
-        foreach ($holidays as $holiday) {
-            $period = CarbonPeriod::create($holiday->from, $holiday->to);
-            // Iterate over the period
-            foreach ($period as $date) {
-                if (!in_array($date->toDateString(), $holiday_dates))
-                    $holiday_dates[] = $date->toDateString();
-            }
-        }
-        return $holiday_dates;
-    }
-
     public function getConfessionnelDates()
     {
         $confessionnels = Confessionnel::all();
@@ -180,11 +161,6 @@ class LeaveService
             $confessionnel_dates[] = $confessionnel->date;
         }
         return $confessionnel_dates;
-    }
-
-    public function isHoliday($date) {
-        $holidays = $this->getHolidays();
-        return (in_array($date, $holidays));
     }
 
     public function isConfessionnel($date) {
@@ -214,12 +190,13 @@ class LeaveService
     }
 
     public function findNbofDaysOff($leave) {
+        $helper = new Helper();
         $period = CarbonPeriod::create($leave->from, $leave->to);
         $nb_of_days_off = 0;
         $disabled_dates = unserialize($leave->disabled_dates);
         foreach ($period as $date) {
             $date = $date->toDateString();
-            if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date) && !$this->isConfessionnel($date)) {
+            if (!$helper->isWeekend($date) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && !$this->isConfessionnel($date)) {
                 $nb_of_days_off = $nb_of_days_off + 1;
             }
         }
@@ -231,12 +208,13 @@ class LeaveService
     }
 
     public function findNbofDaysOffConfessionnels($leave) {
+        $helper = new Helper();
         $period = CarbonPeriod::create($leave->from, $leave->to);
         $nb_of_days_off_confessionnels = 0;
         $disabled_dates = unserialize($leave->disabled_dates);
         foreach ($period as $date) {
             $date = $date->toDateString();
-            if (!$this->isWeekend($date) && !in_array($date, $disabled_dates) && !$this->isHoliday($date) && $this->isConfessionnel($date)) {
+            if (!$helper->isWeekend($date) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && $this->isConfessionnel($date)) {
                 $nb_of_days_off_confessionnels = $nb_of_days_off_confessionnels + 1;
             }
         }
