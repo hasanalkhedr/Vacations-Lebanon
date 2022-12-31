@@ -2,7 +2,6 @@
     @section('title', __("Leaves Report Form"))
     <form method="POST" action="{{ route('leaves.generateReport') }}" enctype="multipart/form-data" class="m-2">
         @csrf
-        @hasanyrole('human_resource|sg')
         <div>
             <label for="employee_id" class="text-lg block mb-2 text-sm font-medium blue-color">{{__("Select Employee")}}</label>
             <select name="employee_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -33,7 +32,6 @@
                 @enderror
             </div>
         </div>
-        @endhasanyrole
         <button class="mt-4 text-white hover:text-white border hover:bg-blue-400 focus:ring-2 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 blue-bg">
             {{__("Generate Report")}}
         </button>

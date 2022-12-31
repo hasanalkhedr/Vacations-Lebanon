@@ -277,7 +277,7 @@ class LeaveController extends Controller
                 $department = Department::where('id', $request->department_id)->first();
             }
             $leaves = Leave::whereIn('employee_id', $department->employees->pluck('id')->toarray())->whereNot('leave_status', self::REJECTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
-            $employees = $department->employees;
+            $employees = Employee::where('department_id', $department->id)->where('is_supervisor', false)->get();
         }
         $leaveId_dates_pairs = [];
         foreach ($leaves as $leave) {
@@ -353,10 +353,15 @@ class LeaveController extends Controller
     }
 
     public function createReport() {
-        $employees = Employee::role('employee')->where('is_supervisor', false)->orderBy('first_name')->get();
-        return view('leaves.create-report', [
-            'employees' => $employees
-        ]);
+        if(auth()->user()->hasRole(['human_resource', 'sg'])) {
+            $employees = Employee::role('employee')->where('is_supervisor', false)->orderBy('first_name')->get();
+            return view('leaves.create-report', [
+                'employees' => $employees
+            ]);
+        }
+        else {
+            return back();
+        }
     }
 
     public function generateReport(Request $request) {
