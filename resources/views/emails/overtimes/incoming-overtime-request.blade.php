@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Overtime Request Email</title>
+    <title>Demandes d'heures supplémentaires</title>
 </head>
+
 <body>
 
-<p>Hello,</p>
+    <p>Bonjour,</p>
 
-<p>Please confirm or reject the overtime request</p>
+    <p>Vous avez une nouvelle demande d'heures supplémentaires à verifier.</p>
 
-<strong>Thanks & Regards.</strong>
+    <strong>Merci</strong>
 
 </body>
+
 </html>

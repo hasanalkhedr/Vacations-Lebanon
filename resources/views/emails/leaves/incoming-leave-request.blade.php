@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Leave Request Email</title>
+    <title>Demandes Jour Congé</title>
 </head>
+
 <body>
 
-<p>Hello,</p>
+    <p>Bonjour,</p>
 
-<p>Please confirm or reject the leave request</p>
+    <p>Vous avez une nouvelle demande de congé à verifier.</p>
 
-<strong>Thanks & Regards.</strong>
+    <strong>Merci</strong>
 
 </body>
+
 </html>
