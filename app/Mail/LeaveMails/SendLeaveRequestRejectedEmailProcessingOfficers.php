@@ -27,7 +27,7 @@ class SendLeaveRequestRejectedEmailProcessingOfficers extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request Rejected')
+        return $this->subject('Demande de congé rejetée')
             ->view('emails.leaves.rejected-leave-request-processing_officers');
     }
 }

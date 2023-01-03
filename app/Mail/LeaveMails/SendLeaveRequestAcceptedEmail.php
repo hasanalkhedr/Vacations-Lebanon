@@ -27,7 +27,7 @@ class SendLeaveRequestAcceptedEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request Accepted')
+        return $this->subject('Demande de congé acceptée')
             ->view('emails.leaves.accepted-leave-request');
     }
 }

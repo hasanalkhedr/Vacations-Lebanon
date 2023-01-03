@@ -27,7 +27,7 @@ class SendOvertimeRequestAcceptedEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request Accepted')
+        return $this->subject("Demande d'heures supplémentaires acceptée")
             ->view('emails.overtimes.accepted-overtime-request');
     }
 }

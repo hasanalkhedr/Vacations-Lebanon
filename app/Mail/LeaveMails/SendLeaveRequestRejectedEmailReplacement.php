@@ -27,7 +27,7 @@ class SendLeaveRequestRejectedEmailReplacement extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request Rejected as Replacement')
+        return $this->subject('Demande de congé rejetée en remplacement')
             ->view('emails.leaves.rejected-leave-request-replacement');
     }
 }

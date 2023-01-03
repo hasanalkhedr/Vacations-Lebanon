@@ -27,7 +27,7 @@ class SendLeaveRequestCanceledEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request Rejected')
+        return $this->subject('Demande de congé rejetée')
             ->view('emails.leaves.canceled-leave-request');
     }
 }

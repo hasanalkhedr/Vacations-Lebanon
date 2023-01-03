@@ -27,7 +27,7 @@ class SendOvertimeRequestRejectedEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Overtime Request Rejected')
+        return $this->subject("Demande d'heures supplémentaires rejetée")
             ->view('emails.overtimes.rejected-overtime-request');
     }
 }

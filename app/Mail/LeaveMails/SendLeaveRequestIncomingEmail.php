@@ -27,7 +27,7 @@ class SendLeaveRequestIncomingEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request')
+        return $this->subject('Demandes Jour Congé')
             ->view('emails.leaves.incoming-leave-request');
     }
 }
