@@ -63,7 +63,7 @@ class OvertimeController extends Controller
                     $overtime->processing_officer_role = $role->id;
                 }
                 $overtime->save();
-                // $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
+                $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
             }
         }
         return back();
