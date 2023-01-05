@@ -14,7 +14,7 @@
 
         @if ($unread->count() > 0)
             <h2 tabindex="0" class="focus:outline-none text-sm leading-normal pt-8 border-b pb-2 border-gray-300 text-gray-600">
-                {{__("Unread Notifications")}}
+                {{__('Unread Notifications')}}
             </h2>
 
             @foreach ($unread as $announcement)
@@ -36,7 +36,7 @@
 
             @if ($announcements->count() > 0)
                 <h2 tabindex="0" class="focus:outline-none text-sm leading-normal pt-8 border-b pb-2 border-gray-300 text-gray-600">
-                    {{__("Previous Notifications")}}
+                    {{__('Previous Notifications')}}
                 </h2>
             @endif
         @endif
@@ -51,7 +51,7 @@
             <div class="flex items-center justify-between">
                 <hr class="w-full">
                 <p tabindex="0" class="focus:outline-none text-sm flex flex-shrink-0 leading-normal px-3 py-16 text-gray-500">
-                    {{__("No new announcements")}}
+                    {{__('No new announcements')}}
                 </p>
                 <hr class="w-full">
             </div>

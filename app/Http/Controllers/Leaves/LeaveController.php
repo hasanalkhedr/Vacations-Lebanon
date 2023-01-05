@@ -90,14 +90,20 @@ class LeaveController extends Controller
             $leave->substitute_employee_id = $request['substitute_employee_id'];
         }
         $leave->disabled_dates = $serializedArr;
-        if($leave->employee->hasExactRoles('employee') && $leave->employee->is_supervisor == false) {
-            $role = Role::findByName('employee');
-            $processing_officers = auth()->user()->department->manager;
-            $leave->processing_officer_role = $role->id;
-        }
-        else if($leave->employee->hasAllRoles(['employee','human_resource']) && $leave->employee->is_supervisor == false) {
+
+        if($leave->employee->hasAllRoles(['employee','human_resource']) && $leave->employee->is_supervisor == false) {
             $role = Role::findByName('sg');
             $processing_officers = Employee::role('sg')->get();
+            $leave->processing_officer_role = $role->id;
+        }
+        else if($leave->employee->department->manager->hasRole('sg')) {
+            $role = Role::findByName('human_resource');
+            $processing_officers = Employee::role('human_resource')->get();
+            $leave->processing_officer_role = $role->id;
+        }
+        else {
+            $role = Role::findByName('employee');
+            $processing_officers = auth()->user()->department->manager;
             $leave->processing_officer_role = $role->id;
         }
         $leave->save();
@@ -111,54 +117,68 @@ class LeaveController extends Controller
         if($helper->checkIfNormalEmployee($employee)) {
             return back();
         }
-        $leave_durations = LeaveDuration::all();
-        $leave_types = LeaveType::all();
-        $today = now();
-        if($employee->hasRole("human_resource")) {
-            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('employee')->id)->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
-        }
         if($employee->hasRole("employee") && $employee->is_supervisor){
-            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+            $leaves = Leave::where('processing_officer_role', Role::findByName('employee')->id)->where('leave_status', self::PENDING_STATUS)
+                ->whereHas('employee', function ($q) use ($employee) {
+                    $q->whereHas('department', function ($q) use ($employee) {
+                        $q->where('manager_id', $employee->id);
+                    });
+                })->search(request(['search']))->paginate(10);
+        }
+        if($employee->hasRole("human_resource")) {
+            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
         if($employee->hasRole("sg")) {
             $leaves = Leave::where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
-
-        if($employee->hasRole("human_resource")) {
-            $substitutes = Employee::role('human_resource')->get()->except($employee->id);
-        }
-        else {
-            if($employee->is_supervisor){
-                $substitutes = Employee::where('department_id', $employee->department_id)->get()->except($employee->id);
-            }
-            else {
-                $substitutes = Employee::where('department_id', $employee->department_id)->where('is_supervisor', false)->get()->except($employee->id);
-            }
-
-        }
         return view('leaves.index', [
             'leaves' => $leaves,
             'employee' => $employee,
-            'leave_durations' => $leave_durations,
-            'leave_types' => $leave_types,
-            'today' => $today,
-            'department' => $employee->department,
-            'substitutes' => $substitutes
         ]);
     }
 
     public function acceptedIndex() {
-        $ROLES_ASCENDING = array(Role::findByName('employee')->id, Role::findByName('human_resource')->id, Role::findByName('sg')->id);
         $employee = auth()->user();
-        $leaves = Leave::where('leave_status', self::ACCEPTED_STATUS)->orWhere('processing_officer_role' , ">", $ROLES_ASCENDING[array_search(Role::findByName($employee->getRoleNames()->first())->id, $ROLES_ASCENDING)])->paginate(10);
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($employee)) {
+            return back();
+        }
+
+        if($employee->hasExactRoles('employee') && $employee->is_supervisor) {
+            $leaves = Leave::where('leave_status', self::ACCEPTED_STATUS)
+                        ->orWhere(function ($query) use ($employee) {
+                            $query->whereHas('employee', function ($q) use ($employee) {
+                                $q->whereHas('department', function ($q) use ($employee) {
+                                    $q->where('manager_id', $employee->id);
+                                });})
+                                ->whereNot('processing_officer_role', Role::findByName('employee')->id)
+                                ->where('leave_status', self::PENDING_STATUS);})->paginate(10);
+        }
+
+        if($employee->hasRole('human_resource')) {
+            $leaves = Leave::where('leave_status', self::ACCEPTED_STATUS)
+                            ->orWhere(function ($query) {
+                             $query->where('leave_status', self::PENDING_STATUS)->where('processing_officer_role', Role::findByName('sg')->id);})->paginate(10);
+        }
+
+        if($employee->hasRole('sg')) {
+            $leaves = Leave::whereNot('employee_id', $employee->id)
+                        ->where('leave_status', self::ACCEPTED_STATUS)->paginate(10);
+
+        }
+
         return view('leaves.accepted-index', [
             'leaves' => $leaves
         ]);
     }
 
     public function rejectedIndex() {
-        $employee=auth()->user();
-        $leaves = Leave::where('leave_status', self::REJECTED_STATUS)->where('processing_officer_role', Role::findByName($employee->getRoleNames()->first())->id)->paginate(10);
+        $employee = auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($employee)) {
+            return back();
+        }
+        $leaves = Leave::where('leave_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->paginate(10);
         return view('leaves.rejected-index', [
             'leaves' => $leaves
         ]);
@@ -166,23 +186,16 @@ class LeaveController extends Controller
 
     public function show(Leave $leave) {
         {
+            $loggedInUser = auth()->user();
             $processing_officer = Role::where('id', $leave->processing_officer_role)->first();
-            $roles = auth()->user()->getRoleNames();
 
-            if($leave->employee_id == auth()->user()->id) {
+            if($leave->employee_id == $loggedInUser->id || $loggedInUser->hasRole(['human_resource', 'sg']) || $loggedInUser->id == $leave->employee->department->manager_id) {
                 return view('leaves.show', [
                     'leave' => $leave,
                     'processing_officer' => $processing_officer
                 ]);
             }
-            foreach ($roles as $role) {
-                if (Role::findByName($role)->id == $leave->processing_officer_role) {
-                    return view('leaves.show', [
-                        'leave' => $leave,
-                        'processing_officer' => $processing_officer
-                    ]);
-                }
-            }
+
             return back();
         }
     }
@@ -204,10 +217,7 @@ class LeaveController extends Controller
     public function reject(Request $request, Leave $leave) {
         $employee=auth()->user();
         $helper = new Helper();
-        if($helper->checkIfNormalEmployee($employee)) {
-            return back();
-        }
-        if(!$employee->hasRole($leave->processing_officer->name)) {
+        if($helper->checkIfNormalEmployee($employee) || !$employee->hasRole($leave->processing_officer->name)) {
             return back();
         }
         $leave_service = new LeaveService();

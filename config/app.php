@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
+use MBarlow\Megaphone\MegaphoneServiceProvider;
 
 return [
 
@@ -187,6 +188,7 @@ return [
          */
         Spatie\Permission\PermissionServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        MegaphoneServiceProvider::class,
 
         /*
          * Application Services Providers...

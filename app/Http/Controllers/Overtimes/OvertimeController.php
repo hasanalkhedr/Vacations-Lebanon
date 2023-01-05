@@ -52,14 +52,20 @@ class OvertimeController extends Controller
                     $overtime->objective = $request->objective[$i];
                 }
                 $overtime->date_of_submission = now()->format('Y-m-d');
-                if($overtime->employee->hasExactRoles('employee') && $overtime->employee->is_supervisor == false) {
-                    $role = Role::findByName('employee');
-                    $processing_officers = auth()->user()->department->manager;
-                    $overtime->processing_officer_role = $role->id;
-                }
-                else if($overtime->employee->hasAllRoles(['employee','human_resource']) && $overtime->employee->is_supervisor == false) {
+
+                if($overtime->employee->hasAllRoles(['employee','human_resource']) && $overtime->employee->is_supervisor == false) {
                     $role = Role::findByName('sg');
                     $processing_officers = Employee::role('sg')->get();
+                    $overtime->processing_officer_role = $role->id;
+                }
+                else if($overtime->employee->department->manager->hasRole('sg')) {
+                    $role = Role::findByName('human_resource');
+                    $processing_officers = Employee::role('human_resource')->get();
+                    $overtime->processing_officer_role = $role->id;
+                }
+                else {
+                    $role = Role::findByName('employee');
+                    $processing_officers = auth()->user()->department->manager;
                     $overtime->processing_officer_role = $role->id;
                 }
                 $overtime->save();
@@ -92,37 +98,67 @@ class OvertimeController extends Controller
         if($helper->checkIfNormalEmployee($employee)) {
             return back();
         }
-        $today = now();
-        if($employee->hasRole("human_resource")) {
-            $overtimes = Overtime::whereNot('processing_officer_role', Role::findByName('employee')->id)->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('overtime_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+        if($employee->hasRole("employee") && $employee->is_supervisor){
+            $overtimes = Overtime::where('processing_officer_role', Role::findByName('employee')->id)->where('overtime_status', self::PENDING_STATUS)
+                        ->whereHas('employee', function ($q) use ($employee) {
+                        $q->whereHas('department', function ($q) use ($employee) {
+                            $q->where('manager_id', $employee->id);
+                        });
+                    })->search(request(['search']))->paginate(10);
         }
-        if($employee->hasRole("employee")  && $employee->is_supervisor){
-            $overtimes = Overtime::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('overtime_status', self::PENDING_STATUS)->whereIn('employee_id', $employee->department->employees->pluck('id')->toarray())->search(request(['search']))->paginate(10);
+        if($employee->hasRole("human_resource")) {
+            $overtimes = Overtime::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('overtime_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
         if($employee->hasRole("sg")) {
             $overtimes = Overtime::where('overtime_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
-
         return view('overtimes.index', [
             'overtimes' => $overtimes,
             'employee' => $employee,
-            'today' => $today,
-            'department' => $employee->department,
         ]);
     }
 
     public function acceptedIndex() {
-        $ROLES_ASCENDING = array(Role::findByName('employee')->id, Role::findByName('human_resource')->id, Role::findByName('sg')->id);
-        $employee=auth()->user();
-        $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->orWhere('processing_officer' , ">", array_search(Role::findByName($employee->getRoleNames()->first()->name)->id, $ROLES_ASCENDING));
+        $employee = auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($employee)) {
+            return back();
+        }
+        if($employee->hasExactRoles('employee') && $employee->is_supervisor) {
+            $overtimes = Overtime::where('overtime_status', self::ACCEPTED_STATUS)
+                ->orWhere(function ($query) use ($employee) {
+                    $query->whereHas('employee', function ($q) use ($employee) {
+                        $q->whereHas('department', function ($q) use ($employee) {
+                            $q->where('manager_id', $employee->id);
+                        });})
+                        ->whereNot('processing_officer_role', Role::findByName('employee')->id)
+                        ->where('overtime_status', self::PENDING_STATUS);})->paginate(10);
+        }
+
+        if($employee->hasRole('human_resource')) {
+            $overtimes = Overtime::where('overtime_status', self::ACCEPTED_STATUS)
+                ->orWhere(function ($query) {
+                    $query->where('overtime_status', self::PENDING_STATUS)->where('processing_officer_role', Role::findByName('sg')->id);})->paginate(10);
+        }
+
+        if($employee->hasRole('sg')) {
+            $overtimes = Overtime::whereNot('employee_id', $employee->id)
+                ->where('overtime_status', self::ACCEPTED_STATUS)->paginate(10);
+
+        }
+
         return view('overtimes.accepted-index', [
             'overtimes' => $overtimes
         ]);
     }
 
     public function rejectedIndex() {
-        $employee=auth()->user();
-        $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('processing_officer', $employee->id);
+        $employee = auth()->user();
+        $helper = new Helper();
+        if($helper->checkIfNormalEmployee($employee)) {
+            return back();
+        }
+        $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->paginate(10);
         return view('overtimes.rejected-index', [
             'overtimes' => $overtimes
         ]);
@@ -130,24 +166,13 @@ class OvertimeController extends Controller
 
     public function show(Overtime $overtime) {
         {
+            $loggedInUser = auth()->user();
             $processing_officer = Role::where('id', $overtime->processing_officer_role)->first();
-            $roles = auth()->user()->getRoleNames();
-            if($overtime->employee_id == auth()->user()->id) {
+            if($overtime->employee_id == $loggedInUser->id || $loggedInUser->hasRole(['human_resource', 'sg']) || $loggedInUser->id == $leave->employee->department->manager_id) {
                 return view('overtimes.show', [
                     'overtime' => $overtime,
                     'processing_officer' => $processing_officer
                 ]);
-            }
-            foreach ($roles as $role) {
-                if (Role::findByName($role)->id == $overtime->processing_officer_role){
-                    return view('overtimes.show', [
-                        'overtime' => $overtime,
-                        'processing_officer' => $processing_officer
-                    ]);
-                }
-                else {
-                    continue;
-                }
             }
             return back();
         }
@@ -170,10 +195,7 @@ class OvertimeController extends Controller
     public function reject(Request $request, Overtime $overtime) {
         $user = auth()->user();
         $helper = new Helper();
-        if($helper->checkIfNormalEmployee($user)) {
-            return back();
-        }
-        if(!$user->hasRole($overtime->processing_officer->name)) {
+        if($helper->checkIfNormalEmployee($user) || !$user->hasRole($overtime->processing_officer->name)) {
             return back();
         }
         $overtime_service = new OvertimeService();

@@ -8,30 +8,18 @@
         </div>
     @endif
 
-    <form wire:submit.prevent="send">
+    <form method="POST" action="{{ route('notifications.store') }}" enctype="multipart/form-data">
+        @csrf
         <div class="mb-6">
-            <label for="type" class="block mb-2 text-sm font-medium blue-color">{{ __('Type') }}*</label>
-            <select id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                @error('type') border-red-500 @enderror" wire:model="type">
-                <option value="" disabled selected>{{ __('Select Type') }}</option>
-                @foreach ($notifTypes as $type => $name)
-                    <option value="{{ $type }}">
-                        {{ $name }}
-                    </option>
-                @endforeach
-            </select>
+            <label for="title" class="block mb-2 text-sm font-medium text-gray-900">{{ __('Title') }}*</label>
+            <input name="title" type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 @error('title') border-red-500 @enderror">
         </div>
 
         <div class="mb-6">
-            <label for="title" class="block mb-2 text-sm font-medium blue-color">{{__('Title') }}*</label>
-            <input type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 @error('title') border-red-500 @enderror" wire:model.lazy="title" >
+            <label for="body" class="block mb-2 text-sm font-medium text-gray-900">{{ __('Body') }}*</label>
+            <input name="body" type="text" id="body" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 @error('body') border-red-500 @enderror">
         </div>
 
-        <div class="mb-6">
-            <label for="body" class="block mb-2 text-sm font-medium blue-color">{{__('Body') }}*</label>
-            <input type="text" id="body" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 @error('body') border-red-500 @enderror" wire:model.lazy="body" >
-        </div>
-
-        <button type="submit" class="text-white hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center blue-bg">{{ __('Send') }}</button>
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">{{ __('Send') }}</button>
     </form>
 </div>

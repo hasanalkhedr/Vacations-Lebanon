@@ -16,7 +16,10 @@ class EmployeeService
             return Employee::whereNot('id', auth()->id())->search(request(['search']))->paginate(10);
         }
         else {
-            return Employee::whereNot('id', auth()->id())->where('department_id', $loggedInUser->department_id)->search(request(['search']))->paginate(10);
+            return Employee::whereNot('id', auth()->id())
+                            ->whereHas('department', function($q) use ($loggedInUser) {
+                                $q->where('manager_id', $loggedInUser->id);})
+                            ->search(request(['search']))->paginate(10);
         }
     }
 

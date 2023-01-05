@@ -1,5 +1,5 @@
 <x-sidebar>
-    @section('title', 'Show Leave Request')
+    @section('title', __('Show Leave Request'))
     <div class="m-4">
         <div class="mb-6">
             <a href="{{ url()->previous() }}">
@@ -15,7 +15,7 @@
             </label>
         </div>
         <div class="relative z-0 mb-6 w-full group">
-            <input type="text" name="leave_duration_id" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $leave->leave_duration->name }}" />
+            <input type="text" name="leave_duration_id" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{__($leave->leave_duration->name) }}" />
             <label for="leave_duration_id" class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
                 {{__("Leave Duration Type")}}
             </label>
@@ -68,7 +68,7 @@
         </div>
         <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 mb-6 w-full group">
-                <input type="text" name="leave_type_id" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{ $leave->leave_type->name }}" />
+                <input type="text" name="leave_type_id" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" disabled value="{{__($leave->leave_type->name) }}" />
                 <label for="leave_type_id" class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
                     {{__("Leave Type")}}
                 </label>
@@ -125,7 +125,7 @@
                 </label>
             </div>
         @endif
-        @unlessrole('employee')
+        @unless((auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false) || auth()->user()->id != $leave->employee->department->manager_id)
             @if($leave->leave_status == 0 && auth()->user()->hasRole($leave->processing_officer->name))
                 <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" data-modal-toggle="acceptModal">
                     {{__("Accept")}}
@@ -134,7 +134,7 @@
                     {{__("Reject")}}
                 </button>
             @endif
-        @endunlessrole
+        @endunless
     </div>
 
 
@@ -271,5 +271,5 @@
         </div>
     </div>
 
-</x-sidebar>>
+</x-sidebar>
 

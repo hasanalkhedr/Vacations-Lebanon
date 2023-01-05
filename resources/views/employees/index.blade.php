@@ -61,30 +61,7 @@
                             </td>
                         @endif
                         <td class="py-4 px-6 border-b">
-                            @if($employee->getRoleNames()->count() == 1)
-                                @if($employee->hasRole('employee') && $employee->is_supervisor)
-                            {{__("Supervisor")}}
-                                @else
-                                    {{__($employee->roles()->first()->display_name) }}
-                                @endif
-                            @else
-                                @foreach($employee->getRoleNames() as $role_name)
-                                    @if($employee->getRoleNames()->last() == $role_name)
-                                        @if($role_name == "$employee" && $employee->is_supervisor)
-                                            {{__("Supervisor")}}
-                                        @else
-                                            {{__(\Spatie\Permission\Models\Role::findByName($role_name)->display_name) }}
-                                        @endif
-
-                                    @else
-                                        @if($role_name == "$employee" && $employee->is_supervisor)
-                                            {{__("Supervisor")}} |
-                                        @else
-                                            {{__(\Spatie\Permission\Models\Role::findByName($role_name)->display_name) }} |
-                                        @endif
-                                    @endif
-                                @endforeach
-                            @endif
+                            {{(implode(' | ', $employee->getRoleNamesCustom())) }}
                         </td>
                         @hasanyrole('human_resource|sg')
                             <td class="py-4 px-6 text-right border-b">

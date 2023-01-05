@@ -64,12 +64,7 @@ class EmployeeSeeder extends Seeder
             'department_id' => 2
         ]);
         $role = Role::findByName('employee');
-        $employee->is_supervisor = true;
-        $employee->save();
         $employee->roles()->save($role);
-        $department = Department::find(2);
-        $department['manager_id'] = $employee['id'];
-        $department->save();
 
         //Bekaa
 
@@ -310,12 +305,7 @@ class EmployeeSeeder extends Seeder
             'department_id' => 7
         ]);
         $role = Role::findByName('employee');
-        $employee->is_supervisor = true;
-        $employee->save();
         $employee->roles()->save($role);
-        $department = Department::find(7);
-        $department['manager_id'] = $employee['id'];
-        $department->save();
 
         // Culturel
 
@@ -366,7 +356,6 @@ class EmployeeSeeder extends Seeder
             'last_name' => 'Azzi',
             'email' => 'hiam.azze@if-liban.com',
             'password' => Hash::make('123456'),
-            'phone_number' => '+96176030977',
             'department_id' => 9
         ]);
         $role = Role::findByName('employee');
@@ -415,6 +404,12 @@ class EmployeeSeeder extends Seeder
         $employee->is_supervisor = true;
         $employee->save();
         $employee->roles()->save($role);
+        $department = Department::find(2);
+        $department['manager_id'] = $employee['id'];
+        $department->save();
+        $department = Department::find(7);
+        $department['manager_id'] = $employee['id'];
+        $department->save();
         $department = Department::find(10);
         $department['manager_id'] = $employee['id'];
         $department->save();

@@ -130,7 +130,7 @@ class EmployeeController
         $departments = Department::all();
         $roles = Role::all();
         $loggedInUser = auth()->user();
-        if($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole("sg") || $loggedInUser->id === $employee->id || ($loggedInUser->is_supervisor && $employee->department->id == $loggedInUser->department->id)) {
+        if($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole("sg") || $loggedInUser->id === $employee->id || ($loggedInUser->is_supervisor && $employee->department->manager_id == $loggedInUser->id)) {
             return view('employees.show', [
                 'employee' => $employee,
                 'departments' => $departments,

@@ -4,16 +4,12 @@ namespace App\Helpers;
 
 use App\Models\Holiday;
 use Carbon\CarbonPeriod;
+use Spatie\Permission\Models\Role;
 
 class Helper
 {
     public function checkIfNormalEmployee($user) {
-        if(!$user->hasAnyRole(['human_resource', 'sg'])) {
-            if(!$user->is_supervisor) {
-                return true;
-            }
-        }
-        return false;
+        return ($user->hasExactRoles('employee') && $user->is_supervisor == false);
     }
 
     public function getHolidays()
@@ -40,4 +36,12 @@ class Helper
         return (date('N', strtotime($date)) == 7 || date('N', strtotime($date)) == 6);
     }
 
+    public function getRoleIds() {
+        $roles_ids = [];
+        $roles = Role::all();
+        foreach ($roles as $role) {
+            $roles_ids [] = $role->id;
+        }
+        return $roles_ids;
+    }
 }

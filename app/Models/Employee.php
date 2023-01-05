@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use MBarlow\Megaphone\HasMegaphone;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 class Employee extends Authenticatable
@@ -76,5 +77,31 @@ class Employee extends Authenticatable
 
     public function overtimes() {
         return $this->hasMany(Overtime::class);
+    }
+
+    public function allRoles()
+    {
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id');
+    }
+
+    public function getRoleNamesCustom() {
+        $roles = [];
+        foreach ($this->getRoleNames() as $name) {
+            if($name == "employee" && $this->is_supervisor) {
+                $roles [] = ucfirst(__("supervisor"));
+            }
+            else {
+                $roles [] = ucfirst(__($name));
+            }
+        }
+        return $roles;
+    }
+
+    public function getRoleIds() {
+        $role_ids = [];
+        foreach($this->allRoles as $role) {
+            $role_ids [] = $role->id;
+        }
+        return $role_ids;
     }
 }

@@ -37,5 +37,5 @@ return [
     /*
      * Clear Megaphone notifications older than....
      */
-    'clearAfter' => '1 minute',
+    'clearAfter' => '2 weeks',
 ];

@@ -79,6 +79,7 @@ class OvertimeService
         if($request['cancellation_reason']) {
             $overtime->cancellation_reason = $request['cancellation_reason'];
         }
+        $overtime->rejected_by = auth()->user()->id;
         $overtime->save();
        $this->sendEmailToInvolvedEmployees($overtime);
     }

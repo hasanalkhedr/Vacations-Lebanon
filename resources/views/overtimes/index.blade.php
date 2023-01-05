@@ -56,7 +56,7 @@
                             @endif
 
                         </td>
-                        @hasanyrole('human_resource|sg')
+                        @if(($leave->processing_officer->name == "employee" && $leave->employee->department->manager_id == $employee->id) || ($leave->processing_officer->name == "human_resource" && $employee->hasRole('human_resource')) || ($leave->processing_officer->name == "sg" && $employee->hasRole('sg')))
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-green-600 hover:underline" type="button"
                                         data-modal-toggle="acceptModal-{{$overtime->id}}">
@@ -69,7 +69,7 @@
                                     {{__("Reject")}}
                                 </button>
                             </td>
-                        @endhasanyrole
+                        @endif
                         <div id="rejectModal-{{$overtime->id}}" tabindex="-1" aria-hidden="true"
                              class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">

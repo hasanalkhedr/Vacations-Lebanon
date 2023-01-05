@@ -11,11 +11,11 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com/"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"
         integrity="sha512-K/oyQtMXpxI4+K0W7H25UopjM8pzq0yrVdFdG21Fh5dBe91I40pDd9A4lzNlHPHBIP2cwZuoxaUSX0GJSObvGA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.3/dist/flowbite.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
@@ -65,7 +65,7 @@
 
                                 </li>
                             @endunless
-                            @unless(auth()->user()->hasExactRoles('employee'))
+                            @unless(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('employees.index') }}">
@@ -250,30 +250,7 @@
                             {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
                         </div>
                         <div class="px-2 text-md italic text-black">
-                            @if (auth()->user()->getRoleNames()->count() == 1)
-                                @if (auth()->user()->roles()->first()->name == 'employee' && auth()->user()->is_supervisor)
-                                    {{ __('Supervisor') }}
-                                @else
-                                    {{ __(auth()->user()->roles()->first()->display_name) }}
-                                @endif
-                            @else
-                                @foreach (auth()->user()->getRoleNames() as $role_name)
-                                    @if (auth()->user()->getRoleNames()->last() == $role_name)
-                                        @if (auth()->user()->roles()->first() == 'employee' && auth()->user()->is_supervisor)
-                                            {{ __('Supervisor') }}
-                                        @else
-                                            {{ __(\Spatie\Permission\Models\Role::findByName($role_name)->display_name) }}
-                                        @endif
-                                    @else
-                                        @if (auth()->user()->roles()->first() == 'employee' && auth()->user()->is_supervisor)
-                                            {{ __('Supervisor') }} |
-                                        @else
-                                            {{ __(\Spatie\Permission\Models\Role::findByName($role_name)->display_name) }}
-                                            |
-                                        @endif
-                                    @endif
-                                @endforeach
-                            @endif
+                            {{(implode(' | ', auth()->user()->getRoleNamesCustom())) }}
                         </div>
                     </div>
                     <div class="flex mx-2">
@@ -300,6 +277,8 @@
         </div>
     </div>
     <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+
+    @livewireScripts
 </body>
 
 </html>

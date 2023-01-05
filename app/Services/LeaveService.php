@@ -108,6 +108,7 @@ class LeaveService
         if ($request['cancellation_reason']) {
             $leave->cancellation_reason = $request['cancellation_reason'];
         }
+        $leave->rejected_by = auth()->user()->id;
         $leave->save();
         $this->sendEmailToInvolvedEmployees($leave, NULL, $leave->substitute_employee);
     }
@@ -139,7 +140,7 @@ class LeaveService
 
     public function getDisabledDates($employee)
     {
-        $leaves = Leave::all();
+        $leaves = Leave::where('employee_id', $employee->id)->get();
         $disabled_dates = [];
         foreach ($leaves as $leave) {
             $period = CarbonPeriod::create($leave->from, $leave->to);
