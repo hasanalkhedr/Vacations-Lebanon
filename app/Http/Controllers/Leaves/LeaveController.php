@@ -123,7 +123,9 @@ class LeaveController extends Controller
                     $q->whereHas('department', function ($q) use ($employee) {
                         $q->where('manager_id', $employee->id);
                     });
-                })->search(request(['search']))->paginate(10);
+                })
+                ->whereNot('employee_id', $employee->id)
+                ->search(request(['search']))->paginate(10);
         }
         if($employee->hasRole("human_resource")) {
             $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
