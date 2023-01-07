@@ -227,7 +227,13 @@ class LeaveService
     }
 
     public function fetchLeaves($employee_id, $from_date, $to_date) {
-        $leaves = Leave::where('employee_id', $employee_id)->where('leave_status', self::ACCEPTED_STATUS)->whereDate('from', '>=', $from_date)->whereDate('to', '<=', $to_date)->paginate(20);
+        $leaves = Leave::where('employee_id', $employee_id)->where('leave_status', self::ACCEPTED_STATUS)
+                        ->where(function($query) use($from_date, $to_date) {
+                            $query->where(function($query) use($from_date, $to_date) {
+                                        $query->whereDate('from', '>=', $from_date)->whereDate('from', '<=', $to_date);})
+                                    ->orWhere(function($query) use($from_date, $to_date) {
+                                        $query->whereDate('to', '>=', $from_date)->whereDate('to', '<=', $to_date);});
+                        })->paginate(20);
         $leave_types = LeaveType::all();
         foreach ($leave_types as $leave_type) {
             $data[$leave_type->name] = $this->filterLeaves($leaves, $leave_type);

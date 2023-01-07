@@ -50,8 +50,9 @@ class EmployeeController
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'phone_number' => $validated['phone_number'],
+//            'phone_number' => $validated['phone_number'],
         ]);
+        $employee->phone_number = $request->phone_number;
         foreach ($request->role_ids as $role_id) {
             $employee->assignRole(Role::findById($role_id)->name);
         }
@@ -159,9 +160,10 @@ class EmployeeController
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
-            'phone_number' => $validated['phone_number'],
+//            'phone_number' => $validated['phone_number'],
         ]);
-        if($employee->hasRole('employee') && !$employee->is_supervisor) {
+        $employee->phone_number = $request->phone_number;
+        if($employee->hasRole('employee') && !$employee->is_supervisor && !$this->employee->hasRole("sg")) {
             $employee->update([
                 'nb_of_days' => $validated['nb_of_days'],
                 'confessionnels' => $validated['confessionnels'],

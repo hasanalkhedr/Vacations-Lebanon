@@ -20,6 +20,7 @@ class Holiday extends Model
         'to',
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
