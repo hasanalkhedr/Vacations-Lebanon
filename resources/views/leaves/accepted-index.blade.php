@@ -41,7 +41,7 @@
                         </td>
                         <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             @if($leave->leave_status == 0)
-                                Pending
+                                    {{__("Pending")}}
                             @elseif($leave->leave_status == 1)
                                 <div class="text-green-500">
                                     {{__("Accepted")}}
