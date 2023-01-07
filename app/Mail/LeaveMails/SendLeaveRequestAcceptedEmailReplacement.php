@@ -27,7 +27,7 @@ class SendLeaveRequestAcceptedEmailReplacement extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request Accepted as a Replacement')
+        return $this->subject('Demande de congé acceptée en remplacement')
             ->view('emails.leaves.accepted-leave-request-replacement');
     }
 }

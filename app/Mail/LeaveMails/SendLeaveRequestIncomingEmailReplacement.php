@@ -27,7 +27,7 @@ class SendLeaveRequestIncomingEmailReplacement extends Mailable
      */
     public function build()
     {
-        return $this->subject('Leave Request Replacement')
+        return $this->subject('Remplacement de demande de congé')
             ->view('emails.leaves.incoming-leave-request-replacement');
     }
 }

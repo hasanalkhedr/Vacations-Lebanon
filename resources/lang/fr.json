@@ -100,7 +100,6 @@
     "No": "Non",
     "Select Leave Type": "Choisir le type d'absence",
     "Attachment": "Pièce jointe",
-
     "Select Substitute": "Choisir un remplaçant ",
     "Choose Substitute Employee": "Choisir l'agent me remplaçant",
     "No Replacement": "Pas de remplaçant nécessaire",
@@ -194,14 +193,14 @@
     "training": "Formation",
     "sick leave": "Arrêt maladie",
     "bereavement leave": "Congé deuil",
-    "maternity leave": "congé maternité",
-    "paternity leave": "congé paternité",
-    "marriage leave": "congé mariage",
+    "maternity leave": "Congé maternité",
+    "paternity leave": "Congé paternité",
+    "marriage leave": "Congé mariage",
     "The attachment is required": "La pièce jointe est obligatoire",
     "The date is required": "La date est obligatoire",
     "The leave duration type is required": "La durée du congé est obligatoire",
     "The leave type is required": "Le type d'absence est obligatoire",
-    "The name is required": "le nom est obligatoire",
+    "The name is required": "Le nom est obligatoire",
     "Select Employee": "Sélectionner l'employé",
     "Total": "Total",
     "Monday": "Lundi",
@@ -218,7 +217,9 @@
     "Remaining Leaves": "Jours de congés",
     "Remaining Confessionnels": "Jours Confessionnel",
     "Remaining Balances": "Soldes Restants",
-    "Leaves":  "Congé",
+    "Leaves": "Congé",
     "Overtimes": "HS",
-    "Generate Report": "Générer un rapport"
+    "Generate Report": "Générer un rapport",
+    "Accepted Overtime Requests": "Demandes d'heures supplémentaires acceptées",
+    "Rejected Overtime Requests": "Demandes d'heures supplémentaires rejetées"
 }
