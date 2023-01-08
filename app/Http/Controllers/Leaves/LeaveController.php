@@ -107,7 +107,7 @@ class LeaveController extends Controller
             $leave->processing_officer_role = $role->id;
         }
         $leave->save();
-        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
+        // $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
         return redirect()->route('leaves.submitted');
     }
 
@@ -363,7 +363,7 @@ class LeaveController extends Controller
             }
         }
         $leave_service = new LeaveService();
-        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee, true);
+        // $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee, true);
         $leave->delete();
         return redirect()->route('leaves.submitted');
     }
