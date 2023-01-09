@@ -69,7 +69,7 @@
                                 @if ($leave->processing_officer->name == 'employee')
                                     {{ __('Supervisor') }}
                                 @else
-                                    {{ $leave->processing_officer->display_name }}
+                                    {{__($leave->processing_officer->display_name) }}
                                 @endif
 
                             </td>

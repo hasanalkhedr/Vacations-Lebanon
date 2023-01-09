@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
-use Kyslik\ColumnSortable\ColumnSortableServiceProvider;
 use MBarlow\Megaphone\MegaphoneServiceProvider;
 
 return [
@@ -190,7 +189,6 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         MegaphoneServiceProvider::class,
-        ColumnSortableServiceProvider::class,
 
         /*
          * Application Services Providers...

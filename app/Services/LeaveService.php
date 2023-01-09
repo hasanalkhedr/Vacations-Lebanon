@@ -39,7 +39,9 @@ class LeaveService
             if ($leave->leave_status == self::ACCEPTED_STATUS) {
                 $employee = Employee::where('id', $leave->employee_id)->first();
                 dispatch(new SendLeaveRequestAcceptedEmailJob($employee));
-                dispatch(new SendLeaveRequestAcceptedEmailReplacementJob($substitute_employee));
+                if($substitute_employee) {
+                    dispatch(new SendLeaveRequestAcceptedEmailReplacementJob($substitute_employee));
+                }
             } elseif ($leave->leave_status == self::REJECTED_STATUS) {
                 $employee = Employee::where('id', $leave->employee_id)->first();
                 dispatch(new SendLeaveRequestRejectedEmailJob($employee));

@@ -254,11 +254,9 @@
                         </div>
                     </div>
                     <div class="flex mx-2">
-                        @if (auth()->user()->hasRole('employee') && auth()->user()->is_supervisor == false)
-                            <div class="flex justify-center items-center">
-                                <livewire:megaphone></livewire:megaphone>
-                            </div>
-                        @endif
+                         <div class="flex justify-center items-center">
+                            <livewire:megaphone></livewire:megaphone>
+                        </div>
 
                         <div class="py-3 text-xl font-bold text-black">
                             <form method="POST" action="{{ route('logout') }}">
