@@ -103,7 +103,7 @@ class LeaveController extends Controller
         }
         else {
             $role = Role::findByName('employee');
-            $processing_officers = auth()->user()->department->manager;
+            $processing_officers = collect([auth()->user()->department->manager]);
             $leave->processing_officer_role = $role->id;
         }
         $leave->save();
