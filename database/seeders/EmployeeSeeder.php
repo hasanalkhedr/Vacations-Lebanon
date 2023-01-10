@@ -22,7 +22,7 @@ class EmployeeSeeder extends Seeder
         $employee = Employee::create([
             'first_name' => 'Catherine',
             'last_name' => 'Lapierre',
-            'email' => 'abednahouli@gmail.com',
+            'email' => 'catherine.lapierre@diplomatie.gouv.fr',
             'password' => Hash::make('123456'),
             'department_id' => 1
         ]);
@@ -513,7 +513,7 @@ class EmployeeSeeder extends Seeder
         $employee = Employee::create([
             'first_name' => 'Mélanie',
             'last_name' => 'Bouchard',
-            'email' => 'majzoub.malek@gmail.com',
+            'email' => 'melanie.bouchard@diplomatie.gouv.fr',
             'password' => Hash::make('123456'),
             'department_id' => 13
         ]);
@@ -550,7 +550,7 @@ class EmployeeSeeder extends Seeder
         $employee = Employee::create([
             'first_name' => 'Sandra',
             'last_name' => 'Khabazian',
-            'email' => 'abed2001nahouli@gmail.com',
+            'email' => 'sandra.khabazian@if-liban.com',
             'password' => Hash::make('123456'),
             'department_id' => 13
         ]);
