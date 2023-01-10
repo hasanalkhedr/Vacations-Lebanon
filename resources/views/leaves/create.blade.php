@@ -190,17 +190,16 @@
             $("#error").text("");
             if ($('#confessionnels')[0].checked) {
                 if ({{  auth()->user()->confessionnels }} === 0) {
-                    $('#createButton').attr('disabled', true)
-                    $('#error').css("color", "red");
-                    $("#error").text("{{__("You don't have any confessionnel days left")}}");
+                    let text = "{{__("You don't have any confessionnel days left")}}";
+                    disableButtonAndShowError(text);
                 }
                 let fromDate = $('#fromDate').val();
                 $("#toDate").val(fromDate);
             } else {
-                let fromDate = $('#fromDate').val();
-                let toDate = $('#toDate').val();
-                if (fromDate > toDate) {
-                    $("#toDate").val(fromDate);
+                let fromDate = changeDateFormat($('#fromDate').val());
+                let toDate = changeDateFormat($('#toDate').val());
+                if (fromDate > toDate || !toDate) {
+                    $("#toDate").val($('#fromDate').val());
                     toDate = $('#toDate').val();
                 }
                 let newFromDate = new Date(fromDate);
@@ -227,23 +226,17 @@
                 }
                 if ($('#confessionnels')[0].checked) {
                     if (dateDifference > {{  auth()->user()->confessionnels }}) {
-
-                        $('#createButton').attr('disabled', true)
-                        $('#error').css("color", "red");
-                        $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnel days left")}}");
+                        let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnel days left")}}";
+                        disableButtonAndShowError(text);
                     }
                 } else {
                     if (dateDifference > {{  auth()->user()->nb_of_days }}) {
-
-                        $('#createButton').attr('disabled', true)
-                        $('#error').css("color", "red");
-                        $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}}" + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}");
+                        let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}";
+                        disableButtonAndShowError(text);
                     }
                     if (dateDifference_confessionnels > {{  auth()->user()->confessionnels }}) {
-
-                        $('#createButton').attr('disabled', true)
-                        $('#error').css("color", "red");
-                        $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}");
+                        let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
+                        disableButtonAndShowError(text);
                     }
                 }
             }
@@ -252,10 +245,10 @@
         $('#toDate').change(function(){
             $('#createButton').attr('disabled', false)
             $("#error").text("");
-            let fromDate = $('#fromDate').val();
-            let toDate = $('#toDate').val();
+            let fromDate = changeDateFormat($('#fromDate').val());
+            let toDate = changeDateFormat($('#toDate').val());
             if(!fromDate) {
-                $("#fromDate").val(toDate);
+                $("#fromDate").val($('#toDate').val());
                 fromDate = $('#fromDate').val();
             }
             let newFromDate = new Date(fromDate);
@@ -282,24 +275,18 @@
             }
             if($('#confessionnels')[0].checked) {
                 if(dateDifference > {{  auth()->user()->confessionnels }}) {
-
-                    $('#createButton').attr('disabled', true)
-                    $('#error').css("color", "red");
-                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}");
+                    let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
+                    disableButtonAndShowError(text);
                 }
             }
             else {
                 if(dateDifference > {{  auth()->user()->nb_of_days }}) {
-
-                    $('#createButton').attr('disabled', true)
-                    $('#error').css("color", "red");
-                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}");
+                    let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}";
+                    disableButtonAndShowError(text);
                 }
                 if (dateDifference_confessionnels > {{  auth()->user()->confessionnels }}) {
-
-                    $('#createButton').attr('disabled', true)
-                    $('#error').css("color", "red");
-                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}");
+                    let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
+                    disableButtonAndShowError(text);
                 }
             }
         });
@@ -307,10 +294,10 @@
         $('#confessionnels').change(function(){
             $('#createButton').attr('disabled', false)
             $("#error").text("");
-            let fromDate = $('#fromDate').val();
-            let toDate = $('#toDate').val();
+            let fromDate = changeDateFormat($('#fromDate').val());
+            let toDate = changeDateFormat($('#toDate').val());
             if(!fromDate) {
-                $("#fromDate").val(toDate);
+                $("#fromDate").val($('#toDate').val());
                 fromDate = $('#fromDate').val();
             }
             let newFromDate = new Date(fromDate);
@@ -326,21 +313,36 @@
             }
             if($('#confessionnels')[0].checked) {
                 if(dateDifference > {{  auth()->user()->confessionnels }}) {
-
-                    $('#createButton').attr('disabled', true)
-                    $('#error').css("color", "red");
-                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}");
+                    let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
+                    disableButtonAndShowError(text);
                 }
             }
             else {
                 if(dateDifference > {{  auth()->user()->nb_of_days }}) {
-
-                    $('#createButton').attr('disabled', true)
-                    $('#error').css("color", "red");
-                    $("#error").text("{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}");
+                    let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}";
+                    disableButtonAndShowError(text);
                 }
             }
         });
+
+
+        function changeDateFormat(date) {
+            if(!date) {
+                return null
+            }
+            let separator = '/';
+            const [day, month, year] = date.split(separator);
+
+            const formattedDate = [year, month, day].join('-');
+
+            return formattedDate;
+        }
+
+        function disableButtonAndShowError(text) {
+            $('#createButton').attr('disabled', true)
+            $('#error').css("color", "red");
+            $("#error").text(text);
+        }
     </script>
 
     <script type="text/javascript">
