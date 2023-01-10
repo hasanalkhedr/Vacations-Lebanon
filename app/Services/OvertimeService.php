@@ -71,7 +71,7 @@ class OvertimeService
                 break;
         }
         $overtime->save();
-    //    $this->sendEmailToInvolvedEmployees($overtime, $processing_officers);
+       $this->sendEmailToInvolvedEmployees($overtime, $processing_officers);
     }
 
     public function rejectLeaveRequest($request, $overtime) {
@@ -81,7 +81,7 @@ class OvertimeService
         }
         $overtime->rejected_by = auth()->user()->id;
         $overtime->save();
-    //    $this->sendEmailToInvolvedEmployees($overtime);
+       $this->sendEmailToInvolvedEmployees($overtime);
     }
 
     public function acceptLeave($overtime) {

@@ -96,10 +96,10 @@ class LeaveService
         }
         $leave->save();
         if($leave->leave_status == self::ACCEPTED_STATUS){
-            // $this->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
+            $this->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
         }
         else{
-            // $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
+            $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
         }
 
     }
@@ -112,7 +112,7 @@ class LeaveService
         }
         $leave->rejected_by = auth()->user()->id;
         $leave->save();
-        // $this->sendEmailToInvolvedEmployees($leave, NULL, $leave->substitute_employee);
+        $this->sendEmailToInvolvedEmployees($leave, NULL, $leave->substitute_employee);
     }
 
     public function acceptLeave($leave)
