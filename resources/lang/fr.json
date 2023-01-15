@@ -221,5 +221,6 @@
     "Overtimes": "HS",
     "Generate Report": "Générer un rapport",
     "Accepted Overtime Requests": "Demandes d'heures supplémentaires acceptées",
-    "Rejected Overtime Requests": "Demandes d'heures supplémentaires rejetées"
+    "Rejected Overtime Requests": "Demandes d'heures supplémentaires rejetées",
+    "Invalid Credentials": "Les informations d'identification invalides"
 }

@@ -16,12 +16,14 @@ use App\Models\Confessionnel;
 use App\Models\Employee;
 use App\Models\Holiday;
 use App\Models\Leave;
+use App\Models\LeaveDuration;
 use App\Models\LeaveType;
 use Carbon\CarbonPeriod;
 use Spatie\Permission\Models\Role;
 
 class LeaveService
 {
+    const PENDING_STATUS = 0;
     const ACCEPTED_STATUS = 1;
     const REJECTED_STATUS = 2;
 
@@ -250,5 +252,20 @@ class LeaveService
                 return true;
         });
         return ${"$leave_type->name"};
+    }
+
+    public function fetchRecoveryLeaves(Employee $employee) {
+        $recovery_leave_type = LeaveType::where('name', 'recovery')->first();
+        $leaves = Leave::where('employee_id', $employee->id)->where('leave_type_id', $recovery_leave_type->id)->whereNot('leave_status', self::REJECTED_STATUS)->get();
+        return $leaves;
+    }
+
+    public function getRecoveryLeaveDays(Employee $employee) {
+        $leaves = $this->fetchRecoveryLeaves($employee);
+        $days = 0;
+        foreach ($leaves as $leave) {
+            $days += $this->findNbofDaysOff($leave);
+        }
+        return $days;
     }
 }

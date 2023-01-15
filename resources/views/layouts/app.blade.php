@@ -21,6 +21,8 @@
     {{--    @vite(['resources/sass/app.scss', 'resources/js/app.js'])--}}
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+    @stack('head')
 </head>
 <body>
     <div id="app">

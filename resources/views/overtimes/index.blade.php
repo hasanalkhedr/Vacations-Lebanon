@@ -10,7 +10,7 @@
     </nav>
     @include('partials.searches._search-overtimes')
     <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table x-data="data()" class="w-full text-sm text-left text-gray-500" x-data="leaveData">
+        <table x-data="data()" class="w-full text-sm text-left text-gray-500" x-data="overtimeData">
             @unless($overtimes->isEmpty())
                 <thead class="text-s uppercase bg-gray-50 blue-color">
                 <tr>
@@ -56,7 +56,7 @@
                             @endif
 
                         </td>
-                        @if(($leave->processing_officer->name == "employee" && $leave->employee->department->manager_id == $employee->id) || ($leave->processing_officer->name == "human_resource" && $employee->hasRole('human_resource')) || ($leave->processing_officer->name == "sg" && $employee->hasRole('sg')))
+                        @if(($overtime->processing_officer->name == "employee" && $overtime->employee->department->manager_id == $employee->id) || ($overtime->processing_officer->name == "human_resource" && $employee->hasRole('human_resource')) || ($overtime->processing_officer->name == "sg" && $employee->hasRole('sg')))
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-green-600 hover:underline" type="button"
                                         data-modal-toggle="acceptModal-{{$overtime->id}}">

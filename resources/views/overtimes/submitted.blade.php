@@ -18,7 +18,7 @@
     <div class="rounded-lg p-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()"
             class="rounded-lg border-collapse border border-slate-200 w-full text-sm text-left text-gray-500"
-            x-data="leaveData">
+            x-data="overtimeData">
             @unless($overtimes->isEmpty())
                 <thead class="text-s uppercase bg-gray-50 blue-color">
                     <tr>

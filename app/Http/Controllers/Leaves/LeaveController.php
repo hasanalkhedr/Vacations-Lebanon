@@ -39,9 +39,12 @@ class LeaveController extends Controller
             $today = now();
             $substitutes = Employee::where('department_id', $employee->department_id)->where('is_supervisor', false)->get()->except($employee->id);
             $leave_service = new LeaveService();
-            $disabled_dates = $leave_service->getDisabledDates($employee);
-            $holiday_dates = $helper->getHolidays();
-            $confessionnel_dates = $leave_service->getConfessionnels();
+            $disabledDates = $leave_service->getDisabledDates($employee);
+            $holidayDates = $helper->getHolidays();
+            $confessionnelDates = $leave_service->getConfessionnels();
+            $overtimeService = new OvertimeService();
+            $overtimeDays = $overtimeService->overtimeToLeaveDays($employee);
+            $overtimeTotalTime = $overtimeService->fetchOvertimes($employee->id)['total_time'];
             return view('leaves.create', [
                 'employee' => $employee,
                 'leave_durations' => $leave_durations,
@@ -49,13 +52,15 @@ class LeaveController extends Controller
                 'today' => $today,
                 'department' => $employee->department,
                 'substitutes' => $substitutes,
-                'disabled_dates' => $disabled_dates,
-                'holiday_dates' => $holiday_dates,
-                'confessionnel_dates' => $confessionnel_dates,
+                'disabled_dates' => $disabledDates,
+                'holiday_dates' => $holidayDates,
+                'confessionnel_dates' => $confessionnelDates,
                 'normal_pending_days' => $normal_pending_days,
                 'confessionnel_pending_days' => $confessionnel_pending_days,
                 'normal_accepted_days' => $normal_accepted_days,
                 'confessionnel_accepted_days' => $confessionnel_accepted_days,
+                'overtimeTotalTime' => $overtimeTotalTime,
+                'overtimeDays' => $overtimeDays
             ]);
         }
         else {

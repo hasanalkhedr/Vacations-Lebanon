@@ -11,7 +11,7 @@
     <div class="rounded-lg p-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()"
             class="rounded-lg border-collapse border border-slate-200 w-full text-sm text-left text-gray-500"
-            x-data="leaveData">
+            x-data="overtimeData">
             @unless($overtimes->isEmpty())
                 <thead class="text-s uppercase bg-gray-50 blue-color">
                     <tr>
@@ -33,19 +33,19 @@
                     @foreach ($overtimes as $overtime)
                         <tr class="bg-white hover:bg-gray-50">
                             <td class="py-4 px-6 cursor-pointer"
-                                onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                                onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                                 {{ $overtime->employee->first_name }} {{ $overtime->employee->last_name }}
                             </td>
                             <td class="py-4 px-6 cursor-pointer"
-                                onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                                onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                                 {{ $overtime->date }}
                             </td>
                             <td class="py-4 px-6 cursor-pointer"
-                                onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                                onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                                 {{ $overtime->hours }}
                             </td>
                             <td class="py-4 px-6 cursor-pointer"
-                                onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                                onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                                 @if ($overtime->overtime_status == 0)
                                     {{ __('Pending') }}
                                 @elseif($overtime->overtime_status == 1)

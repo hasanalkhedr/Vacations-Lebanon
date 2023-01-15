@@ -89,11 +89,18 @@ class OvertimeService
         $overtime->save();
     }
 
-    public function fetchOvertimes($employee_id, $from_date, $to_date) {
-        $overtimes = Overtime::where('employee_id', $employee_id)->where('overtime_status', self::ACCEPTED_STATUS)->whereDate('date', '>=', $from_date)->whereDate('date', '<=', $to_date)->get();
-        $total_time = $this-> getTotalOvertime($overtimes);
+    public function fetchOvertimes($employee_id, $from_date = null, $to_date = null) {
+        if($from_date == null && $to_date == null) {
+            $overtimes = Overtime::where('employee_id', $employee_id)->where('overtime_status', self::ACCEPTED_STATUS)->get();
+        }
+        else {
+            $overtimes = Overtime::where('employee_id', $employee_id)->where('overtime_status', self::ACCEPTED_STATUS)->whereDate('date', '>=', $from_date)->whereDate('date', '<=', $to_date)->get();
+        }
+        $total = $this-> getTotalOvertime($overtimes);
         $data['overtimes'] = $overtimes;
-        $data['total_time'] = $total_time;
+        $data['hours'] = $total['hours'];
+        $data['mins'] = $total['mins'];
+        $data['total_time'] = $total['total_time'];
         return $data;
     }
 
@@ -107,8 +114,26 @@ class OvertimeService
         }
         $hours = floor($totalMinutes / 60);
         $mins = floor($totalMinutes % 60);
+        $total['hours'] = (int)$hours;
+        $total['mins'] = (int)$mins;
         $secs = floor($totalMinutes *60 % 60);
-        $total_time = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-        return $total_time;
+        $total['total_time'] = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+        return $total;
+    }
+
+    public function overtimeToLeaveDays(Employee $employee) {
+        $overtimeFullDayHours = 450;    // 7.5 hours
+        $overtimeHalfDayHours = 225;    // 3.75 hours
+
+        $total = $this->fetchOvertimes($employee->id);
+        $totalOvertimeMinutes = $total['hours'] * 60 + $total['mins'];
+        $fullDays = (int)($totalOvertimeMinutes / $overtimeFullDayHours);    // 7.5 hours = 450 mins
+        $halfDays = (int)($totalOvertimeMinutes / $overtimeHalfDayHours);    // 3.75 hours = 225 mins
+        $total_days = $fullDays + ($halfDays % $fullDays)*0.5;
+
+        $leaveService = new LeaveService();
+        $days = $leaveService->getRecoveryLeaveDays($employee);
+
+        return $total_days - $days;
     }
 }

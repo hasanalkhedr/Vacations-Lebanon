@@ -48,6 +48,35 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="mx-4">
+            <table class="mt-4 w-full text-sm text-left text-gray-500 border">
+                <thead class="text-s uppercase bg-gray-50 blue-color">
+                </thead>
+                <tbody>
+                <tr class="bg-white">
+                    <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
+                        {{__("Total Overtime")}}
+                    </th>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                        {{ $overtimeTotalTime }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
+                        {{__("Days")}}
+                    </th>
+{{--                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">--}}
+{{--                        {{ $overtimeFullDays + ($overtimeHalfDays % $overtimeFullDays)*0.5 }}--}}
+{{--                    </td>--}}
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                        {{$overtimeDays}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
         <div class="p-6">
             <form method="POST" action="{{ route('leaves.store') }}" enctype="multipart/form-data">
                 @csrf
@@ -67,7 +96,21 @@
                     </select>
                 </div>
 
-                <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="relative z-0 mb-6 w-full group">
+                    <label for="leave_type" class="mb-2 text-sm font-medium blue-color">
+                        {{__("Select Leave Type")}}
+                    </label>
+                    <select id="leave_type" name="leave_type_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="" disabled>{{__("Select Leave Type")}}</option>
+                        @if(count($leave_types))
+                            @foreach ($leave_types as $leave_type)
+                                <option value="{{ $leave_type->id }}">{{__($leave_type->name) }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+
+                <div class="grid md:grid-cols-2 md:gap-6" id="confessionnels_mix_div">
                     <div class="relative z-0 mb-6 w-full group">
                         <p class="mb-2 text-sm font-medium blue-color">{{__("Use Confessionnels Only")}}</p>
                         <div class="mt-2 flex flex-row">
@@ -124,19 +167,6 @@
                     @enderror
                 </div>
                 <div class="relative z-0 mb-6 w-full group">
-                    <label for="leave_type" class="mb-2 text-sm font-medium blue-color">
-                        {{__("Select Leave Type")}}
-                    </label>
-                    <select id="leave_type" name="leave_type_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="" disabled>{{__("Select Leave Type")}}</option>
-                        @if(count($leave_types))
-                            @foreach ($leave_types as $leave_type)
-                                <option value="{{ $leave_type->id }}">{{__($leave_type->name) }}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-                <div class="relative z-0 mb-6 w-full group">
                     <input type="file" name="attachment_path" id="attachment_path"
                            class="block pt-2.5 px-0 text-sm text-gray-900 bg-transparent appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
                     <label for="attachment_path"
@@ -186,119 +216,22 @@
 
     <script type="text/javascript">
         $('#fromDate').change(function() {
-            $('#createButton').attr('disabled', false);
-            $("#error").text("");
-            if ($('#confessionnels')[0].checked) {
-                if ({{  auth()->user()->confessionnels }} === 0) {
-                    let text = "{{__("You don't have any confessionnel days left")}}";
-                    disableButtonAndShowError(text);
-                }
-                let fromDate = $('#fromDate').val();
-                $("#toDate").val(fromDate);
-            } else {
-                let fromDate = changeDateFormat($('#fromDate').val());
-                let toDate = changeDateFormat($('#toDate').val());
-                if (fromDate > toDate || !toDate) {
-                    $("#toDate").val($('#fromDate').val());
-                    toDate = $('#toDate').val();
-                }
-                let newFromDate = new Date(fromDate);
-                let newToDate = new Date(toDate);
-                let dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000 * 3600 * 24)) + 1;
-                let dateDifference_confessionnels = 0;
-                let tempDate = new Date(newFromDate.getTime());
-                while (tempDate <= newToDate) {
-                    let newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
-                    if ($('#mix_of_leaves')[0].checked) {
-                        if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate) || {!! json_encode($confessionnel_dates) !!}.includes(newTempDate)) {
-                            dateDifference = dateDifference - 1;
-                        }
-                        if ({!! json_encode($confessionnel_dates) !!}.includes(newTempDate)) {
-                            dateDifference_confessionnels = dateDifference_confessionnels + 1;
-                        }
-                    }
-                    else {
-                        if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
-                            dateDifference = dateDifference - 1;
-                        }
-                    }
-                    tempDate.setDate(tempDate.getDate() + 1);
-                }
-                if ($('#confessionnels')[0].checked) {
-                    if (dateDifference > {{  auth()->user()->confessionnels }}) {
-                        let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnel days left")}}";
-                        disableButtonAndShowError(text);
-                    }
-                } else {
-                    if (dateDifference > {{  auth()->user()->nb_of_days }}) {
-                        let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}";
-                        disableButtonAndShowError(text);
-                    }
-                    if (dateDifference_confessionnels > {{  auth()->user()->confessionnels }}) {
-                        let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
-                        disableButtonAndShowError(text);
-                    }
-                }
-            }
+            calculateDateDifference();
         });
 
         $('#toDate').change(function(){
-            $('#createButton').attr('disabled', false)
-            $("#error").text("");
-            let fromDate = changeDateFormat($('#fromDate').val());
-            let toDate = changeDateFormat($('#toDate').val());
-            if(!fromDate) {
-                $("#fromDate").val($('#toDate').val());
-                fromDate = $('#fromDate').val();
-            }
-            let newFromDate = new Date(fromDate);
-            let newToDate = new Date(toDate);
-            let dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000*3600*24)) + 1;
-            let dateDifference_confessionnels = 0;
-            let tempDate = new Date(newFromDate.getTime());
-            while(tempDate <= newToDate){
-                let newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
-                if ($('#mix_of_leaves')[0].checked) {
-                    if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate) || {!! json_encode($confessionnel_dates) !!}.includes(newTempDate)) {
-                        dateDifference = dateDifference - 1;
-                    }
-                    if ({!! json_encode($confessionnel_dates) !!}.includes(newTempDate) ) {
-                        dateDifference_confessionnels = dateDifference_confessionnels + 1;
-                    }
-                }
-                else {
-                    if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
-                        dateDifference = dateDifference - 1;
-                    }
-                }
-                tempDate.setDate(tempDate.getDate() + 1);
-            }
-            if($('#confessionnels')[0].checked) {
-                if(dateDifference > {{  auth()->user()->confessionnels }}) {
-                    let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
-                    disableButtonAndShowError(text);
-                }
-            }
-            else {
-                if(dateDifference > {{  auth()->user()->nb_of_days }}) {
-                    let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}";
-                    disableButtonAndShowError(text);
-                }
-                if (dateDifference_confessionnels > {{  auth()->user()->confessionnels }}) {
-                    let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
-                    disableButtonAndShowError(text);
-                }
-            }
+            calculateDateDifference();
         });
 
         $('#confessionnels').change(function(){
             $('#createButton').attr('disabled', false)
+            $('#createButton').removeClass('disabled-button')
             $("#error").text("");
             let fromDate = changeDateFormat($('#fromDate').val());
             let toDate = changeDateFormat($('#toDate').val());
             if(!fromDate) {
                 $("#fromDate").val($('#toDate').val());
-                fromDate = $('#fromDate').val();
+                fromDate = changeDateFormat($('#fromDate').val());
             }
             let newFromDate = new Date(fromDate);
             let newToDate = new Date(toDate);
@@ -325,6 +258,94 @@
             }
         });
 
+        $('#leave_duration_id').change(function() {
+            calculateDateDifference();
+        });
+
+        function calculateDateDifference() {
+            $('#createButton').attr('disabled', false);
+            $('#createButton').removeClass('disabled-button')
+            $("#error").text("");
+            if ($('#confessionnels')[0].checked) {
+                if ({{  auth()->user()->confessionnels }} === 0) {
+                    let text = "{{__("You don't have any confessionnel days left")}}";
+                    disableButtonAndShowError(text);
+                }
+                let fromDate = $('#fromDate').val();
+                $("#toDate").val(fromDate);
+            }
+            else {
+                let fromDate = changeDateFormat($('#fromDate').val());
+                let toDate = changeDateFormat($('#toDate').val());
+                if (fromDate > toDate || !toDate) {
+                    $("#toDate").val($('#fromDate').val());
+                    toDate = changeDateFormat($('#toDate').val());
+                }
+                else if(!fromDate) {
+                    $("#fromDate").val($('#toDate').val());
+                    fromDate = changeDateFormat($('#fromDate').val());
+                }
+                let newFromDate = new Date(fromDate);
+                let newToDate = new Date(toDate);
+                let dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000 * 3600 * 24)) + 1;
+                let dateDifference_confessionnels = 0;
+                let tempDate = new Date(newFromDate.getTime());
+                while (tempDate <= newToDate) {
+                    let newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString().split('T')[0];
+                    if ($('#mix_of_leaves')[0].checked) {
+                        if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate) || {!! json_encode($confessionnel_dates) !!}.includes(newTempDate)) {
+                            dateDifference = dateDifference - 1;
+                        }
+                        if ({!! json_encode($confessionnel_dates) !!}.includes(newTempDate)) {
+                            dateDifference_confessionnels = dateDifference_confessionnels + 1;
+                        }
+                    }
+                    else {
+                        if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
+                            dateDifference = dateDifference - 1;
+                        }
+                    }
+                    tempDate.setDate(tempDate.getDate() + 1);
+                }
+                selected_leave_type = $("#leave_type")[0].options[$("#leave_type")[0].selectedIndex].text.toLowerCase();
+                selected_leave_duration = $("#leave_duration_id")[0].options[$("#leave_duration_id")[0].selectedIndex].text.toLowerCase();
+                if(selected_leave_type == "{{__("recovery")}}".toLowerCase() || selected_leave_type == "recovery".toLowerCase()) {
+                    if (selected_leave_duration == "{{__("One or More Full Days")}}".toLowerCase() || selected_leave_type == "One or More Full Days".toLowerCase()) {
+                        if (dateDifference > {{  (int)$overtimeDays }}) {
+                            let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  (int)$overtimeDays }} + " {{__("leave days left")}}";
+                            disableButtonAndShowError(text);
+                        }
+                    } else {
+                        if (dateDifference > {{  2*$overtimeDays }}) {
+                            let text = "{{__("You chose a range of")}} " + dateDifference/2 + " {{__("days but you only have")}} " + {{  $overtimeDays }} + " {{__("leave days left")}}";
+                            disableButtonAndShowError(text);
+                        }
+                    }
+                }
+                else {
+                    if (selected_leave_duration == "{{__("One or More Full Days")}}".toLowerCase() || selected_leave_type == "One or More Full Days".toLowerCase()) {
+                        if (dateDifference > {{  auth()->user()->nb_of_days }}) {
+                            let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}";
+                            disableButtonAndShowError(text);
+                        }
+                        if (dateDifference_confessionnels > {{  auth()->user()->confessionnels }}) {
+                            let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
+                            disableButtonAndShowError(text);
+                        }
+                    }
+                    else {
+                        if (dateDifference > 2*{{  auth()->user()->nb_of_days }}) {
+                            let text = "{{__("You chose a range of")}} " + dateDifference/2 + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}";
+                            disableButtonAndShowError(text);
+                        }
+                        if (dateDifference_confessionnels > 2*{{  auth()->user()->confessionnels }}) {
+                            let text = "{{__("You chose a range of")}} " + dateDifference/2 + " {{__("days but you only have")}} " + {{  auth()->user()->confessionnels }} + " {{__("confessionnels days left")}}";
+                            disableButtonAndShowError(text);
+                        }
+                    }
+                }
+            }
+        }
 
         function changeDateFormat(date) {
             if(!date) {
@@ -340,8 +361,14 @@
 
         function disableButtonAndShowError(text) {
             $('#createButton').attr('disabled', true)
+            $('#createButton').addClass('disabled-button')
             $('#error').css("color", "red");
             $("#error").text(text);
+        }
+
+        function calculateRecoveryDays() {
+            resetConfessionnelsCheckbox();
+            $("#confessionnels_mix_div").addClass("hidden");
         }
     </script>
 
@@ -405,45 +432,7 @@
                 });
             }
             else{
-                flatpickr("#fromDate", {}).clear();
-                $("#fromDate").attr("placeholder", "{{__("Please select date range")}}");
-                $("#fromDateLabel").html("{{__("Start Date")}}");
-                $("#toDateDiv").removeClass("invisible");
-                $("#mix_of_leaves_div").removeClass("invisible");
-                let fromDate = $('#fromDate').val();
-                $("#toDate").val(fromDate);
-                $("#fromDate").flatpickr({
-                    dateFormat: "d/m/Y",
-                    disable: [
-                        function (date) {
-                            let date_temp = new Date(date.getTime());
-                            let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
-                        }],
-
-                    locale: {
-                        firstDayOfWeek: 1
-                    },
-                    allowInput:true,
-                    onClose: function (selectedDates, dateStr, instance) {
-                        if (dateStr) {
-                            topicker.set('minDate', dateStr);
-                        }
-                    },
-                });
-                let topicker = $("#toDate").flatpickr({
-                    dateFormat: "d/m/Y",
-                    disable: [
-                        function (date) {
-                            let date_temp = new Date(date.getTime());
-                            let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
-                        }],
-                    locale: {
-                        firstDayOfWeek: 1
-                    },
-                    allowInput:true,
-                });
+                resetConfessionnelsCheckbox();
             }
         });
 
@@ -511,18 +500,69 @@
                 });
             }
         })
+
+        function resetConfessionnelsCheckbox() {
+            flatpickr("#fromDate", {}).clear();
+            $("#fromDate").attr("placeholder", "{{__("Please select date range")}}");
+            $("#fromDateLabel").html("{{__("Start Date")}}");
+            $("#toDateDiv").removeClass("invisible");
+            $("#mix_of_leaves_div").removeClass("invisible");
+            $('#mix_of_leaves')[0].checked = false;
+            let fromDate = $('#fromDate').val();
+            $("#toDate").val(fromDate);
+            $("#fromDate").flatpickr({
+                dateFormat: "d/m/Y",
+                disable: [
+                    function (date) {
+                        let date_temp = new Date(date.getTime());
+                        let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                        return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                    }],
+
+                locale: {
+                    firstDayOfWeek: 1
+                },
+                allowInput:true,
+                onClose: function (selectedDates, dateStr, instance) {
+                    if (dateStr) {
+                        topicker.set('minDate', dateStr);
+                    }
+                },
+            });
+            let topicker = $("#toDate").flatpickr({
+                dateFormat: "d/m/Y",
+                disable: [
+                    function (date) {
+                        let date_temp = new Date(date.getTime());
+                        let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                        return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                    }],
+                locale: {
+                    firstDayOfWeek: 1
+                },
+                allowInput:true,
+            });
+        }
     </script>
 
     <script>
         $("#leave_type").change(function () {
             selected_leave_type = this.options[this.selectedIndex].text.toLowerCase();
-            if(selected_leave_type === "{{__("sick leave")}}" || selected_leave_type == "sick leave") {
+            if(selected_leave_type == "{{__("sick leave")}}".toLowerCase() || selected_leave_type == "sick leave".toLowerCase()) {
                 $('#attachment_file_span')[0].classList.remove('hidden')
                 document.getElementById("attachment_path").required = true;
             }
             else {
                 $('#attachment_file_span')[0].classList.add('hidden')
                 document.getElementById("attachment_path").required = false;
+            }
+            if(selected_leave_type == "{{__("recovery")}}".toLowerCase() || selected_leave_type == "recovery".toLowerCase()) {
+                calculateRecoveryDays();
+            }
+            else {
+                $("#confessionnels_mix_div").removeClass("hidden");
+                $('#confessionnels')[0].checked = false;
+                resetConfessionnelsCheckbox();
             }
         })
     </script>
