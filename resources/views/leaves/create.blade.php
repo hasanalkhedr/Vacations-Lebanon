@@ -82,7 +82,7 @@
                 @csrf
                 <div class="relative z-0 mb-6 w-full group">
                     <label for="leave_duration_id" class="mb-2 text-sm font-medium blue-color">{{__("Leave Duration")}}</label>
-                    <select id="leave_duration_id" name="leave_duration_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <select id="leave_duration_id" name="leave_duration_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onchange="calculateDateDifference();">
                         <option value="" disabled>{{__("Choose Leave Duration")}}</option>
                         @if(count($leave_durations))
                             @foreach ($leave_durations as $leave_duration)
@@ -137,7 +137,7 @@
                         <label id="fromDateLabel" for="fromDate" class="mb-2 text-sm font-medium blue-color">
                             {{__("Start Date")}} <span class="text-red-500">*</span>
                         </label>
-                        <input required type="text" name="from" id="fromDate" placeholder="{{__("Please select date range")}}" data-input>
+                        <input required type="text" name="from" id="fromDate" placeholder="{{__("Please select date range")}}" data-input onchange="calculateDateDifference()">
                         @error('from')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -146,7 +146,7 @@
                         <label for="toDate" class="mb-2 text-sm font-medium blue-color">
                             {{__("End Date")}} <span class="text-red-500">*</span>
                         </label>
-                        <input required type="text" name="to" id="toDate" placeholder="{{__("Please select date range")}}" data-input>
+                        <input required type="text" name="to" id="toDate" placeholder="{{__("Please select date range")}}" data-input onchange="calculateDateDifference()">
                         @error('to')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -215,13 +215,6 @@
     </div>
 
     <script type="text/javascript">
-        $('#fromDate').change(function() {
-            calculateDateDifference();
-        });
-
-        $('#toDate').change(function(){
-            calculateDateDifference();
-        });
 
         $('#confessionnels').change(function(){
             $('#createButton').attr('disabled', false)
@@ -258,11 +251,10 @@
             }
         });
 
-        $('#leave_duration_id').change(function() {
-            calculateDateDifference();
-        });
-
         function calculateDateDifference() {
+            if($('#fromDate').val() == '' && $('#toDate').val() == '') {
+                return;
+            }
             $('#createButton').attr('disabled', false);
             $('#createButton').removeClass('disabled-button')
             $("#error").text("");
@@ -312,7 +304,7 @@
                 if(selected_leave_type == "{{__("recovery")}}".toLowerCase() || selected_leave_type == "recovery".toLowerCase()) {
                     if (selected_leave_duration == "{{__("One or More Full Days")}}".toLowerCase() || selected_leave_type == "One or More Full Days".toLowerCase()) {
                         if (dateDifference > {{  (int)$overtimeDays }}) {
-                            let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  (int)$overtimeDays }} + " {{__("leave days left")}}";
+                            let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  $overtimeDays }} + " {{__("leave days left")}}";
                             disableButtonAndShowError(text);
                         }
                     } else {
@@ -366,7 +358,7 @@
             $("#error").text(text);
         }
 
-        function calculateRecoveryDays() {
+        function selectedRecovery() {
             resetConfessionnelsCheckbox();
             $("#confessionnels_mix_div").addClass("hidden");
         }
@@ -557,7 +549,7 @@
                 document.getElementById("attachment_path").required = false;
             }
             if(selected_leave_type == "{{__("recovery")}}".toLowerCase() || selected_leave_type == "recovery".toLowerCase()) {
-                calculateRecoveryDays();
+                selectedRecovery();
             }
             else {
                 $("#confessionnels_mix_div").removeClass("hidden");
