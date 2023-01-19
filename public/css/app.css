@@ -3,7 +3,7 @@
 }
 
 .blue-color {
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 
 .blue-bg-sidebar {
@@ -11,11 +11,11 @@
 }
 
 .blue-bg {
-    background: var(--primary-color);
+    background: var(--primary-color) !important;
 }
 
 .blue-bg:hover {
-    background: rgb(96 165 250);
+    background: rgb(96 165 250) !important;
 }
 
 .logo-container {
@@ -32,4 +32,13 @@
 
 .disabled-button {
     background: gray;
+}
+
+.login-container {
+    background: url('../assets/images/login-background.jpg') no-repeat center;
+    background-size: auto;
+}
+
+.login-form {
+    opacity: 90%;
 }
