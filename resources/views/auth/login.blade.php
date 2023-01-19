@@ -51,7 +51,8 @@
                     <hr class="mt-2 custom-hr-login-form">
 
                     <div class="mt-6 flex justify-center text-lg">
-                        <button type="submit" class="rounded-xl px-10 py-2 text-white shadow-xl duration-300 blue-bg text-base">
+                        <button type="submit"
+                            class="rounded-xl px-10 py-2 text-white shadow-xl duration-300 blue-bg text-base">
                             {{ __('Login') }}
                         </button>
                     </div>
@@ -59,6 +60,9 @@
             </div>
         </div>
     </div>
+    <span class="powered-by">
+        Powered By <a class="IST" href="https://isolutionleb.com/">IST</a>
+    </span>
 </body>
 
 </html>

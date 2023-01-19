@@ -43,8 +43,20 @@
     background-color: #ffffffdd !important;
 }
 
-.custom-hr-login-form{
+.custom-hr-login-form {
     height: 2px;
     width: 100%;
     background-color: var(--primary-color);
+}
+
+.powered-by {
+    position: fixed;
+    bottom: 50px;
+    text-align: center;
+    width: 100%;
+}
+
+.IST {
+    font-weight: bold;
+    color: var(--primary-color);
 }
