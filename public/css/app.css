@@ -23,7 +23,7 @@
     /*max-width: 140px;*/
 }
 
-@media screen and (max-width:1023px)  {
+@media screen and (max-width: 1023px) {
     .logo-container {
         width: 100%;
         max-width: 140px;
@@ -35,10 +35,16 @@
 }
 
 .login-container {
-    background: url('../assets/images/login-background.jpg') no-repeat center;
+    background: url("../assets/images/login-background.jpg") no-repeat center;
     background-size: auto;
 }
 
 .login-form {
-    opacity: 80%;
+    background-color: #ffffffdd !important;
+}
+
+.custom-hr-login-form{
+    height: 2px;
+    width: 100%;
+    background-color: var(--primary-color);
 }
