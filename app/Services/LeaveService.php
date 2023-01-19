@@ -126,6 +126,10 @@ class LeaveService
 
     public function updateNbOfDaysOff($leave)
     {
+        $recovery = LeaveType::where('name', 'recovery')->first();
+        if($leave->leave_type_id == $recovery->id) {
+            return;
+        }
         $employee = $leave->employee;
         if ($leave->use_confessionnels) {
             $employee->confessionnels = $employee->confessionnels - 1;
