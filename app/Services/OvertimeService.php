@@ -129,7 +129,7 @@ class OvertimeService
         $totalOvertimeMinutes = $total['hours'] * 60 + $total['mins'];
         $fullDays = (int)($totalOvertimeMinutes / $overtimeFullDayHours);    // 7.5 hours = 450 mins
         $halfDays = (int)($totalOvertimeMinutes / $overtimeHalfDayHours);    // 3.75 hours = 225 mins
-        $total_days = $fullDays + ($halfDays % $fullDays)*0.5;
+        $total_days = $fullDays + ($halfDays - 2*$fullDays)*0.5;
 
         $leaveService = new LeaveService();
         $days = $leaveService->getRecoveryLeaveDays($employee);
