@@ -170,10 +170,11 @@
                                         </div>
                                     </div>
                                     <!-- Modal body -->
-                                    <div class="p-6">
+                                    <div class="p-6 overflow-y-auto" style="max-height: 500px">
                                         <form method="POST"
                                               action="{{ route('employees.updateProfile', ['employee' => $employee->id]) }}"
-                                              id="edit_form--{{$employee->id}}">
+                                              id="edit_form--{{$employee->id}}"
+                                                enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
                                             <div class="grid md:grid-cols-2 md:gap-6">
@@ -297,6 +298,23 @@
                                                     </select>
                                                 </div>
                                             @endif
+
+                                            <div>
+                                                <div class="relative z-0 mb-4 w-full group">
+                                                    <input type="file" name="profile_photo" id="profile_image_input--{{$employee->id}}" onchange="readUrl(this, {{$employee->id}})" style="color: rgba(0, 0, 0, 0);">
+                                                    @error('profile_photo')
+                                                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="relative z-0 mb-4 group align-center inline-block {{ !$employee->profile_photo ? 'hidden' : ''}}" id="profile_image_preview--{{$employee->id}}">
+                                                    <img id="preview-image-before-upload--{{$employee->id}}" src={{ $employee->profile_photo ? asset('storage/' . $employee->profile_photo) : "" }}
+                                                         alt="{{__("Profile Photo")}}" style="max-height: 250px; display: inline">
+                                                    <span class="close hover:cursor-pointer text-2xl" style="position: absolute; right: -20px; z-index: 100;" onclick="removeImage({{$employee->id}})">&times;</span>
+                                                </div>
+                                                <input name="is_deleted" hidden type="number" value="0" id="deleted_photo--{{$employee->id}}"/>
+                                            </div>
+
                                             <div
                                                 class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200">
                                                 <div>
@@ -355,8 +373,8 @@
                         </div>
                     </div>
                     <!-- Modal body -->
-                    <div class="p-6">
-                        <form method="POST" action="{{ route('employees.store') }}">
+                    <div class="p-6 overflow-y-auto"  style="max-height: 700px">
+                        <form method="POST" action="{{ route('employees.store') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="grid md:grid-cols-2 md:gap-6">
                                 <div class="relative z-0 mb-4 w-full group">
@@ -483,6 +501,22 @@
                                     @endif
                                 </select>
                             </div>
+
+                            <div>
+                                <div class="relative z-0 mb-4 w-full group">
+                                    <input type="file" name="profile_photo" id="profile_image_input--0" onchange="readUrl(this, 0)" style="color: rgba(0, 0, 0, 0);"/>
+                                    @error('profile_photo')
+                                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="relative z-0 mb-4 group align-center hidden inline-block" id="profile_image_preview--0">
+                                    <img id="preview-image-before-upload--0" src=""
+                                         alt="{{__("Profile Photo")}}" style="max-height: 250px; display: inline">
+                                    <span class="close hover:cursor-pointer text-2xl" style="position: absolute; right: -20px; z-index: 100;" onclick="removeImage(0)">&times;</span>
+                                </div>
+                            </div>
+
                             <div
                                 class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200">
                                 <div>
@@ -604,6 +638,36 @@
                 if(!$('#new_manager--' + employee_id)[0].classList.contains('hidden'))
                     $('#new_manager--' + employee_id)[0].classList.add('hidden')
             }
+        }
+
+        function readUrl(file_input, id){
+            if(file_input.value) {
+                uploadImage(file_input, id)
+            }
+            else {
+                removeImage()
+            }
+        };
+
+        function uploadImage(file_input, id) {
+            let profile_image_preview = document.getElementById('profile_image_preview--' + id);
+            profile_image_preview.classList.remove('hidden');
+            let reader = new FileReader();
+
+            reader.onload = (e) => {
+
+                $('#preview-image-before-upload--' + id).attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(file_input.files[0]);
+            $('#deleted_photo--' + id)[0].value = 0
+        }
+        function removeImage(id) {
+            let profile_image_preview = document.getElementById('profile_image_preview--' + id);
+            $('#preview-image-before-upload--' + id).attr('src', "");
+            profile_image_preview.classList.add('hidden');
+            $('#profile_image_input--' + id)[0].value = ""
+            $('#deleted_photo--' + id)[0].value = 1
         }
 
     </script>

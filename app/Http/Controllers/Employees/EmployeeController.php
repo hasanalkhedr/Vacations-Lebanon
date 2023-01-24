@@ -10,7 +10,9 @@ use App\Http\Requests\EmployeesRequests\UpdateEmployeeProfileRequest;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Services\EmployeeService;
+use App\Services\OvertimeService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -74,6 +76,11 @@ class EmployeeController
         else {
             $employee['department_id'] = NULL;
         }
+
+        if($request->hasFile('profile_photo')) {
+            $employee['profile_photo'] = $request->file('profile_photo')->store('profile_photos', 'public');
+        }
+
         $employee->save();
 
         return redirect()->route('employees.index');
@@ -131,6 +138,9 @@ class EmployeeController
         $departments = Department::all();
         $roles = Role::all();
         $loggedInUser = auth()->user();
+        $overtimeService = new OvertimeService();
+        $overtimeDays = $overtimeService->overtimeToLeaveDays($employee);
+        $overtimeTotalTime = $overtimeService->fetchOvertimes($employee->id)['total_time'];
         if($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole("sg") || $loggedInUser->id === $employee->id || ($loggedInUser->is_supervisor && $employee->department->manager_id == $loggedInUser->id)) {
             return view('employees.show', [
                 'employee' => $employee,
@@ -140,6 +150,8 @@ class EmployeeController
                 'confessionnel_pending_days' => $confessionnel_pending_days,
                 'normal_accepted_days' => $normal_accepted_days,
                 'confessionnel_accepted_days' => $confessionnel_accepted_days,
+                'overtimeTotalTime' => $overtimeTotalTime,
+                'overtimeDays' => $overtimeDays
             ]);
         }
         return back();
@@ -163,7 +175,7 @@ class EmployeeController
 //            'phone_number' => $validated['phone_number'],
         ]);
         $employee->phone_number = $request->phone_number;
-        if($employee->hasRole('employee') && !$employee->is_supervisor && !$this->employee->hasRole("sg")) {
+        if($employee->hasRole('employee') && !$employee->is_supervisor && !$employee->hasRole("sg")) {
             $employee->update([
                 'nb_of_days' => $validated['nb_of_days'],
                 'confessionnels' => $validated['confessionnels'],
@@ -189,6 +201,20 @@ class EmployeeController
             }
             $employee['department_id'] = NULL;
         }
+
+        if($request->hasFile('profile_photo')) {
+            if($employee->profile_photo) {
+                File::delete(public_path('storage/' . $employee->profile_photo));
+            }
+            $employee['profile_photo'] = $request->file('profile_photo')->store('profile_photos', 'public');
+        }
+        else {
+            if($employee->profile_photo && $request->is_deleted == 1) {
+                File::delete(public_path('storage/' . $employee->profile_photo));
+                $employee['profile_photo'] = NULL;
+            }
+        }
+
         $employee->save();
         return back();
     }

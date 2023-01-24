@@ -30,6 +30,13 @@
                     {{__("Back")}}</button>
             </a>
         </div> --}}
+        @if($employee->profile_photo)
+            <div class="relative z-0 mb-4 group align-center inline-block">
+                <img src="{{ asset('storage/' . $employee->profile_photo) }}"
+                     alt="{{__("Profile Photo")}}" style="max-height: 250px; display: inline">
+            </div>
+        @endif
+
         <div class="grid md:grid-cols-2 md:gap-6 mt-7">
             <div class="relative z-0 mb-6 w-full group">
                 <input type="text" name="first_name"
@@ -178,6 +185,33 @@
             </table>
         @endif
 
+        @if(($employee->hasExactRoles("employee") || $employee->hasAllRoles(['employee','human_resource'])) && $employee->is_supervisor == false)
+            <div class="mx-4">
+            <table class="mt-4 w-full text-sm text-left text-gray-500 border">
+                <thead class="text-s uppercase bg-gray-50 blue-color">
+                </thead>
+                <tbody>
+                <tr class="bg-white">
+                    <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
+                        {{__("Total Overtime")}}
+                    </th>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                        {{ $overtimeTotalTime }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
+                        {{__("Days")}}
+                    </th>
+                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
+                        {{$overtimeDays}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        @endif
+
         <div id="editProfileModal" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
             <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
@@ -205,7 +239,8 @@
                     <!-- Modal body -->
                     <div class="p-6">
                         <form method="POST"
-                            action="{{ route('employees.updateProfile', ['employee' => $employee->id]) }}">
+                            action="{{ route('employees.updateProfile', ['employee' => $employee->id]) }}"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="grid md:grid-cols-2 md:gap-6">
@@ -327,6 +362,23 @@
                                     </select>
                                 </div>
                             @endif
+
+                            <div>
+                                <div class="relative z-0 mb-4 w-full group">
+                                    <input type="file" name="profile_photo" id="profile_image_input--{{$employee->id}}" onchange="readUrl(this, {{$employee->id}})" style="color: rgba(0, 0, 0, 0);">
+                                    @error('profile_photo')
+                                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="relative z-0 mb-4 group align-center inline-block {{ !$employee->profile_photo ? 'hidden' : ''}}" id="profile_image_preview--{{$employee->id}}">
+                                    <img id="preview-image-before-upload--{{$employee->id}}" src={{ $employee->profile_photo ? asset('storage/' . $employee->profile_photo) : "" }}
+                                                         alt="{{__("Profile Photo")}}" style="max-height: 250px; display: inline">
+                                    <span class="close hover:cursor-pointer text-2xl" style="position: absolute; right: -20px; z-index: 100;" onclick="removeImage({{$employee->id}})">&times;</span>
+                                </div>
+                                <input name="is_deleted" hidden type="number" value="0" id="deleted_photo--{{$employee->id}}"/>
+                            </div>
+
                             <div class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200">
                                 <div>
                                     <button data-modal-toggle="editProfileModal" type="button"
@@ -517,6 +569,36 @@
                     if (!$('#new_manager--' + employee_id)[0].classList.contains('hidden'))
                         $('#new_manager--' + employee_id)[0].classList.add('hidden')
                 }
+            }
+
+            function readUrl(file_input, id){
+                if(file_input.value) {
+                    uploadImage(file_input, id)
+                }
+                else {
+                    removeImage()
+                }
+            };
+
+            function uploadImage(file_input, id) {
+                let profile_image_preview = document.getElementById('profile_image_preview--' + id);
+                profile_image_preview.classList.remove('hidden');
+                let reader = new FileReader();
+
+                reader.onload = (e) => {
+
+                    $('#preview-image-before-upload--' + id).attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(file_input.files[0]);
+                $('#deleted_photo--' + id)[0].value = 0
+            }
+            function removeImage(id) {
+                let profile_image_preview = document.getElementById('profile_image_preview--' + id);
+                $('#preview-image-before-upload--' + id).attr('src', "");
+                profile_image_preview.classList.add('hidden');
+                $('#profile_image_input--' + id)[0].value = ""
+                $('#deleted_photo--' + id)[0].value = 1
             }
         </script>
 

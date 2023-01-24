@@ -66,9 +66,6 @@
                     <th scope="col" class="border-r-2 text-center py-3 px-2 blue-color">
                         {{__("Days")}}
                     </th>
-{{--                    <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">--}}
-{{--                        {{ $overtimeFullDays + ($overtimeHalfDays % $overtimeFullDays)*0.5 }}--}}
-{{--                    </td>--}}
                     <td class="text-center border-b py-4 px-2 font-bold text-gray-900 whitespace-nowrap">
                         {{$overtimeDays}}
                     </td>

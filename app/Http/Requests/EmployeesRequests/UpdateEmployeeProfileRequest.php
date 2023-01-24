@@ -33,6 +33,7 @@ class UpdateEmployeeProfileRequest extends FormRequest
         $rules['last_name'] = ['required'];
         $rules['email'] = ['required', 'email', Rule::unique('employees', 'email')->ignore($this->employee)];
 //        $rules['phone_number'] = ['sometimes', Rule::unique('employees', 'phone_number')->ignore($this->employee)];
+        $rules['profile_image'] = ['sometimes|image|mimes:jpg,png,jpeg,svg'];
 
         return $rules;
     }

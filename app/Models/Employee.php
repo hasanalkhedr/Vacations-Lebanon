@@ -26,7 +26,8 @@ class Employee extends Authenticatable
         'phone_number',
         'nb_of_days',
         'confessionnels',
-        'department_id'
+        'department_id',
+        'profile_photo'
     ];
 
     /**
