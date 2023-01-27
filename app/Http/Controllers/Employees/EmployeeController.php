@@ -46,6 +46,7 @@ class EmployeeController
     }
 
     public function store(StoreEmployeeRequest $request) {
+
         $validated = $request->validated();
         $employee = Employee::create([
             'first_name' => $validated['first_name'],

@@ -2,6 +2,7 @@
     "Login": "Connexion",
     "Email Address": "Adresse électronique",
     "Password": "Mot de passe",
+    "Confirm Password": "Confirmez le mot de passe",
     "Departments": "Dép / Antenne",
     "Users": "Utilisateurs",
     "Leave Requests": "Demandes de congé",
@@ -223,5 +224,11 @@
     "Accepted Overtime Requests": "Demandes d'heures supplémentaires acceptées",
     "Rejected Overtime Requests": "Demandes d'heures supplémentaires rejetées",
     "Invalid Credentials": "Les informations d'identification invalides",
-    "Profile Photo": "Photo de profil"
+    "Profile Photo": "Photo de profil",
+    "Total Overtime": "HS en nombre d’heures",
+    "Days": "Équivalence des HS en nombre de jours",
+    "The profile photo must be an image" : "La photo de profil doit être une image",
+    "The profile photo can have the following extensions:" : "La photo de profil peut avoir les extensions suivantes:",
+    "La photo de profil ne doit pas dépasser" : "La photo de profil ne doit pas dépasser",
+    "Choose File" : "Choisir le fichier"
 }

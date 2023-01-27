@@ -29,7 +29,16 @@ class StoreEmployeeRequest extends FormRequest
             'last_name' => ['required'],
             'email' => ['required', 'email', Rule::unique('employees', 'email')],
             'password' => ['required', 'confirmed', 'min:6'],
-//            'phone_number' => ['required']
+//            'phone_number' => ['required'],
+            'profile_photo' => ['sometimes','image', 'mimes:jpg,png,jpeg,svg', 'max:2048'],
+        ];
+    }
+
+    public function messages() {
+        return [
+            'profile_photo.image' => __("The profile photo must be an image."),
+            'profile_photo.mimes' => __("The profile photo can have the following extensions:") . " jpg, png, jpeg, svg",
+            'profile_photo.max' => __("La photo de profil ne doit pas dépasser") . " 2 MB",
         ];
     }
 }

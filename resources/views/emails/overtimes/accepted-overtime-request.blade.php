@@ -5,11 +5,11 @@
 </head>
 <body>
 
-<p>Hello,</p>
+<p>Bonjour,</p>
 
-<p>Your overtime request has been accepted.</p>
+<p>Merci de bien vouloir noter que votre demande d’heures supplémentaires a été acceptée.</p>
 
-<strong>Thanks & Regards.</strong>
+<strong>Bien cordialement,<br>Phare</strong>
 
 </body>
 </html>

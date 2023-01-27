@@ -110,12 +110,10 @@
                                         @csrf
                                         <div class="p-6 space-y-6">
                                             <div class="text-base leading-relaxed text-gray-500">
-                                                {{__("Are you sure you want to reject this overtime request")}}? {{__("This
-                                                action cannot be undone")}}.
+                                                {{__("Are you sure you want to reject this overtime request")}}? {{__("This action cannot be undone")}}.
                                             </div>
                                             <div class="text-base leading-relaxed text-gray-500">
-                                                <label for="cancellation_reason" class="text-lg text-gray-600">{{__("Rejection
-                                                    Reason")}}</label>
+                                                <label for="cancellation_reason" class="text-lg text-gray-600">{{__("Rejection Reason")}}</label>
                                                 <textarea class="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white rounded" name="cancellation_reason" ></textarea>
                                             </div>
                                         </div>
@@ -177,8 +175,7 @@
                                     <!-- Modal body -->
                                     <div class="p-6 space-y-6">
                                         <div class="text-base leading-relaxed text-gray-500">
-                                            {{__("Are you sure you want to accept this overtime request")}}? {{__("This
-                                            action cannot be undone")}}.
+                                            {{__("Are you sure you want to accept this overtime request")}}? {{__("This action cannot be undone")}}.
                                         </div>
                                     </div>
                                     <!-- Modal footer -->

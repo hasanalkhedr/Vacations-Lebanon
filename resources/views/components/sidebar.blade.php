@@ -268,6 +268,7 @@
                         </div>
                     </div>
                 </nav>
+                @include('flash-messages.error-flash-message')
                 <div>
                     {{ $slot }}
                 </div>

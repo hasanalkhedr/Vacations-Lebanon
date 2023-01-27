@@ -129,8 +129,7 @@
                     @csrf
                     <div class="p-6 space-y-6">
                         <div class="text-base leading-relaxed text-gray-500">
-                            {{__("Are you sure you want to reject this overtime request")}}? {{__("This action cannot be
-                            undone")}}.
+                            {{__("Are you sure you want to reject this overtime request")}}? {{__("This action cannot be undone")}}.
                         </div>
                         <div class="text-base leading-relaxed text-gray-500">
                             <label for="cancellation_reason" class="text-lg text-gray-600">{{__("Rejection Reason")}}</label>

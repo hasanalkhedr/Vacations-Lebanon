@@ -164,12 +164,18 @@
                     @enderror
                 </div>
                 <div class="relative z-0 mb-6 w-full group">
-                    <input type="file" name="attachment_path" id="attachment_path"
-                           class="block pt-2.5 px-0 text-sm text-gray-900 bg-transparent appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                    <label for="attachment_path"
-                           class="font-medium absolute text-sm duration-300 transform -translate-y-6  top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
-                        {{__("Attachment")}} <span id="attachment_file_span" class="text-red-500 hidden">*</span>
-                    </label>
+                    <p class="mb-2 text-sm font-medium blue-color">{{__("Attachment")}}</p>
+                    <div class="flex w-full">
+                        <label class="px-2 w-max flex flex-col items-center px py-2 bg-white text-white rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer blue-bg">
+                            <svg class="w-5 h-5" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                            </svg>
+                            <span class="text-xs text-white leading-normal">{{ __("Choose File") }}</span>
+                            <input type="file" name="attachment_path" id="attachment_path"
+                                   class="hidden "/>
+                        </label>
+                    </div>
+
                     @error('attachment_path')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror

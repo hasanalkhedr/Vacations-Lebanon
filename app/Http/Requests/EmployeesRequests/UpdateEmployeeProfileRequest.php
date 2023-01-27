@@ -33,8 +33,16 @@ class UpdateEmployeeProfileRequest extends FormRequest
         $rules['last_name'] = ['required'];
         $rules['email'] = ['required', 'email', Rule::unique('employees', 'email')->ignore($this->employee)];
 //        $rules['phone_number'] = ['sometimes', Rule::unique('employees', 'phone_number')->ignore($this->employee)];
-        $rules['profile_image'] = ['sometimes|image|mimes:jpg,png,jpeg,svg'];
+        $rules['profile_photo'] = ['sometimes','image', 'mimes:jpg,png,jpeg,svg', 'max:2048'];
 
         return $rules;
+    }
+
+    public function messages() {
+        return [
+            'profile_photo.image' => __("The profile photo must be an image."),
+            'profile_photo.mimes' => __("The profile photo can have the following extensions:") . " jpg, png, jpeg, svg",
+            'profile_photo.max' => __("La photo de profil ne doit pas dépasser") . " 2 MB",
+        ];
     }
 }

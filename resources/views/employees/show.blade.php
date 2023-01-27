@@ -364,8 +364,20 @@
                             @endif
 
                             <div>
-                                <div class="relative z-0 mb-4 w-full group">
-                                    <input type="file" name="profile_photo" id="profile_image_input--{{$employee->id}}" onchange="readUrl(this, {{$employee->id}})" style="color: rgba(0, 0, 0, 0);">
+                                <div class="relative z-0 mb-4 w-full group flex flex-col">
+                                    <label for="profile_photo" class="mb-2 text-sm font-medium blue-color">
+                                        {{ __('Profile Photo') }}
+                                    </label>
+                                    <div class="flex w-full">
+                                        <label class="px-2 w-max flex flex-col items-center px py-2 bg-white text-white rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer blue-bg">
+                                            <svg class="w-5 h-5" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                                            </svg>
+                                            <span class="text-xs text-white leading-normal">{{ __("Choose File") }}</span>
+                                            <input class="hidden" type="file" name="profile_photo" id="profile_image_input--{{$employee->id}}" onchange="readUrl(this, {{$employee->id}})" style="color: rgba(0, 0, 0, 0);"
+                                                   accept=".jpg, .png, .jpeg, .svg">
+                                        </label>
+                                    </div>
                                     @error('profile_photo')
                                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                                     @enderror
