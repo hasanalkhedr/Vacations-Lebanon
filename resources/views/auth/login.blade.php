@@ -14,55 +14,63 @@
 </head>
 
 <body>
-    <div class="flex h-screen w-full items-center justify-center login-container">
-        <div class="rounded-xl bg-white px-16 py-10 shadow-lg max-sm:px-8 login-form">
-            <div class="text-white card justify-content-center">
-                {{-- <div class="mb-8 flex flex-col items-center">
-                    <h1 class="text-xl font-bold blue-color">{{ __('Login') }}</h1>
-                </div> --}}
-                <form method="POST" action="{{ route('employees.authenticate') }}" class="flex flex-col items-center">
-                    @csrf
-                    <div class="mb-4 text-lg row text-center">
-                        {{-- <label for="email" class="font-medium col-md-4 text-md-end blue-color">{{ __('Email Address') }}</label> --}}
+    <section class="h-screen">
+        <div class="container px-6 py-12 h-full m-auto">
+            <div class="flex justify-center items-center flex-wrap h-full g-6 text-gray-800">
+                <div class="md:w-8/12 lg:w-6/12 mb-12 md:mb-0">
+                    <img src="https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg"
+                        class="w-full" alt="Phone image" />
+                </div>
+                <div class="md:w-8/12 lg:w-5/12 lg:ml-20">
+                    <form method="POST" action="{{ route('employees.authenticate') }}">
+                        @csrf
 
-                        <div class="col-md-6">
-                            <input id="email"
-                                class="rounded-xl border-2 px-6 py-2 text-black shadow-lg outline-none text-sm @error('email') is-invalid @enderror"
+                        <!-- Logo -->
+                        <div class="flex justify-center">
+                            <img src="{{ asset('assets/images/logo-IFL.png') }}" class="w-2/4" alt="Logo" />
+                        </div>
+
+                        <div
+                            class="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
+                            <p class="text-center font-semibold mx-4 mb-0">{{ __('Login') }}</p>
+                        </div>
+                        <!-- Email input -->
+
+                        <div class="mb-6">
+                            <input
+                                class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none @error('email') is-invalid @enderror"
                                 autofocus value="{{ old('email') }}" type="email" required name="email"
                                 autocomplete="email" placeholder="{{ __('Email Address') }}" />
 
                             @error('email')
                                 <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
+                                    <strong>{{ __($message) }}</strong>
                                 </span>
                             @enderror
                         </div>
-                    </div>
 
-                    <div class="mb-4 text-lg row text-center">
-                        {{-- <label for="password" class="font-medium col-md-4 text-md-end blue-color">{{ __('Password') }}</label> --}}
-
-                        <div class="col-md-6">
-                            <input class="rounded-xl border-2 px-6 py-2 text-black shadow-lg outline-none text-sm"
+                        <!-- Password input -->
+                        <div class="mb-6">
+                            <input
+                                class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 type="Password" name="password" placeholder="{{ __('Password') }}" />
                         </div>
-                    </div>
 
-                    <hr class="mt-2 custom-hr-login-form">
-
-                    <div class="mt-6 flex justify-center text-lg">
+                        <!-- Submit button -->
                         <button type="submit"
-                            class="rounded-xl px-10 py-2 text-white shadow-xl duration-300 blue-bg text-base">
+                            class="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                            data-mdb-ripple="true" data-mdb-ripple-color="light">
                             {{ __('Login') }}
                         </button>
-                    </div>
-                </form>
+
+                        <div class="powered-by">
+                            Powered By <a class="IST" href="https://isolutionleb.com/">IST</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <span class="powered-by">
-        Powered By <a class="IST" href="https://isolutionleb.com/">IST</a>
-    </span>
+    </section>
 </body>
 
 </html>
