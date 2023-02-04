@@ -52,7 +52,7 @@
             var row = document.getElementById("tbody").insertRow();
             row.innerHTML = html;
             let frompicker = $(".date").flatpickr({
-                dateFormat: "Y-m-d",
+                dateFormat: "d/m/Y",
                 locale: {
                     firstDayOfWeek: 1
                 },

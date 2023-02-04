@@ -76,7 +76,7 @@ class OvertimeController extends Controller
     }
 
     public function submitted() {
-        if(auth()->user()->hasExactRoles("employee") && auth()->user()->is_supervisor == false) {
+        if((auth()->user()->hasExactRoles("employee") || auth()->user()->hasAllRoles(['employee','human_resource'])) && auth()->user()->is_supervisor == false) {
             $overtimes = auth()->user()->overtimes;
             return view('overtimes.submitted', [
                 'overtimes' => $overtimes

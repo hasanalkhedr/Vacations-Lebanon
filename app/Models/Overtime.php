@@ -48,6 +48,14 @@ class Overtime extends Model
         //
     ];
 
+    protected function date(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->format(config('app.date_format')),
+            set: fn ($value) => Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d'),
+        );
+    }
+
     public function scopeSearch($query, array $filters)
     {
         if ($filters['search'] ?? false) {
@@ -56,13 +64,6 @@ class Overtime extends Model
                     ->orwhere('last_name', 'like', '%' . request('search') . '%');
             });;
         };
-    }
-
-    protected function date(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => Carbon::parse($value)->format(config('app.date_format'))
-        );
     }
 
     public function employee() {

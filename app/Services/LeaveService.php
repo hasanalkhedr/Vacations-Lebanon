@@ -272,4 +272,51 @@ class LeaveService
         }
         return $days;
     }
+
+    public function getProcessingOfficersForLeaveDestroy(Leave $leave) {
+        $processing_officers=[];
+        if($leave->employee->hasRole('employee') && $leave->employee->is_supervisor == false) {
+            $supervisor = $leave->employee->department->manager;
+            $processing_officers[] = $supervisor;
+            $hrs = Employee::role('human_resource')->get();
+            foreach ($hrs as $hr) {
+                $processing_officers[] = $hr;
+            }
+            $sgs = Employee::role('sg')->get();
+            foreach ($sgs as $sg) {
+                $processing_officers[] = $sg;
+            }
+        }
+        elseif($leave->employee->hasRole('employee') && $leave->employee->is_supervisor) {
+            $hrs = Employee::role('human_resource')->get();
+            foreach ($hrs as $hr) {
+                $processing_officers[] = $hr;
+            }
+            $sgs = Employee::role('sg')->get();
+            foreach ($sgs as $sg) {
+                $processing_officers[] = $sg;
+            }
+        }
+        else {
+            $sgs = Employee::role('sg')->get();
+            foreach ($sgs as $sg) {
+                $processing_officers[] = $sg;
+            }
+        }
+        return $processing_officers;
+    }
+
+    public function recoverDays(Leave $leave) {
+        $employee = $leave->employee;
+        if ($leave->use_confessionnels) {
+            $employee->confessionnels = $employee->confessionnels - 1;
+        }
+        $nb_of_days_off = $this->findNbofDaysOff($leave);
+        if($leave->mix_of_leaves) {
+            $nb_of_days_off_confessionnels = $this->findNbofDaysOffConfessionnels($leave);
+            $employee->confessionnels = $employee->confessionnels + $nb_of_days_off_confessionnels;
+        }
+        $employee->nb_of_days = $employee->nb_of_days + $nb_of_days_off;
+        $employee->save();
+    }
 }

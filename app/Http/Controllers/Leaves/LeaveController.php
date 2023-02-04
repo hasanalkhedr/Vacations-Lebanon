@@ -338,39 +338,19 @@ class LeaveController extends Controller
     }
 
     public function destroy(Leave $leave) {
-        $processing_officers=[];
-        if($leave->employee->hasRole('employee') && $leave->employee->is_supervisor == false) {
-            $supervisor = $leave->employee->department->manager;
-            $processing_officers[] = $supervisor;
-            $hrs = Employee::role('human_resource')->get();
-            foreach ($hrs as $hr) {
-                $processing_officers[] = $hr;
-            }
-            $sgs = Employee::role('sg')->get();
-            foreach ($sgs as $sg) {
-                $processing_officers[] = $sg;
-            }
-        }
-        elseif($leave->employee->hasRole('employee') && $leave->employee->is_supervisor) {
-            $hrs = Employee::role('human_resource')->get();
-            foreach ($hrs as $hr) {
-                $processing_officers[] = $hr;
-            }
-            $sgs = Employee::role('sg')->get();
-            foreach ($sgs as $sg) {
-                $processing_officers[] = $sg;
-            }
-        }
-        else {
-        $sgs = Employee::role('sg')->get();
-            foreach ($sgs as $sg) {
-                $processing_officers[] = $sg;
-            }
+        if($leave->employee->id != auth()->user()->id || !auth()->user()->hasRole('human_resource')) {
+            return;
         }
         $leave_service = new LeaveService();
-        $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee, true);
+        if($leave->leave_status == self::ACCEPTED_STATUS) {
+            $leave_service->recoverDays($leave);
+        }
+        if($leave->leave_status == self::PENDING_STATUS) {
+            $processing_officers = $leave_service->getProcessingOfficersForLeaveDestroy($leave);
+            $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee, true);
+        }
         $leave->delete();
-        return redirect()->route('leaves.submitted');
+        return back();
     }
 
     public function createReport() {
