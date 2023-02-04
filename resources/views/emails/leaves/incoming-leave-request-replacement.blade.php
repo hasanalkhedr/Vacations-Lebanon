@@ -5,11 +5,11 @@
 </head>
 <body>
 
-<p>Hello,</p>
+<p>Bonjour,</p>
 
-<p>Please note that you were assigned as a replacement for a pending leave request</p>
+<p>Veuillez noter que vous avez été affecté en remplacement d'une demande de congé en attente.</p>
 
-<strong>Thanks & Regards.</strong>
+<strong>Merci</strong>
 
 </body>
 </html>

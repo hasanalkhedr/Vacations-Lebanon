@@ -5,11 +5,11 @@
 </head>
 <body>
 
-<p>Hello,</p>
+<p>Bonjour,</p>
 
-<p>A leave request that you were assigned as a replacement for was rejected</p>
+<p>Une demande de congé pour laquelle vous avez été affecté en remplacement a été rejetée.</p>
 
-<strong>Thanks & Regards.</strong>
+<strong>Merci</strong>
 
 </body>
 </html>

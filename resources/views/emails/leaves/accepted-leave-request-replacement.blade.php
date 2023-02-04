@@ -5,11 +5,11 @@
 </head>
 <body>
 
-<p>Hello,</p>
+<p>Bonjour,</p>
 
-<p>Please note that you were assigned as a replacement.</p>
+<p>Veuillez noter que vous avez été nommé remplaçant.</p>
 
-<strong>Thanks & Regards.</strong>
+<strong>Merci</strong>
 
 </body>
 </html>

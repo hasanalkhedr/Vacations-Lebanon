@@ -29,4 +29,12 @@ class AuthenticateEmployeeRequest extends FormRequest
             'password' => ['required'],
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'email.required' => __("Email is required"),
+            'password.required' => __("Password is required")
+        ];
+    }
 }

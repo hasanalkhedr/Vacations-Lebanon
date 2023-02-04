@@ -5,11 +5,11 @@
 </head>
 <body>
 
-<p>Hello,</p>
+<p>Bonjour,</p>
 
-<p>Your overtime request has been rejected</p>
+<p>Votre demande d'heures supplémentaires a été rejetée.</p>
 
-<strong>Thanks & Regards.</strong>
+<strong>Merci</strong>
 
 </body>
 </html>
