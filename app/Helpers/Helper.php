@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Confessionnel;
 use App\Models\Holiday;
 use Carbon\CarbonPeriod;
 use Spatie\Permission\Models\Role;
@@ -25,6 +26,18 @@ class Helper
         }
         return $holiday_dates;
     }
+
+    public function getConfessionnels()
+    {
+        $confessionnels = Confessionnel::all();
+        $confessionnel_dates = [];
+        foreach ($confessionnels as $confessionnel) {
+            if (!in_array($confessionnel->date, $confessionnel_dates))
+                $confessionnel_dates[] = $confessionnel->date;
+        }
+        return $confessionnel_dates;
+    }
+
 
     public function isHoliday($date) {
         $holidays = $this->getHolidays();

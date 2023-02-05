@@ -330,12 +330,24 @@
     <script type="text/javascript">
         let editPicker = $("#dateEdit").flatpickr({
             dateFormat: "Y-m-d",
+            disable: [
+                function (date) {
+                    let date_temp = new Date(date.getTime());
+                    let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                    return ({!! json_encode($confessionnel_days) !!}.includes(disabled_date));
+                }],
             locale: {
                 firstDayOfWeek: 1
             },
         });
         let storePicker = $("#dateStore").flatpickr({
             dateFormat: "Y-m-d",
+            disable: [
+                function (date) {
+                    let date_temp = new Date(date.getTime());
+                    let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                    return ({!! json_encode($confessionnel_days) !!}.includes(disabled_date));
+                }],
             locale: {
                 firstDayOfWeek: 1
             },

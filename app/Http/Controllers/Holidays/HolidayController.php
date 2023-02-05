@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Holidays;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HolidayRequests\StoreHolidayRequest;
 use App\Http\Requests\HolidayRequests\UpdateHolidayRequest;
@@ -12,6 +13,7 @@ class HolidayController extends Controller
 {
     public function create()
     {
+
         return view('holidays.create');
     }
 
@@ -27,9 +29,11 @@ class HolidayController extends Controller
 
     public function index() {
         $holidays = Holiday::search(request(['search']))->paginate(10);
-
+        $helper = new Helper();
+        $holidayDates = $helper->getHolidays();
         return view('holidays.index', [
             'holidays' => $holidays,
+            'holiday_dates' => $holidayDates
         ]);
     }
 

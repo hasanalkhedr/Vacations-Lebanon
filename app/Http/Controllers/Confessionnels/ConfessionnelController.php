@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Confessionnels;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ConfessionnelRequests\StoreConfessionnelRequest;
 use App\Http\Requests\ConfessionnelRequests\UpdateConfessionnelRequest;
@@ -29,9 +30,11 @@ class ConfessionnelController extends Controller
 
     public function index() {
         $confessionnels = Confessionnel::search(request(['search']))->paginate(10);
-
+        $helper = new Helper();
+        $confessionnelDates = $helper->getConfessionnels();
         return view('confessionnels.index', [
             'confessionnels' => $confessionnels,
+            'confessionnel_days' => $confessionnelDates
         ]);
     }
 

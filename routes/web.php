@@ -115,6 +115,9 @@ Route::group(['middleware' => 'role_custom:human_resource', 'controller' => Noti
     Route::post('/store', 'store')->name('store');
 });
 
+Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'controller' => \App\Http\Controllers\HolidaysAndConfessionnels\HolidaysAndConfessionnels::class, 'prefix' => 'holidays-and-confessionnels', 'as' => 'holidays-and-confessionnels.'], function () {
+    Route::get('/index', 'index')->name('index');
+});
 Auth::routes();
 
 
