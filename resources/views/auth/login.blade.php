@@ -18,7 +18,7 @@
         <div class="container px-6 py-12 h-full m-auto">
             <div class="flex justify-center items-center flex-wrap h-full g-6 text-gray-800">
                 <div class="md:w-8/12 lg:w-6/12 mb-12 md:mb-0">
-                    <img src="https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg"
+                    <img src="https://assets.website-files.com/626f5d0ae6c15cea8c2dd5dd/6322a454df6ee26d107fa074_Banner-0014.png"
                         class="w-full" alt="Phone image" />
                 </div>
                 <div class="md:w-8/12 lg:w-5/12 lg:ml-20">
