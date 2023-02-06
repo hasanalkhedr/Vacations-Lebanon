@@ -88,6 +88,7 @@
     "Accepted Leave Requests": "Demandes de congé acceptées",
     "Status": "Statut",
     "No Accepted Leave Requests Found": "Aucune demande de congé acceptée trouvée",
+    "No Accepted Overtime Requests Found": "Aucune demande d'heures supplémentaires acceptée n'a été trouvée",
     "Generate New Calendar": "Générer un nouveau calendrier",
     "Weekend": "Weekend",
     "National Holiday": "Fête nationale",
@@ -227,9 +228,9 @@
     "Profile Photo": "Photo de profil",
     "Total Overtime": "HS en nombre d’heures",
     "Days": "Équivalence des HS en nombre de jours",
-    "The profile photo must be an image" : "La photo de profil doit être une image",
-    "The profile photo can have the following extensions:" : "La photo de profil peut avoir les extensions suivantes:",
-    "La photo de profil ne doit pas dépasser" : "La photo de profil ne doit pas dépasser",
-    "Choose File" : "Choisir le fichier",
-    "Holidays And Confessionnels" : "Fêtes Et Confessionnels"
+    "The profile photo must be an image": "La photo de profil doit être une image",
+    "The profile photo can have the following extensions:": "La photo de profil peut avoir les extensions suivantes:",
+    "La photo de profil ne doit pas dépasser": "La photo de profil ne doit pas dépasser",
+    "Choose File": "Choisir le fichier",
+    "Holidays And Confessionnels": "Fêtes Et Confessionnels"
 }
