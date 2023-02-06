@@ -152,14 +152,13 @@ class LeaveController extends Controller
         }
 
         if($employee->hasExactRoles('employee') && $employee->is_supervisor) {
-            $leaves = Leave::where('leave_status', self::ACCEPTED_STATUS)
-                        ->orWhere(function ($query) use ($employee) {
+            $leaves = Leave::where(function ($query) use ($employee) {
                             $query->whereHas('employee', function ($q) use ($employee) {
                                 $q->whereHas('department', function ($q) use ($employee) {
                                     $q->where('manager_id', $employee->id);
                                 });})
                                 ->whereNot('processing_officer_role', Role::findByName('employee')->id)
-                                ->where('leave_status', self::PENDING_STATUS);})
+                                ->whereNot('leave_status', self::REJECTED_STATUS);})
                                 ->whereNot('employee_id', $employee->id)
                                 ->paginate(10);
         }
