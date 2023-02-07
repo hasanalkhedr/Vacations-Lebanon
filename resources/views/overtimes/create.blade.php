@@ -59,6 +59,18 @@
             });
         }
 
+        function changeDateFormat(date) {
+            if(!date) {
+                return null
+            }
+            let separator = '/';
+            const [day, month, year] = date.split(separator);
+
+            const formattedDate = [year, month, day].join('-');
+
+            return formattedDate;
+        }
+
         function deleteRow(button) {
             overtimes--
             button.parentElement.parentElement.remove();
@@ -69,13 +81,11 @@
             multiplyHours = false;
             let $row = $(this).closest("tr");
             let date = $row.find("input[name^='date']");
-            let day = new Date(date.val())
-
+            let day = new Date(changeDateFormat(date.val()))
             const offset = day.getTimezoneOffset()
             day = new Date(day.getTime() - (offset*60*1000))
             let string_day = day.toISOString().split('T')[0]
-
-            if(day.getDay() == 0 || {!! json_encode($holiday_dates) !!}.includes(string_day))
+            if(day.getDay() == 0 || day.getDay() == 6 || {!! json_encode($holiday_dates) !!}.includes(string_day))
                 multiplyHours = true;
         })
 
