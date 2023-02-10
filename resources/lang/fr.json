@@ -232,5 +232,7 @@
     "The profile photo can have the following extensions:": "La photo de profil peut avoir les extensions suivantes:",
     "La photo de profil ne doit pas dépasser": "La photo de profil ne doit pas dépasser",
     "Choose File": "Choisir le fichier",
-    "Holidays And Confessionnels": "Fêtes Et Confessionnels"
+    "Holidays And Confessionnels": "Fêtes Et Confessionnels",
+    "Delete Notification": "Supprimer la notification",
+    "Are you sure you want to delete this notification": "Voulez-vous vraiment supprimer cette notification"
 }

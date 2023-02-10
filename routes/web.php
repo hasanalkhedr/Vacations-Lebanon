@@ -29,15 +29,14 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
     Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:employee|human_resource|sg'], function () {
         Route::get('/index', 'index')->name('index');
         Route::get('/show/{employee}', 'show')->name('show');
+        Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
+        Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
     });
     Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource|sg'], function () {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
-        Route::get('/sendMessage', 'sendMessage')->name('sendMessage');
         Route::get('/editprofile/{employee}', 'editProfile')->name('editProfile');
         Route::put('/updateprofile/{employee}', 'updateProfile')->name('updateProfile');
-        Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
-        Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
         Route::delete('/{employee}', 'destroy')->name('destroy');
     });
 });
@@ -112,7 +111,10 @@ Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => C
 });
 
 Route::group(['middleware' => 'role_custom:human_resource', 'controller' => NotificationController::class, 'prefix' => 'notifications', 'as' => 'notifications.'], function () {
+    Route::get('/tabbed_view', 'tabbed_view')->name('tabbed_view');
     Route::post('/store', 'store')->name('store');
+    Route::get('/show/{notificationsGroup}', 'show')->name('show');
+    Route::delete('/delete/{notificationsGroup}', 'destroy')->name('destroy');
 });
 
 Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'controller' => \App\Http\Controllers\HolidaysAndConfessionnels\HolidaysAndConfessionnels::class, 'prefix' => 'holidays-and-confessionnels', 'as' => 'holidays-and-confessionnels.'], function () {

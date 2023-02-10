@@ -17,113 +17,11 @@
     </div>
     <div id="myTabContent">
         <div class="{{ $activeTab == "holidays" ? '' : 'hidden' }}" id="holidays" role="tabpanel" aria-labelledby="holidays-tab">
-            <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left text-gray-500">
-                    @unless($holidays->isEmpty())
-                        <thead class="text-s blue-color uppercase bg-gray-50">
-                        <tr>
-                            <th scope="col" class="cursor-pointer py-3 px-6">
-                                {{ __('Name') }}
-                            </th>
-                            <th scope="col" class="cursor-pointer py-3 px-6">
-                                {{ __('From') }}
-                            </th>
-                            <th scope="col" class="cursor-pointer py-3 px-6">
-                                {{ __('To') }}
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach ($holidays as $holiday)
-                            <tr class="bg-white">
-                                <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap cursor-pointer"
-                                    onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
-                                    {{ $holiday->name }}
-                                </td>
-                                <td class="py-4 px-6 border-b cursor-pointer"
-                                    onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
-                                    {{ $holiday->from }}
-                                </td>
-                                <td class="py-4 px-6 border-b cursor-pointer"
-                                    onclick="window.location.href = '{{ url(route('holidays.show', ['holiday' => $holiday->id])) }}'">
-                                    {{ $holiday->to }}
-                                </td>
-                            </tr>
-                        @endforeach
-                        @else
-                            <tr class="border-gray-300">
-                                <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                                    <p class="text-center">{{ __('No Holidays Found') }}</p>
-                                </td>
-                            </tr>
-                        @endunless
-                        </tbody>
-                </table>
-            </div>
-
-            <div class="mt-6 p-4">
-                {{ $holidays->appends(['confessionnels_page' => $confessionnels->currentPage(), 'active_tab' => 'holidays'])->links() }}
-            </div>
+            @include('holidays-and-confessionnels.includes.holidays-tab')
         </div>
         <div class="{{ $activeTab == "confessionnels" ? '' : 'hidden' }}" id="confessionnels" role="tabpanel" aria-labelledby="confessionnels-tab">
-            <div class="px-4 overflow-x-auto relative shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left text-gray-500">
-                    @unless($confessionnels->isEmpty())
-                        <thead class="text-s blue-color uppercase bg-gray-50">
-                        <tr>
-                            <th scope="col" class="cursor-pointer py-3 px-6">
-                                {{__("Name")}}
-                            </th>
-                            <th scope="col" class="cursor-pointer py-3 px-6">
-                                {{__("Date")}}
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach ($confessionnels as $confessionnel)
-                            <tr class="bg-white hover:bg-gray-50">
-                                <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap cursor-pointer" onclick="window.location.href = '{{ url(route('confessionnels.show', ['confessionnel' => $confessionnel->id])) }}'">
-                                    {{ $confessionnel->name }}
-                                </td>
-                                <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('confessionnels.show', ['confessionnel' => $confessionnel->id])) }}'">
-                                    {{$confessionnel->date}}
-                                </td>
-                            </tr>
-                        @endforeach
-                        @else
-                            <tr class="border-gray-300">
-                                <td colspan="4" class="px-4 py-8 border-t border-gray-300 text-lg">
-                                    <p class="text-center">{{__("No Confessionnels Found")}}</p>
-                                </td>
-                            </tr>
-                        @endunless
-                        </tbody>
-                </table>
-
-
-            </div>
-
-            <div class="mt-6 p-4">
-                {{ $confessionnels->appends(['holidays_page' => $holidays->currentPage(), 'active_tab' => 'confessionnels'])->links() }}
-            </div>
+            @include('holidays-and-confessionnels.includes.confessionnels-tab')
         </div>
     </div>
 </x-sidebar>
-
-<script>
-    // $(document).ready(function () {
-    //     const queryString = window.location.search;
-    //     const urlParams = new URLSearchParams(queryString);
-    //     const activeTab = urlParams.get('active_tab');
-    //     const holidaysButton = document.getElementById('holidaysButton');
-    //     const confessionnelsButton = document.getElementById('confessionnelsButton');
-    //     if(activeTab === 'holidays') {
-    //         holidaysButton.click()
-    //     }
-    //     if(activeTab === 'confessionnels') {
-    //         confessionnelsButton.click()
-    //     }
-    // });
-</script>
-
 

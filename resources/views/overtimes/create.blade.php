@@ -85,7 +85,7 @@
             const offset = day.getTimezoneOffset()
             day = new Date(day.getTime() - (offset*60*1000))
             let string_day = day.toISOString().split('T')[0]
-            if(day.getDay() == 0 || day.getDay() == 6 || {!! json_encode($holiday_dates) !!}.includes(string_day))
+            if(day.getDay() == 0 || {!! json_encode($holiday_dates) !!}.includes(string_day))
                 multiplyHours = true;
         })
 

@@ -34,10 +34,10 @@
                             {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                         </td>
                         <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            {{ $leave->from }}
+                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $leave->from)->format(config('app.date_format')) }}
                         </td>
                         <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            {{ $leave->to }}
+                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $leave->to)->format(config('app.date_format')) }}
                         </td>
                         <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             @if($leave->leave_status == 0)

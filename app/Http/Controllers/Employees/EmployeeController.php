@@ -243,8 +243,4 @@ class EmployeeController
         return redirect()->route('employees.index');
     }
 
-    public function sendMessage()
-    {
-        return view('employees.send-message');
-    }
 }

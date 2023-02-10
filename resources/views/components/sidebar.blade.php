@@ -195,8 +195,8 @@
                             @if (auth()->user()->hasRole('human_resource'))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
-                                        href="{{ route('employees.sendMessage') }}">
-                                        <span class="mx-2 font-medium">{{ __('Send Message') }}</span>
+                                        href="{{ route('notifications.tabbed_view') }}">
+                                        <span class="mx-2 font-medium">{{ __('Notifications') }}</span>
                                     </a>
                                 </li>
                             @endif

@@ -128,12 +128,14 @@
                 data-modal-toggle="editProfileModal">
                 {{ __('Edit Employee Profile') }}
             </button>
+        @endhasanyrole
+        @if(auth()->user()->id == $employee->id || auth()->user()->hasRole(['human_resource','sg']))
             <button
                 class="text-white hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center blue-bg"
                 data-modal-toggle="editPasswordModal">
                 {{ __('Edit Employee Password') }}
             </button>
-        @endhasanyrole
+        @endif
     </div>
     @if ($employee->hasRole('employee') && $employee->is_supervisor == false)
         <table class="mt-4 w-full text-sm text-left text-gray-500 border">

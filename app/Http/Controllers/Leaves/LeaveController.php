@@ -337,8 +337,8 @@ class LeaveController extends Controller
     }
 
     public function destroy(Leave $leave) {
-        if($leave->employee->id != auth()->user()->id || !auth()->user()->hasRole('human_resource')) {
-            return;
+        if($leave->employee->id != auth()->user()->id && !auth()->user()->hasRole('human_resource')) {
+            return back();
         }
         $leave_service = new LeaveService();
         if($leave->leave_status == self::ACCEPTED_STATUS) {
