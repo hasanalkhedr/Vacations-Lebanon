@@ -9,7 +9,7 @@
 
     <p>Bonjour,</p>
 
-    <p>Vous avez une nouvelle demande de congé à verifier.</p>
+    <p>Vous avez une nouvelle demande de congé à vérifier.</p>
 
     <strong>Merci</strong>
 
