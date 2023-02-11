@@ -4,7 +4,7 @@
         <div class="text-lg blue-color">
             {{__("Users")}}
         </div>
-        @hasanyrole('human_resource|sg')
+        @hasanyrole('human_resource|sg|head')
         <div>
             <button class="hover:bg-blue-700 text-white py-2 px-4 rounded-full blue-bg"
                     data-modal-toggle="createModal">
@@ -63,7 +63,7 @@
                         <td class="py-4 px-6 border-b">
                             {{(implode(' | ', $employee->getRoleNamesCustom())) }}
                         </td>
-                        @hasanyrole('human_resource|sg')
+                        @hasanyrole('human_resource|sg|head')
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium hover:underline blue-color" type="button"
                                         data-modal-toggle="editProfileModal-{{$employee->id}}">
@@ -301,6 +301,28 @@
                                                 </div>
                                             @endif
 
+                                            <div class="grid md:grid-cols-2 md:gap-6">
+                                                <div class="relative z-0 mb-6 w-full group">
+                                                    <p class="mb-2 text-sm font-medium blue-color">{{__("Submit Requests")}}</p>
+                                                    <div class="mt-2 flex flex-row">
+                                                        <input type="checkbox" name="can_submit_requests" id="can_submit_requests" {{ $employee->can_submit_requests ? 'checked' : '' }}>
+                                                    </div>
+                                                    @error('can_submit_requests')
+                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="relative z-0 mb-6 w-full group">
+                                                    <p class="mb-2 text-sm font-medium blue-color">{{__("Receive Emails")}}</p>
+                                                    <div class="mt-2 flex flex-row">
+                                                        <input type="checkbox" name="can_receive_emails" id="can_receive_emails" {{ $employee->can_receive_emails ? 'checked' : '' }}>
+                                                    </div>
+                                                    @error('can_receive_emails')
+                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
                                             <div>
                                                 <div class="relative z-0 mb-4 w-full group">
                                                     <label for="profile_photo" class="mb-2 text-sm font-medium blue-color">
@@ -518,6 +540,28 @@
                                 </select>
                             </div>
 
+                            <div class="grid md:grid-cols-2 md:gap-6">
+                                <div class="relative z-0 mb-6 w-full group">
+                                    <p class="mb-2 text-sm font-medium blue-color">{{__("Submit Requests")}}</p>
+                                    <div class="mt-2 flex flex-row">
+                                        <input type="checkbox" name="can_submit_requests" id="can_submit_requests">
+                                    </div>
+                                    @error('can_submit_requests')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="relative z-0 mb-6 w-full group">
+                                    <p class="mb-2 text-sm font-medium blue-color">{{__("Receive Emails")}}</p>
+                                    <div class="mt-2 flex flex-row">
+                                        <input type="checkbox" name="can_receive_emails" id="can_receive_emails">
+                                    </div>
+                                    @error('can_receive_emails')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div>
                                 <div class="relative z-0 mb-4 w-full group flex flex-col">
                                     <label for="profile_photo" class="mb-2 text-sm font-medium blue-color">
@@ -646,7 +690,7 @@
             employee_id= $(that)[0].id.split('--')[1]
             let role_ids = $(that).val()
             let employee_role_id = Object.keys(role_ids_names_pairs).find(key => role_ids_names_pairs[key] === 'employee')
-            if(!role_ids.includes(employee_role_id) && employee.is_supervisor) {
+            if(!role_ids.includes(employee_role_id) && employee.id == employee.department.manager_id) {
                 $('#new_manager--' + employee_id)[0].classList.remove('hidden')
             }
             else {
@@ -656,10 +700,11 @@
         }
 
         function checkSupervisorDepartment(that, employee) {
+            console.log(employee);
             let department_id = employee.department_id
             employee_id= $(that)[0].id.split('--')[1]
             let selected_department_id = $(that).val()
-            if(department_id != selected_department_id && employee.is_supervisor) {
+            if(department_id != selected_department_id && employee.id == employee.department.manager_id) {
                 $('#new_manager--' + employee_id)[0].classList.remove('hidden')
             }
             else {

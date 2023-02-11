@@ -46,13 +46,16 @@ class DepartmentController extends Controller
     public function update(UpdateDepartmentRequest $request, Department $department)
     {
         $validated = $request->validated();
-        $supervisor_old = Employee::where('id', $department->manager_id)->first();
-        $supervisor_old->is_supervisor = false;
-        $supervisor_old->save();
+        $old_supervisor = Employee::where('id', $department->manager_id)->first();
+        $isOldSupervisorInOtherDepartments = Department::whereManagerId($old_supervisor->id)->count() > 1;
+        if(!$isOldSupervisorInOtherDepartments) {
+            $old_supervisor->is_supervisor = false;
+            $old_supervisor->save();
+        }
         $department->update($validated);
-        $supervisor_new = Employee::where('id', $department->manager_id)->first();
-        $supervisor_new->is_supervisor = true;
-        $supervisor_new->save();
+        $new_supervisor = Employee::where('id', $department->manager_id)->first();
+        $new_supervisor->is_supervisor = true;
+        $new_supervisor->save();
 
         return back();
     }

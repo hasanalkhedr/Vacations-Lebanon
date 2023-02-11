@@ -21,7 +21,7 @@ class OvertimeController extends Controller
     public function create() {
         $helper = new Helper();
         $employee = auth()->user();
-        if(($employee->hasExactRoles("employee") || $employee->hasAllRoles(['employee','human_resource'])) && $employee->is_supervisor == false) {
+        if(auth()->user()->can_submit_requests) {
             $holiday_dates = $helper->getHolidays();
             return view('overtimes.create',[
                 'employee' => $employee,
@@ -53,12 +53,13 @@ class OvertimeController extends Controller
                 }
                 $overtime->date_of_submission = now()->format('Y-m-d');
 
-                if($overtime->employee->hasAllRoles(['employee','human_resource']) && $overtime->employee->is_supervisor == false) {
+                if($overtime->employee->hasRole('human_resource') && $overtime->employee->can_submit_requests) {
                     $role = Role::findByName('sg');
-                    $processing_officers = Employee::role('sg')->get();
+                    $head = Employee::role('head')->get();
+                    $processing_officers = Employee::role('sg')->get()->concat($head)->all();
                     $overtime->processing_officer_role = $role->id;
                 }
-                else if($overtime->employee->department->manager->hasRole('sg')) {
+                else if($overtime->employee->department->manager->hasRole('sg') || $overtime->employee->is_supervisor) {
                     $role = Role::findByName('human_resource');
                     $processing_officers = Employee::role('human_resource')->get();
                     $overtime->processing_officer_role = $role->id;
@@ -76,7 +77,7 @@ class OvertimeController extends Controller
     }
 
     public function submitted() {
-        if((auth()->user()->hasExactRoles("employee") || auth()->user()->hasAllRoles(['employee','human_resource'])) && auth()->user()->is_supervisor == false) {
+        if(auth()->user()->can_submit_requests) {
             $overtimes = auth()->user()->overtimes;
             return view('overtimes.submitted', [
                 'overtimes' => $overtimes
@@ -113,7 +114,7 @@ class OvertimeController extends Controller
                 ->whereNot('employee_id', $employee->id)
                 ->search(request(['search']))->paginate(10);
         }
-        if($employee->hasRole("sg")) {
+        if($employee->hasRole(['sg', 'head'])) {
             $overtimes = Overtime::where('overtime_status', self::PENDING_STATUS)
                 ->whereNot('employee_id', $employee->id)
                 ->search(request(['search']))->paginate(10);
@@ -150,7 +151,7 @@ class OvertimeController extends Controller
                 ->paginate(10);
         }
 
-        if($employee->hasRole('sg')) {
+        if($employee->hasRole(['sg', 'head'])) {
             $overtimes = Overtime::whereNot('employee_id', $employee->id)
                 ->where('overtime_status', self::ACCEPTED_STATUS)
                 ->whereNot('employee_id', $employee->id)
@@ -179,7 +180,7 @@ class OvertimeController extends Controller
         {
             $loggedInUser = auth()->user();
             $processing_officer = Role::where('id', $overtime->processing_officer_role)->first();
-            if($overtime->employee_id == $loggedInUser->id || $loggedInUser->hasRole(['human_resource', 'sg']) || $loggedInUser->id == $overtime->employee->department->manager_id) {
+            if($overtime->employee_id == $loggedInUser->id || $loggedInUser->hasRole(['human_resource', 'sg', 'head']) || $loggedInUser->id == $overtime->employee->department->manager_id) {
                 return view('overtimes.show', [
                     'overtime' => $overtime,
                     'processing_officer' => $processing_officer
@@ -215,7 +216,7 @@ class OvertimeController extends Controller
     }
 
     public function createReport() {
-        if(auth()->user()->hasRole(['human_resource', 'sg'])) {
+        if(auth()->user()->hasRole(['human_resource', 'sg', 'head'])) {
             $employees = Employee::role('employee')->where('is_supervisor', false)->orderBy('first_name')->get();
             return view('overtimes.create-report', [
                 'employees' => $employees

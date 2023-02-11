@@ -29,6 +29,5 @@ class RoleSeeder extends Seeder
         $role = Role::create(['name' => 'sg']);
         $role->display_name = "SG";
         $role->save();
-
     }
 }

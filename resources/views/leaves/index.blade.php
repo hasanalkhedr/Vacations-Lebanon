@@ -56,7 +56,7 @@
                             @endif
 
                         </td>
-                        @if(($leave->processing_officer->name == "employee" && $leave->employee->department->manager_id == $employee->id) || ($leave->processing_officer->name == "human_resource" && $employee->hasRole('human_resource')) || ($leave->processing_officer->name == "sg" && $employee->hasRole('sg')))
+                        @if(($leave->processing_officer->name == "employee" && $leave->employee->department->manager_id == $employee->id) || ($leave->processing_officer->name == "human_resource" && $employee->hasRole('human_resource')) || ($leave->processing_officer->name == "sg" && $employee->hasRole(['sg', 'head'])))
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium text-green-600 hover:underline" type="button"
                                         data-modal-toggle="acceptModal-{{$leave->id}}">

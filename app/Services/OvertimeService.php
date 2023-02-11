@@ -40,7 +40,7 @@ class OvertimeService
         $role = Role::findById($processing_officer_role);
         switch ($role->name){
             case ('human_resource'):
-                if(auth()->user()->hasRole('sg')) {
+                if(auth()->user()->hasRole(['sg', 'head'])) {
                     $role_sg = Role::findByName('sg');
                     $overtime->processing_officer_role = $role_sg->id;
                     $this->acceptLeave($overtime);
@@ -50,11 +50,12 @@ class OvertimeService
                 else {
                     $role = Role::findByName('sg');
                     $overtime->processing_officer_role = $role->id;
-                    $processing_officers = Employee::role('sg')->get();
+                    $head = Employee::role('head')->get();
+                    $processing_officers = Employee::role('sg')->get()->concat($head)->all();
                 }
                 break;
             case ('employee'):
-                if(auth()->user()->hasRole('sg')) {
+                if(auth()->user()->hasRole(['sg', 'head'])) {
                     $role_sg = Role::findByName('sg');
                     $overtime->processing_officer_role = $role_sg->id;
                     $this->acceptLeave($overtime);

@@ -53,7 +53,7 @@
                                 </div>
                             @endif
                         </td>
-                        @hasanyrole('human_resource|sg')
+                        @hasanyrole('human_resource|sg|head')
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium hover:underline blue-color" type="button"
                                         data-modal-toggle="editModal-{{$department->id}}">

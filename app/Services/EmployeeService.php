@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Department;
 use App\Models\Employee;
 
 class EmployeeService
@@ -13,7 +14,7 @@ class EmployeeService
     public function getAppropriateEmployees()
     {
         $loggedInUser = auth()->user();
-        if ($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole('sg')) {
+        if ($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole(['human_resource', 'sg', 'head'])) {
             return Employee::search(request(['search']))->paginate(10);
         } else {
             return Employee::whereHas('department', function ($q) use ($loggedInUser) {
@@ -29,7 +30,11 @@ class EmployeeService
         $new_manager = Employee::where('id', $new_manager_id)->first();
         $new_manager->is_supervisor = true;
         $new_manager->save();
-        $old_supervisor->is_supervisor = false;
+        $isOldSupervisorInOtherDepartments = Department::whereManagerId($old_supervisor->id)->count() > 1;
+        if(!$isOldSupervisorInOtherDepartments) {
+            $old_supervisor->is_supervisor = false;
+            $old_supervisor->save();
+        }
     }
 
     public function getNormalNbofDaysPending($employee)

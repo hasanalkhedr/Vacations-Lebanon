@@ -26,13 +26,13 @@ Route::get('/', function () {
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
     Route::post('/authenticate', 'authenticate')->name('authenticate');
-    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:employee|human_resource|sg'], function () {
+    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:employee|human_resource|sg|head'], function () {
         Route::get('/index', 'index')->name('index');
         Route::get('/show/{employee}', 'show')->name('show');
         Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
         Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
     });
-    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource|sg'], function () {
+    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource|sg|head'], function () {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
         Route::get('/editprofile/{employee}', 'editProfile')->name('editProfile');
@@ -41,7 +41,7 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
     });
 });
 
-Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
+Route::group(['middleware' => 'role_custom:human_resource|sg|head', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
     Route::get('/edit/{department}', 'edit')->name('edit');
@@ -53,7 +53,7 @@ Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => D
 });
 
 
-Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
+Route::group(['middleware' => 'role_custom:employee|human_resource|sg|head', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
     Route::get('/acceptedIndex', 'acceptedIndex')->name('acceptedIndex');
     Route::get('/rejectedIndex', 'rejectedIndex')->name('rejectedIndex');
     Route::get('/create', 'create')->name('create');
@@ -74,7 +74,7 @@ Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'control
     Route::get('/index', 'index')->name('index');
 });
 
-Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'controller' => OvertimeController::class, 'prefix' => 'overtimes', 'as' => 'overtimes.'], function () {
+Route::group(['middleware' => 'role_custom:employee|human_resource|sg|head', 'controller' => OvertimeController::class, 'prefix' => 'overtimes', 'as' => 'overtimes.'], function () {
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
     Route::get('/submitted', 'submitted')->name('submitted');
@@ -89,7 +89,7 @@ Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'control
     Route::get('/', 'index')->name('index');
 });
 
-Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => HolidayController::class, 'prefix' => 'holidays', 'as' => 'holidays.'], function () {
+Route::group(['middleware' => 'role_custom:human_resource|sg|head', 'controller' => HolidayController::class, 'prefix' => 'holidays', 'as' => 'holidays.'], function () {
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
     Route::get('/edit/{holiday}', 'edit')->name('edit');
@@ -100,7 +100,7 @@ Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => H
 
 });
 
-Route::group(['middleware' => 'role_custom:human_resource|sg', 'controller' => ConfessionnelController::class, 'prefix' => 'confessionnels', 'as' => 'confessionnels.'], function () {
+Route::group(['middleware' => 'role_custom:human_resource|sg|head', 'controller' => ConfessionnelController::class, 'prefix' => 'confessionnels', 'as' => 'confessionnels.'], function () {
     Route::post('/store', 'store')->name('store');
     Route::get('/edit/{confessionnel}', 'edit')->name('edit');
     Route::put('/update/{confessionnel}', 'update')->name('update');
@@ -117,7 +117,7 @@ Route::group(['middleware' => 'role_custom:human_resource', 'controller' => Noti
     Route::delete('/delete/{notificationsGroup}', 'destroy')->name('destroy');
 });
 
-Route::group(['middleware' => 'role_custom:employee|human_resource|sg', 'controller' => \App\Http\Controllers\HolidaysAndConfessionnels\HolidaysAndConfessionnels::class, 'prefix' => 'holidays-and-confessionnels', 'as' => 'holidays-and-confessionnels.'], function () {
+Route::group(['middleware' => 'role_custom:employee|human_resource|sg|head', 'controller' => \App\Http\Controllers\HolidaysAndConfessionnels\HolidaysAndConfessionnels::class, 'prefix' => 'holidays-and-confessionnels', 'as' => 'holidays-and-confessionnels.'], function () {
     Route::get('/index', 'index')->name('index');
 });
 Auth::routes();

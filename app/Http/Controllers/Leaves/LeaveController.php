@@ -27,7 +27,7 @@ class LeaveController extends Controller
 
     public function create() {
         $employee = auth()->user();
-        if(($employee->hasExactRoles("employee") || $employee->hasAllRoles(['employee','human_resource'])) && $employee->is_supervisor == false) {
+        if($employee->can_submit_requests) {
             $employee_service = new EmployeeService();
             $helper = new Helper();
             $normal_pending_days = $employee_service->getNormalNbofDaysPending($employee);
@@ -96,12 +96,13 @@ class LeaveController extends Controller
         }
         $leave->disabled_dates = $serializedArr;
 
-        if($leave->employee->hasAllRoles(['employee','human_resource']) && $leave->employee->is_supervisor == false) {
+        if($leave->employee->hasRole('human_resource') && $leave->employee->can_submit_requests) {
             $role = Role::findByName('sg');
-            $processing_officers = Employee::role('sg')->get();
+            $head = Employee::role('head')->get();
+            $processing_officers = Employee::role('sg')->get()->concat($head)->all();
             $leave->processing_officer_role = $role->id;
         }
-        else if($leave->employee->department->manager->hasRole('sg')) {
+        else if($leave->employee->department->manager->hasRole('sg') || $leave->employee->is_supervisor) {
             $role = Role::findByName('human_resource');
             $processing_officers = Employee::role('human_resource')->get();
             $leave->processing_officer_role = $role->id;
@@ -135,7 +136,7 @@ class LeaveController extends Controller
         if($employee->hasRole("human_resource")) {
             $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
-        if($employee->hasRole("sg")) {
+        if($employee->hasRole(['sg', 'head'])) {
             $leaves = Leave::where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
         return view('leaves.index', [
@@ -171,7 +172,7 @@ class LeaveController extends Controller
                             ->paginate(10);
         }
 
-        if($employee->hasRole('sg')) {
+        if($employee->hasRole(['sg', 'head'])) {
             $leaves = Leave::whereNot('employee_id', $employee->id)
                         ->where('leave_status', self::ACCEPTED_STATUS)->paginate(10);
 
@@ -199,7 +200,7 @@ class LeaveController extends Controller
             $loggedInUser = auth()->user();
             $processing_officer = Role::where('id', $leave->processing_officer_role)->first();
 
-            if($leave->employee_id == $loggedInUser->id || $loggedInUser->hasRole(['human_resource', 'sg']) || $loggedInUser->id == $leave->employee->department->manager_id) {
+            if($leave->employee_id == $loggedInUser->id || $loggedInUser->hasRole(['human_resource', 'sg', 'head']) || $loggedInUser->id == $leave->employee->department->manager_id) {
                 return view('leaves.show', [
                     'leave' => $leave,
                     'processing_officer' => $processing_officer
@@ -236,7 +237,7 @@ class LeaveController extends Controller
     }
 
     public function submitted() {
-        if((auth()->user()->hasExactRoles("employee") || auth()->user()->hasAllRoles(['employee','human_resource'])) && auth()->user()->is_supervisor == false) {
+        if(auth()->user()->can_submit_requests) {
             $leaves = Leave::where('employee_id', auth()->user()->id)->paginate(10);
             return view('leaves.submitted', [
                 'leaves' => $leaves
@@ -290,7 +291,7 @@ class LeaveController extends Controller
             $employees = Employee::all();
         }
         else {
-            if(!auth()->user()->hasRole(['human_resource', 'sg'])){
+            if(!auth()->user()->hasRole(['human_resource', 'sg', 'head'])){
                 $department = Department::where('id', auth()->user()->department_id)->first();
             }
             else {
@@ -353,7 +354,7 @@ class LeaveController extends Controller
     }
 
     public function createReport() {
-        if(auth()->user()->hasRole(['human_resource', 'sg'])) {
+        if(auth()->user()->hasRole(['human_resource', 'sg', 'head'])) {
             $employees = Employee::role('employee')->where('is_supervisor', false)->orderBy('first_name')->get();
             return view('leaves.create-report', [
                 'employees' => $employees

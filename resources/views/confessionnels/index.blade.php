@@ -43,7 +43,7 @@
                         <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('confessionnels.show', ['confessionnel' => $confessionnel->id])) }}'">
                             {{$confessionnel->date}}
                         </td>
-                        @hasanyrole('human_resource|sg')
+                        @hasanyrole('human_resource|sg|head')
                         <td class="py-4 px-6 text-right border-b">
                             <button class="font-medium text-blue-600 hover:underline" type="button"
                                     data-modal-toggle="editProfileModal-{{$confessionnel->id}}">

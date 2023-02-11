@@ -30,29 +30,39 @@ class LeaveService
     public function sendEmailToInvolvedEmployees($leave, $processing_officers = NULL, $substitute_employee = NULL, $delete = false)
     {
         if ($delete) {
-            if($substitute_employee) {
+            if($substitute_employee && $substitute_employee->can_receive_emails) {
                 dispatch(new SendLeaveRequestCanceledEmailJob($substitute_employee));
             }
             foreach ($processing_officers as $processing_officer) {
-                dispatch(new SendLeaveRequestCanceledEmailJob($processing_officer));
+                if($processing_officer->can_receive_emails) {
+                    dispatch(new SendLeaveRequestCanceledEmailJob($processing_officer));
+                }
             }
         }
         else {
             if ($leave->leave_status == self::ACCEPTED_STATUS) {
                 $employee = Employee::where('id', $leave->employee_id)->first();
-                dispatch(new SendLeaveRequestAcceptedEmailJob($employee));
-                if($substitute_employee) {
+                if($employee->can_receive_emails) {
+                    dispatch(new SendLeaveRequestAcceptedEmailJob($employee));
+                }
+                if($substitute_employee && $substitute_employee->can_receive_emails) {
                     dispatch(new SendLeaveRequestAcceptedEmailReplacementJob($substitute_employee));
                 }
             } elseif ($leave->leave_status == self::REJECTED_STATUS) {
                 $employee = Employee::where('id', $leave->employee_id)->first();
-                dispatch(new SendLeaveRequestRejectedEmailJob($employee));
-                dispatch(new SendLeaveRequestRejectedEmailReplacementJob($substitute_employee));
+                if($employee->can_receive_emails) {
+                    dispatch(new SendLeaveRequestRejectedEmailJob($employee));
+                }
+                if($substitute_employee && $substitute_employee->can_receive_emails) {
+                    dispatch(new SendLeaveRequestRejectedEmailReplacementJob($substitute_employee));
+                }
             } else {
                 foreach ($processing_officers as $processing_officer) {
-                    dispatch(new SendLeaveRequestIncomingEmailJob($processing_officer));
+                    if($processing_officer->can_receive_emails) {
+                        dispatch(new SendLeaveRequestIncomingEmailJob($processing_officer));
+                    }
                 }
-                if ($substitute_employee) {
+                if($substitute_employee && $substitute_employee->can_receive_emails) {
                     dispatch(new SendLeaveRequestIncomingEmailReplacementJob($substitute_employee));
                 }
             }
@@ -76,11 +86,12 @@ class LeaveService
                 else {
                     $role = Role::findByName('sg');
                     $leave->processing_officer_role = $role->id;
-                    $processing_officers = Employee::role('sg')->get();
+                    $head = Employee::role('head')->get();
+                    $processing_officers = Employee::role('sg')->get()->concat($head)->all();
                 }
                 break;
             case ('employee'):
-                if (auth()->user()->hasRole('sg')) {
+                if (auth()->user()->hasRole(['sg', 'head'])) {
                     $role_sg = Role::findByName('sg');
                     $leave->processing_officer_role = $role_sg->id;
                     $this->acceptLeave($leave);
@@ -282,9 +293,10 @@ class LeaveService
             foreach ($hrs as $hr) {
                 $processing_officers[] = $hr;
             }
-            $sgs = Employee::role('sg')->get();
-            foreach ($sgs as $sg) {
-                $processing_officers[] = $sg;
+            $head = Employee::role('head')->get();
+            $officers = Employee::role('sg')->get()->concat($head)->all();
+            foreach ($officers as $officer) {
+                $processing_officers[] = $officer;
             }
         }
         elseif($leave->employee->hasRole('employee') && $leave->employee->is_supervisor) {
@@ -292,15 +304,17 @@ class LeaveService
             foreach ($hrs as $hr) {
                 $processing_officers[] = $hr;
             }
-            $sgs = Employee::role('sg')->get();
-            foreach ($sgs as $sg) {
-                $processing_officers[] = $sg;
+            $head = Employee::role('head')->get();
+            $officers = Employee::role('sg')->get()->concat($head)->all();
+            foreach ($officers as $officer) {
+                $processing_officers[] = $officer;
             }
         }
         else {
-            $sgs = Employee::role('sg')->get();
-            foreach ($sgs as $sg) {
-                $processing_officers[] = $sg;
+            $head = Employee::role('head')->get();
+            $officers = Employee::role('sg')->get()->concat($head)->all();
+            foreach ($officers as $officer) {
+                $processing_officers[] = $officer;
             }
         }
         return $processing_officers;

@@ -27,7 +27,7 @@ class EmployeeController
         if (auth()->attempt($validated)) {
             $employee = auth()->user();
             $request->session()->regenerate();
-            if($employee->is_supervisor || $employee->hasRole("human_resource") ||$employee->hasRole("sg")){
+            if($employee->is_supervisor || $employee->hasRole(['human_resource', 'sg', 'head'])){
                 return redirect()->route('leaves.index');
             }
             else {
@@ -77,6 +77,9 @@ class EmployeeController
         else {
             $employee['department_id'] = NULL;
         }
+
+        $employee->can_submit_requests = $request->has('can_submit_requests');
+        $employee->can_receive_emails = $request->has('can_receive_emails');
 
         if($request->hasFile('profile_photo')) {
             $employee['profile_photo'] = $request->file('profile_photo')->store('profile_photos', 'public');
@@ -142,7 +145,7 @@ class EmployeeController
         $overtimeService = new OvertimeService();
         $overtimeDays = $overtimeService->overtimeToLeaveDays($employee);
         $overtimeTotalTime = $overtimeService->fetchOvertimes($employee->id)['total_time'];
-        if($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole("sg") || $loggedInUser->id === $employee->id || ($loggedInUser->is_supervisor && $employee->department->manager_id == $loggedInUser->id)) {
+        if($loggedInUser->hasRole(['human_resource', 'sg','head']) || $loggedInUser->id === $employee->id || ($loggedInUser->is_supervisor && $employee->department->manager_id == $loggedInUser->id)) {
             return view('employees.show', [
                 'employee' => $employee,
                 'departments' => $departments,
@@ -176,7 +179,7 @@ class EmployeeController
 //            'phone_number' => $validated['phone_number'],
         ]);
         $employee->phone_number = $request->phone_number;
-        if($employee->hasRole('employee') && !$employee->is_supervisor && !$employee->hasRole("sg")) {
+        if($employee->hasRole('employee') && !$employee->is_supervisor && !$employee->hasRole(['sg', 'head'])) {
             $employee->update([
                 'nb_of_days' => $validated['nb_of_days'],
                 'confessionnels' => $validated['confessionnels'],
@@ -190,18 +193,21 @@ class EmployeeController
         foreach ($roles as $role) {
             $roles_names[] = $role;
         }
+
         if(in_array('employee', $roles_names)){
-            if($employee->department_id != $request['department_id'] && $employee->is_supervisor){
+            if($employee->department_id != $request['department_id'] && $employee->id == $employee->department->manager_id){
                 $employee_service->assignNewSupervisorIfCurrentChanges($employee, $request->manager_id);
             }
-            $employee['department_id'] = $request['department_id'];
         }
         else {
-            if($employee->is_supervisor){
+            if($employee->department && $employee->id == $employee->department->manager_id){
                 $employee_service->assignNewSupervisorIfCurrentChanges($employee, $request->manager_id);
             }
-            $employee['department_id'] = NULL;
         }
+        $employee['department_id'] = $request['department_id'];
+
+        $employee->can_submit_requests = $request->has('can_submit_requests');
+        $employee->can_receive_emails = $request->has('can_receive_emails');
 
         if($request->hasFile('profile_photo')) {
             if($employee->profile_photo) {

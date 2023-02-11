@@ -73,9 +73,7 @@
                                     </a>
                                 </li>
                             @endunless
-                            @if ((auth()->user()->hasExactRoles('employee') ||
-                                auth()->user()->hasAllRoles(['employee', 'human_resource'])) &&
-                                auth()->user()->is_supervisor == false)
+                            @if (auth()->user()->can_submit_requests)
                                 <li>
                                     <a href="{{ url(route('leaves.submitted')) }}"
                                         class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500">
@@ -120,9 +118,7 @@
                                     </ul>
                                 </li>
                             @endunless
-                            @if ((auth()->user()->hasExactRoles('employee') ||
-                                auth()->user()->hasAllRoles(['employee', 'human_resource'])) &&
-                                auth()->user()->is_supervisor == false)
+                            @if (auth()->user()->can_submit_requests)
                                 <li>
                                     <a href="{{ url(route('overtimes.submitted')) }}"
                                         class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500">
@@ -167,8 +163,7 @@
                                     </ul>
                                 </li>
                             @endunless
-                            @if (auth()->user()->hasRole('human_resource') ||
-                                auth()->user()->hasRole('sg'))
+                            @if (auth()->user()->hasRole(['human_resource', 'sg', 'head']))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('holidays.index') }}">
@@ -183,8 +178,7 @@
                                 </li>
                             @endif
                             @if (auth()->user()->is_supervisor ||
-                                auth()->user()->hasRole('human_resource') ||
-                                auth()->user()->hasRole('sg'))
+                                auth()->user()->hasRole(['human_resource', 'sg', 'head']))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('leaves.getCalendarForm') }}">
@@ -206,8 +200,7 @@
                                     <span class="mx-2 font-medium">{{ __('Show Profile') }}</span>
                                 </a>
                             </li>
-                            @if (auth()->user()->hasRole('human_resource') ||
-                                auth()->user()->hasRole('sg'))
+                            @if (auth()->user()->hasRole(['human_resource', 'sg', 'head']))
                                 <li>
                                     <button type="button"
                                         class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
