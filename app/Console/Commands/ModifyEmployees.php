@@ -33,18 +33,19 @@ class ModifyEmployees extends Command
         try {
             $employees = Employee::all();
             foreach ($employees as $employee) {
-                if($employee->is_supervisor || $employee->hasRole(['sg'])) {
+                if ($employee->is_supervisor || $employee->hasRole(['sg'])) {
                     $employee->can_submit_requests = false;
-                }
-                else {
+                } else {
                     $employee->can_submit_requests = true;
                 }
                 $employee->save();
             }
 
-            $role = Role::create(['name' => 'head']);
-            $role->display_name = "IFL director";
-            $role->save();
+            if (!Role::findByName('head')) {
+                $role = Role::create(['name' => 'head']);
+                $role->display_name = "IFL director";
+                $role->save();
+            }
 
             Artisan::call('optimize:clear');
             $this->line('<fg=green>Employees can_submit_leaves modified correctly and role created correctly.');
