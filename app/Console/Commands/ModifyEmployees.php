@@ -41,7 +41,7 @@ class ModifyEmployees extends Command
                 $employee->save();
             }
 
-            if (!Role::findByName('head')) {
+            if (!Role::whereName('head')->first()) {
                 $role = Role::create(['name' => 'head']);
                 $role->display_name = "IFL director";
                 $role->save();
