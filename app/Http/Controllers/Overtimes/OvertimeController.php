@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Overtimes;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
-use App\Models\Holiday;
 use App\Models\Overtime;
 use App\Services\OvertimeService;
 use Carbon\Carbon;
@@ -66,7 +65,7 @@ class OvertimeController extends Controller
                 }
                 else {
                     $role = Role::findByName('employee');
-                    $processing_officers = auth()->user()->department->manager;
+                    $processing_officers = collect([auth()->user()->department->manager]);
                     $overtime->processing_officer_role = $role->id;
                 }
                 $overtime->save();

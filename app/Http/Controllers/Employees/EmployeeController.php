@@ -59,12 +59,13 @@ class EmployeeController
         foreach ($request->role_ids as $role_id) {
             $employee->assignRole(Role::findById($role_id)->name);
         }
-        if($request->nb_of_days) {
-            $employee->nb_of_days = $request->nb_of_days;
-        }
-
-        if($request->confessionnels) {
-            $employee->confessionnels = $request->confessionnels;
+        if($request->has('can_submit_requests')) {
+            if($request->nb_of_days) {
+                $employee->nb_of_days = $request->nb_of_days;
+            }
+            if($request->confessionnels) {
+                $employee->confessionnels = $request->confessionnels;
+            }
         }
 
         $roles = $employee->getRoleNames();
@@ -179,7 +180,7 @@ class EmployeeController
 //            'phone_number' => $validated['phone_number'],
         ]);
         $employee->phone_number = $request->phone_number;
-        if($employee->hasRole('employee') && !$employee->is_supervisor && !$employee->hasRole(['sg', 'head'])) {
+        if($request->has('can_submit_requests')) {
             $employee->update([
                 'nb_of_days' => $validated['nb_of_days'],
                 'confessionnels' => $validated['confessionnels'],

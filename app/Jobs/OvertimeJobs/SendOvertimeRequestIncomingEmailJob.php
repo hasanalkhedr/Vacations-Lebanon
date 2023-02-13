@@ -14,16 +14,16 @@ class SendOvertimeRequestIncomingEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $employee_email;
+    protected $employee;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($employee_email)
+    public function __construct($employee)
     {
-        $this->employee_email= $employee_email;
+        $this->employee= $employee;
     }
 
     /**
@@ -34,6 +34,6 @@ class SendOvertimeRequestIncomingEmailJob implements ShouldQueue
     public function handle()
     {
         $email = new SendOvertimeRequestIncomingEmail();
-        Mail::to($this->employee_email)->send($email);
+        Mail::to($this->employee)->send($email);
     }
 }

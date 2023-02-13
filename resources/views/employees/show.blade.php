@@ -86,7 +86,7 @@
                 </label>
             </div>
         </div>
-        @if ($employee->hasRole('employee') && $employee->is_supervisor == false)
+        @if ($employee->can_submit_requests)
             <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 mb-6 w-full group">
                     <input type="number" name="nb_of_days"
@@ -138,7 +138,7 @@
             </button>
         @endif
     </div>
-    @if ($employee->hasRole('employee') && $employee->is_supervisor == false)
+    @if ($employee->can_submit_requests)
         <table class="mt-4 w-full text-sm text-left text-gray-500 border">
             <thead class="text-s blue-color uppercase bg-gray-50">
                 <tr class="border-b">
@@ -185,11 +185,6 @@
                 </tr>
             </tbody>
         </table>
-    @endif
-
-    @if (
-        ($employee->hasExactRoles('employee') || $employee->hasAllRoles(['employee', 'human_resource'])) &&
-            $employee->is_supervisor == false)
         <div class="mx-4">
             <table class="mt-4 w-full text-sm text-left text-gray-500 border">
                 <thead class="text-s uppercase bg-gray-50 blue-color">
@@ -290,28 +285,26 @@
                                 </label>
                             </div>
                         </div>
-                        @if ($employee->hasRole('employee') && $employee->is_supervisor == false)
-                            <div class="grid md:grid-cols-2 md:gap-6">
-                                <div class="relative z-0 mb-4 w-full group">
-                                    <input type="number" name="nb_of_days"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                        value="{{ $employee->nb_of_days }}" step="0.25" required />
-                                    <label for="nb_of_days"
-                                        class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
-                                        {{ __('Number of Days Off') }}
-                                    </label>
-                                </div>
-                                <div class="relative z-0 mb-4 w-full group">
-                                    <input type="number" name="confessionnels"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                        value="{{ $employee->confessionnels }}" step="0.25" required />
-                                    <label for="nb_of_days"
-                                        class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
-                                        {{ __('Confessionnel Days') }}
-                                    </label>
-                                </div>
+                        <div class="grid md:grid-cols-2 md:gap-6 {{ $employee->can_submit_requests ? '' : 'hidden' }}" id="off-days-container--{{$employee->id}}">
+                            <div class="relative z-0 mb-4 w-full group">
+                                <input type="number" name="nb_of_days"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    value="{{ $employee->nb_of_days }}" step="0.25" required />
+                                <label for="nb_of_days"
+                                    class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                    {{ __('Number of Days Off') }}
+                                </label>
                             </div>
-                        @endif
+                            <div class="relative z-0 mb-4 w-full group">
+                                <input type="number" name="confessionnels"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    value="{{ $employee->confessionnels }}" step="0.25" required />
+                                <label for="nb_of_days"
+                                    class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                    {{ __('Confessionnel Days') }}
+                                </label>
+                            </div>
+                        </div>
                         <div class="relative z-40 mb-4 w-full group">
                             <label for="role_ids" class="mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Select Role(s)') }}
@@ -374,8 +367,8 @@
                             <div class="relative z-0 mb-6 w-full group">
                                 <p class="mb-2 text-sm font-medium blue-color">{{ __('Submit Requests') }}</p>
                                 <div class="mt-2 flex flex-row">
-                                    <input type="checkbox" name="can_submit_requests" id="can_submit_requests"
-                                        {{ $employee->can_submit_requests ? 'checked' : '' }}>
+                                    <input type="checkbox" name="can_submit_requests" id="can-submit-requests--{{$employee->id}}"
+                                        {{ $employee->can_submit_requests ? 'checked' : '' }} onchange="toggleOffDaysContainer(this)">
                                 </div>
                                 @error('can_submit_requests')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -652,6 +645,12 @@
             profile_image_preview.classList.add('hidden');
             $('#profile_image_input--' + id)[0].value = ""
             $('#deleted_photo--' + id)[0].value = 1
+        }
+
+        function toggleOffDaysContainer(value) {
+            let employeeID = value.id.split('--')[1];
+            let offDaysContainer = document.getElementById('off-days-container--' + employeeID);
+            offDaysContainer.classList.toggle('hidden')
         }
     </script>
 
