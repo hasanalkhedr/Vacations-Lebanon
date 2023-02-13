@@ -2,15 +2,12 @@
 
 namespace App\Services;
 
-use App\Jobs\LeaveJobs\SendLeaveRequestIncomingEmailJob;
 use App\Jobs\OvertimeJobs\SendOvertimeRequestAcceptedEmailJob;
+use App\Jobs\OvertimeJobs\SendOvertimeRequestIncomingEmailJob;
 use App\Jobs\OvertimeJobs\SendOvertimeRequestRejectedEmailJob;
 use App\Models\Employee;
-use App\Models\Holiday;
 use App\Models\Overtime;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class OvertimeService
@@ -29,7 +26,7 @@ class OvertimeService
         }
         else {
             foreach ($processing_officers as $processing_officer) {
-                dispatch(new SendOvertimeRequestAcceptedEmailJob($processing_officer));
+                dispatch(new SendOvertimeRequestIncomingEmailJob($processing_officer));
             }
         }
     }
