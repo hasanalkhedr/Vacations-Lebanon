@@ -30,6 +30,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(1);
@@ -44,6 +45,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 1
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -54,6 +57,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 1
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Audio
@@ -66,6 +71,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 2
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         //Bekaa
@@ -79,6 +86,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(3);
@@ -93,6 +101,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 3
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -103,6 +113,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 3
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -113,6 +125,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 3
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -123,6 +137,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 3
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Bureau du Livre
@@ -137,6 +153,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(4);
@@ -151,6 +168,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 4
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -161,6 +180,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 4
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -171,6 +192,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 4
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -181,6 +204,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 4
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Campus France
@@ -194,6 +219,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(5);
@@ -208,6 +234,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 5
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -218,6 +246,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 5
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -228,6 +258,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 5
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Centre de Langes
@@ -241,6 +273,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(6);
@@ -255,6 +288,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 6
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -265,6 +300,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 6
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -275,6 +312,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 6
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -285,6 +324,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 6
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -295,6 +336,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 6
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Communication
@@ -307,6 +350,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 7
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Culturel
@@ -320,6 +365,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(8);
@@ -334,6 +380,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 8
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Deir El Qamar
@@ -347,6 +395,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(9);
@@ -361,6 +410,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 9
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -371,6 +422,7 @@ class EmployeeSeeder extends Seeder
             'department_id' => 9
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -381,6 +433,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 9
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -391,6 +445,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 9
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Direction
@@ -404,6 +460,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(2);
@@ -424,6 +481,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 10
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Jounieh
@@ -437,6 +496,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(11);
@@ -451,6 +511,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 11
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -461,6 +523,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 11
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -471,6 +535,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 11
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Linguistique
@@ -484,6 +550,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(12);
@@ -498,6 +565,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 12
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -508,6 +577,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 12
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Secrétariat Général
@@ -521,6 +592,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $role = Role::findByName('sg');
@@ -537,6 +609,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 13
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -547,6 +621,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 13
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -560,6 +636,8 @@ class EmployeeSeeder extends Seeder
         $employee->roles()->save($role);
         $role = Role::findByName('human_resource');
         $employee->roles()->save($role);
+        $employee->can_submit_requests = true;
+        $employee->save();
 
         $employee = Employee::create([
             'first_name' => 'Léa',
@@ -569,6 +647,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 13
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -579,6 +659,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 13
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -589,6 +671,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 13
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -599,6 +683,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 13
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -609,6 +695,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 13
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -619,6 +707,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 13
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Sud
@@ -632,6 +722,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(14);
@@ -646,6 +737,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 14
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -656,6 +749,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 14
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -666,6 +761,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 14
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -676,6 +773,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 14
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         // Tripoli
@@ -689,6 +788,7 @@ class EmployeeSeeder extends Seeder
         ]);
         $role = Role::findByName('employee');
         $employee->is_supervisor = true;
+        $employee->can_submit_requests = false;
         $employee->save();
         $employee->roles()->save($role);
         $department = Department::find(15);
@@ -703,6 +803,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 15
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -713,6 +815,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 15
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -723,6 +827,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 15
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
 
         $employee = Employee::create([
@@ -733,6 +839,8 @@ class EmployeeSeeder extends Seeder
             'department_id' => 15
         ]);
         $role = Role::findByName('employee');
+        $employee->can_submit_requests = true;
+        $employee->save();
         $employee->roles()->save($role);
     }
 }

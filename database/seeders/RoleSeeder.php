@@ -29,5 +29,10 @@ class RoleSeeder extends Seeder
         $role = Role::create(['name' => 'sg']);
         $role->display_name = "SG";
         $role->save();
+
+        $role = Role::create(['name' => 'head']);
+        $role->display_name = "IFL director";
+        $role->save();
+
     }
 }

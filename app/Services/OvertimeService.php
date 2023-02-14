@@ -40,7 +40,7 @@ class OvertimeService
                 if(auth()->user()->hasRole(['sg', 'head'])) {
                     $role_sg = Role::findByName('sg');
                     $overtime->processing_officer_role = $role_sg->id;
-                    $this->acceptLeave($overtime);
+                    $this->acceptOvertime($overtime);
                     $processing_officers = NULL;
                     break;
                 }
@@ -55,7 +55,7 @@ class OvertimeService
                 if(auth()->user()->hasRole(['sg', 'head'])) {
                     $role_sg = Role::findByName('sg');
                     $overtime->processing_officer_role = $role_sg->id;
-                    $this->acceptLeave($overtime);
+                    $this->acceptOvertime($overtime);
                     $processing_officers = NULL;
                     break;
                 }
@@ -64,7 +64,7 @@ class OvertimeService
                 $processing_officers = Employee::role('human_resource')->get();
                 break;
             case ('sg'):
-                $this->acceptLeave($overtime);
+                $this->acceptOvertime($overtime);
                 $processing_officers = NULL;
                 break;
         }
@@ -72,7 +72,7 @@ class OvertimeService
        $this->sendEmailToInvolvedEmployees($overtime, $processing_officers);
     }
 
-    public function rejectLeaveRequest($request, $overtime) {
+    public function rejectOvertimeRequest($request, $overtime) {
         $overtime->overtime_status = self::REJECTED_STATUS;
         if($request['cancellation_reason']) {
             $overtime->cancellation_reason = $request['cancellation_reason'];
@@ -82,7 +82,7 @@ class OvertimeService
        $this->sendEmailToInvolvedEmployees($overtime);
     }
 
-    public function acceptLeave($overtime) {
+    public function acceptOvertime($overtime) {
         $overtime->overtime_status = self::ACCEPTED_STATUS;
         $overtime->save();
     }

@@ -210,7 +210,7 @@ class OvertimeController extends Controller
             return back();
         }
         $overtime_service = new OvertimeService();
-        $overtime_service->rejectLeaveRequest($request, $overtime);
+        $overtime_service->rejectOvertimeRequest($request, $overtime);
         return redirect()->route('overtimes.index');
     }
 
