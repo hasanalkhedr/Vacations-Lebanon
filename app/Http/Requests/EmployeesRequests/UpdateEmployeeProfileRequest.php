@@ -24,7 +24,7 @@ class UpdateEmployeeProfileRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->employee->hasRole("employee") && !$this->employee->is_supervisor && !$this->employee->hasRole("sg"))
+        if($this->request->has('can_submit_requests'))
         {
             $rules['nb_of_days'] = ['required'];
             $rules['confessionnels'] = ['required'];
