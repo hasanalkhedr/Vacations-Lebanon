@@ -12,9 +12,7 @@ use App\Jobs\LeaveJobs\SendLeaveRequestRejectedEmailJob;
 use App\Jobs\LeaveJobs\SendLeaveRequestRejectedEmailReplacementJob;
 use App\Models\Confessionnel;
 use App\Models\Employee;
-use App\Models\Holiday;
 use App\Models\Leave;
-use App\Models\LeaveDuration;
 use App\Models\LeaveType;
 use Carbon\CarbonPeriod;
 use Spatie\Permission\Models\Role;
@@ -24,6 +22,7 @@ class LeaveService
     const PENDING_STATUS = 0;
     const ACCEPTED_STATUS = 1;
     const REJECTED_STATUS = 2;
+    const DAY_TO_MINUTES = 450;
 
     public function sendEmailToInvolvedEmployees($leave, $processing_officers = NULL, $substitute_employee = NULL, $delete = false)
     {
@@ -207,6 +206,14 @@ class LeaveService
         return $confessionnel_dates;
     }
 
+    public function subtractOvertimeMinutes(Leave $leave) {
+        $days = $this->findNbofDaysOff($leave);
+        $minutes = $days * self::DAY_TO_MINUTES;
+        $employee = $leave->employee;
+        $employee->overtime_minutes -= $minutes;
+        $employee->save();
+    }
+
     public function findNbofDaysOff($leave) {
         $helper = new Helper();
         $period = CarbonPeriod::create($leave->from, $leave->to);
@@ -320,6 +327,13 @@ class LeaveService
 
     public function recoverDays(Leave $leave) {
         $employee = $leave->employee;
+        $recovery = LeaveType::where('name', 'recovery')->first();
+        if($leave->leave_type_id == $recovery->id) {
+            $days = $this->findNbofDaysOff($leave);
+            $minutes = $days * self::DAY_TO_MINUTES;
+            $employee->overtime_minutes += $minutes;
+        }
+
         if ($leave->use_confessionnels) {
             $employee->confessionnels = $employee->confessionnels - 1;
         }
@@ -329,6 +343,14 @@ class LeaveService
             $employee->confessionnels = $employee->confessionnels + $nb_of_days_off_confessionnels;
         }
         $employee->nb_of_days = $employee->nb_of_days + $nb_of_days_off;
+        $employee->save();
+    }
+
+    public function recoverMinutes(Leave $leave) {
+        $employee = $leave->employee;
+        $days = $this->findNbofDaysOff($leave);
+        $minutes = $days * self::DAY_TO_MINUTES;
+        $employee->overtime_minutes += $minutes;
         $employee->save();
     }
 }

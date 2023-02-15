@@ -83,18 +83,29 @@ class OvertimeService
     }
 
     public function acceptOvertime($overtime) {
+        $employee = $overtime->employee;
+        $minutes = $this->getOvertimeMinutes($overtime);
+        $employee->overtime_minutes += $minutes;
+        $employee->save();
         $overtime->overtime_status = self::ACCEPTED_STATUS;
         $overtime->save();
     }
 
+    public function getOvertimeMinutes($overtime) {
+        $time = Carbon::createFromTimeString($overtime->hours);
+        $start_of_day = Carbon::createFromTimeString($overtime->hours)->startOfDay();
+        return $time->diffInMinutes($start_of_day);
+    }
+
     public function fetchOvertimes($employee_id, $from_date = null, $to_date = null) {
+        $employee = Employee::whereId($employee_id)->first();
         if($from_date == null && $to_date == null) {
             $overtimes = Overtime::where('employee_id', $employee_id)->where('overtime_status', self::ACCEPTED_STATUS)->get();
         }
         else {
             $overtimes = Overtime::where('employee_id', $employee_id)->where('overtime_status', self::ACCEPTED_STATUS)->whereDate('date', '>=', $from_date)->whereDate('date', '<=', $to_date)->get();
         }
-        $total = $this-> getTotalOvertime($overtimes);
+        $total = $this-> getTotalOvertime($employee);
         $data['overtimes'] = $overtimes;
         $data['hours'] = $total['hours'];
         $data['mins'] = $total['mins'];
@@ -102,14 +113,15 @@ class OvertimeService
         return $data;
     }
 
-    public function getTotalOvertime($overtimes) {
-        $totalMinutes = 0;
-        foreach ($overtimes as $overtime) {
-            $time = Carbon::createFromTimeString($overtime->hours);
-            $start_of_day = Carbon::createFromTimeString($overtime->hours)->startOfDay();
-            $minutes = $time->diffInMinutes($start_of_day);
-            $totalMinutes += $minutes;
-        }
+    public function getTotalOvertime(Employee $employee) {
+//        $totalMinutes = 0;
+//        foreach ($overtimes as $overtime) {
+//            $time = Carbon::createFromTimeString($overtime->hours);
+//            $start_of_day = Carbon::createFromTimeString($overtime->hours)->startOfDay();
+//            $minutes = $time->diffInMinutes($start_of_day);
+//            $totalMinutes += $minutes;
+//        }
+        $totalMinutes = $employee->overtime_minutes;
         $hours = floor($totalMinutes / 60);
         $mins = floor($totalMinutes % 60);
         $total['hours'] = (int)$hours;
@@ -125,13 +137,10 @@ class OvertimeService
 
         $total = $this->fetchOvertimes($employee->id);
         $totalOvertimeMinutes = $total['hours'] * 60 + $total['mins'];
-        $fullDays = (int)($totalOvertimeMinutes / $overtimeFullDayHours);    // 7.5 hours = 450 mins
-        $halfDays = (int)($totalOvertimeMinutes / $overtimeHalfDayHours);    // 3.75 hours = 225 mins
+        $fullDays = (int)($totalOvertimeMinutes / $overtimeFullDayHours);
+        $halfDays = (int)($totalOvertimeMinutes / $overtimeHalfDayHours);
         $total_days = $fullDays + ($halfDays - 2*$fullDays)*0.5;
 
-        $leaveService = new LeaveService();
-        $days = $leaveService->getRecoveryLeaveDays($employee);
-
-        return $total_days - $days;
+        return $total_days;
     }
 }

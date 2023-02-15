@@ -164,7 +164,7 @@
                     @enderror
                 </div>
                 <div class="relative z-0 mb-6 w-full group">
-                    <p class="mb-2 text-sm font-medium blue-color">{{__("Attachment")}}</p>
+                    <p class="mb-2 text-sm font-medium blue-color">{{__("Attachment")}}<span class="hidden text-red-500" id="attachment_file_span">*</span></p>
                     <div class="flex w-full">
                         <label class="px-2 w-max flex flex-col items-center px py-2 bg-white text-white rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer blue-bg">
                             <svg class="w-5 h-5" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -499,7 +499,7 @@
         function resetConfessionnelsCheckbox() {
             flatpickr("#fromDate", {}).clear();
             $("#fromDate").attr("placeholder", "{{__("Please select date range")}}");
-            $("#fromDateLabel").html("{{__("Start Date")}}");
+            $("#fromDateLabel").html("{{__("Start Date")}} <span class='text-red-500'>*</span>");
             $("#toDateDiv").removeClass("invisible");
             $("#mix_of_leaves_div").removeClass("invisible");
             $('#mix_of_leaves')[0].checked = false;
@@ -542,6 +542,7 @@
 
     <script>
         $("#leave_type").change(function () {
+            console.log($('#attachment_file_span')[0])
             selected_leave_type = this.options[this.selectedIndex].text.toLowerCase();
             if(selected_leave_type == "{{__("sick leave")}}".toLowerCase() || selected_leave_type == "sick leave".toLowerCase()) {
                 $('#attachment_file_span')[0].classList.remove('hidden')

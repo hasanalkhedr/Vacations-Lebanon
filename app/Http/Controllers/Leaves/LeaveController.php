@@ -112,6 +112,13 @@ class LeaveController extends Controller
             $processing_officers = collect([auth()->user()->department->manager]);
             $leave->processing_officer_role = $role->id;
         }
+
+        $recoveryLeave = LeaveType::where('name', 'recovery')->first();
+
+        if($leave->leave_type_id == $recoveryLeave->id) {
+            $leave_service->subtractOvertimeMinutes($leave);
+        }
+
         $leave->save();
         $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
         return redirect()->route('leaves.submitted');
@@ -342,13 +349,20 @@ class LeaveController extends Controller
             return back();
         }
         $leave_service = new LeaveService();
-        if($leave->leave_status == self::ACCEPTED_STATUS) {
-            $leave_service->recoverDays($leave);
+        $recovery = LeaveType::where('name', 'recovery')->first();
+        if($leave->leave_type_id == $recovery->id) {
+            $leave_service->recoverMinutes($leave);
         }
-        if($leave->leave_status == self::PENDING_STATUS) {
-            $processing_officers = $leave_service->getProcessingOfficersForLeaveDestroy($leave);
-            $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee, true);
+        else {
+            if($leave->leave_status == self::ACCEPTED_STATUS) {
+                $leave_service->recoverDays($leave);
+            }
+            if($leave->leave_status == self::PENDING_STATUS) {
+                $processing_officers = $leave_service->getProcessingOfficersForLeaveDestroy($leave);
+                $leave_service->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee, true);
+            }
         }
+
         $leave->delete();
         return back();
     }
