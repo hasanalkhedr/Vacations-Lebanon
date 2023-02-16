@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->integer('overtime_minutes')->nullable()->after('confessionnels');
+            $table->integer('overtime_minutes')->nullable()->after('confessionnels')->default(0);
         });
     }
 

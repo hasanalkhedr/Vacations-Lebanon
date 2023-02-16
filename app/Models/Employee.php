@@ -26,6 +26,7 @@ class Employee extends Authenticatable
         'phone_number',
         'nb_of_days',
         'confessionnels',
+        'overtime_minutes',
         'department_id',
         'profile_photo'
     ];
@@ -51,6 +52,7 @@ class Employee extends Authenticatable
     protected $attributes = [
         'nb_of_days' => 30,
         'confessionnels' => 3,
+        'overtime_minutes' => 0,
     ];
 
     public function scopeSearch($query, array $filters)

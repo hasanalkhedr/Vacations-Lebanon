@@ -66,6 +66,9 @@ class EmployeeController
             if($request->confessionnels) {
                 $employee->confessionnels = $request->confessionnels;
             }
+            if($request->overtime_minutes) {
+                $employee->overtime_minutes = $request->overtime_minutes;
+            }
         }
 
         $roles = $employee->getRoleNames();
@@ -184,6 +187,7 @@ class EmployeeController
             $employee->update([
                 'nb_of_days' => $validated['nb_of_days'],
                 'confessionnels' => $validated['confessionnels'],
+                'overtime_minutes' => $validated['overtime_minutes'],
             ]);
         }
         foreach ($request->role_ids as $role_id) {

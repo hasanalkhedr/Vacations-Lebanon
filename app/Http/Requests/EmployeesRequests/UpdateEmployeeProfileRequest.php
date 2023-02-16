@@ -28,6 +28,7 @@ class UpdateEmployeeProfileRequest extends FormRequest
         {
             $rules['nb_of_days'] = ['required'];
             $rules['confessionnels'] = ['required'];
+            $rules['overtime_minutes'] = ['required'];
         }
         $rules['first_name'] = ['required'];
         $rules['last_name'] = ['required'];

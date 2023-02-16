@@ -222,7 +222,8 @@
                                                 </div>
                                             </div>
 
-                                            <div class="grid md:grid-cols-2 md:gap-6 {{ $employee->can_submit_requests ? '' : 'hidden' }}" id="off-days-container--{{$employee->id}}">
+                                            <div class="{{ $employee->can_submit_requests ? '' : 'hidden' }}" id="off-days-container--{{$employee->id}}">
+                                                <div class="grid md:grid-cols-2 md:gap-6">
                                                     <div class="relative z-0 mb-4 w-full group">
                                                         <input type="number" name="nb_of_days"
                                                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -233,15 +234,28 @@
                                                             {{__("Number of Days Off")}}
                                                         </label>
                                                     </div>
+                                                    <div class="relative z-0 mb-4 w-full group">
+                                                        <input type="number" name="confessionnels"
+                                                               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                               value="{{$employee->confessionnels}}"
+                                                               step="0.25" required/>
+                                                        <label for="nb_of_days"
+                                                               class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                                            {{__("Confessionnel Days")}}
+                                                        </label>
+                                                    </div>
+                                                </div>
                                                 <div class="relative z-0 mb-4 w-full group">
-                                                    <input type="number" name="confessionnels"
+                                                    <input type="number" name="overtime_minutes"
                                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                           value="{{$employee->confessionnels}}"
-                                                           step="0.25" required/>
-                                                    <label for="nb_of_days"
-                                                           class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
-                                                        {{__("Confessionnel Days")}}
-                                                    </label>
+                                                           placeholder=""
+                                                           value="{{$employee->overtime_minutes}}"
+                                                           required/>
+                                                    <label for="overtime_minutes"
+                                                           class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Overtime Minutes")}}</label>
+                                                    @error('overtime_minutes')
+                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="relative z-40 mb-4 w-full group">
@@ -481,30 +495,44 @@
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="grid md:grid-cols-2 md:gap-6 hidden" id="off-days-container--0">
-                                <div class="relative z-0 mb-4 w-full group">
-                                    <input type="number" name="nb_of_days"
-                                           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                           placeholder=""
-                                           value=30
-                                           step=any required/>
-                                    <label for="nb_of_days"
-                                           class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
-                                        {{__("Number of Days Off")}}
-                                    </label>
-                                    @error('nb_of_days')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
+                            <div class="hidden"  id="off-days-container--0">
+                                <div class="grid md:grid-cols-2 md:gap-6">
+                                    <div class="relative z-0 mb-4 w-full group">
+                                        <input type="number" name="nb_of_days"
+                                               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                               placeholder=""
+                                               value=30
+                                               step=any required/>
+                                        <label for="nb_of_days"
+                                               class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">
+                                            {{__("Number of Days Off")}}
+                                        </label>
+                                        @error('nb_of_days')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div class="relative z-0 mb-4 w-full group">
+                                        <input type="number" name="confessionnels"
+                                               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                               placeholder=""
+                                               value=3
+                                               step=any required/>
+                                        <label for="confessionnels"
+                                               class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Confessionnels")}}</label>
+                                        @error('confessionnels')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                 </div>
                                 <div class="relative z-0 mb-4 w-full group">
-                                    <input type="number" name="confessionnels"
+                                    <input type="number" name="overtime_minutes"
                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                            placeholder=""
-                                           value=3
-                                           step=any required/>
-                                    <label for="confessionnels"
-                                           class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Confessionnels")}}</label>
-                                    @error('confessionnels')
+                                           value=0
+                                           required/>
+                                    <label for="overtime_minutes"
+                                           class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 blue-color">{{__("Overtime Minutes")}}</label>
+                                    @error('overtime_minutes')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
