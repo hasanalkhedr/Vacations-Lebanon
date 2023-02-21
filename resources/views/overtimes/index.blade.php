@@ -64,13 +64,13 @@
                             @endif
                         </td>
                         @if(($overtime->processing_officer->name == "employee" && $overtime->employee->department->manager_id == $employee->id) || ($overtime->processing_officer->name == "human_resource" && $employee->hasRole('human_resource')) || ($overtime->processing_officer->name == "sg" && $employee->hasRole(['sg', 'head'])))
-                            <td class="py-4 px-6 text-right border-b">
+                            <td class="py-4 px-6 text-right">
                                 <button class="font-medium text-green-600 hover:underline" type="button"
                                         data-modal-toggle="acceptModal-{{$overtime->id}}">
                                     {{__("Accept")}}
                                 </button>
                             </td>
-                            <td class="py-4 px-6 text-right border-b">
+                            <td class="py-4 px-6 text-right">
                                 <button class="font-medium text-red-600 hover:underline" type="button"
                                         data-modal-toggle="rejectModal-{{$overtime->id}}">
                                     {{__("Reject")}}
