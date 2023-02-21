@@ -15,13 +15,16 @@
                 <thead class="text-s uppercase bg-gray-50 blue-color">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        {{__("Name")}}
+                        {{ __('Employee') }}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        {{__("Department")}}
+                        {{ __('Date') }}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        {{__("Reports To")}}
+                        {{ __('Hours') }}
+                    </th>
+                    <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
+                        {{ __('Status') }}
                     </th>
                     <th scope="col" class="py-3 px-6">
                         <span class="sr-only">{{__("Accept")}}</span>
@@ -34,27 +37,31 @@
                 <tbody x-ref="tbody">
                 @foreach ($overtimes as $overtime)
                     <tr class="bg-white">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer"
+                            onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
                             {{ $overtime->employee->first_name }} {{ $overtime->employee->last_name }}
                         </td>
-                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
-                            @if($overtime->employee->department)
-                                {{$overtime->employee->department->name}}
-                            @else
-                                -
-                            @endif
+                        <td class="py-4 px-6 cursor-pointer"
+                            onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                            {{ $overtime->date }}
                         </td>
-                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
-                            @if($overtime->employee->department)
-                                @if($overtime->employee->id == $overtime->employee->department->manager->id)
-                                    -
-                                @else
-                                    {{$overtime->employee->department->manager->first_name}} {{$overtime->employee->department->manager->last_name}}
-                                @endif
+                        <td class="py-4 px-6 cursor-pointer"
+                            onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                            {{ $overtime->hours }}
+                        </td>
+                        <td class="py-4 px-6 cursor-pointer"
+                            onclick="window.location.href = '{{ url(route('overtimes.show', ['overtime' => $overtime->id])) }}'">
+                            @if ($overtime->overtime_status == 0)
+                                {{ __('Pending') }}
+                            @elseif($overtime->overtime_status == 1)
+                                <div class="text-green-500">
+                                    {{ __('Accepted') }}
+                                </div>
                             @else
-                                -
+                                <div class="text-red-500">
+                                    {{ __('Rejected') }}
+                                </div>
                             @endif
-
                         </td>
                         @if(($overtime->processing_officer->name == "employee" && $overtime->employee->department->manager_id == $employee->id) || ($overtime->processing_officer->name == "human_resource" && $employee->hasRole('human_resource')) || ($overtime->processing_officer->name == "sg" && $employee->hasRole(['sg', 'head'])))
                             <td class="py-4 px-6 text-right border-b">

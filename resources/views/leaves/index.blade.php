@@ -15,13 +15,16 @@
                 <thead class="text-s uppercase bg-gray-50 blue-color">
                 <tr>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        {{__("Name")}}
+                        {{__("Employee")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        {{__("Department")}}
+                        {{__("From")}}
                     </th>
                     <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
-                        {{__("Reports To")}}
+                        {{__("To")}}
+                    </th>
+                    <th @click="sortByColumn" scope="col" class="cursor-pointer py-3 px-6">
+                        {{__("Status")}}
                     </th>
                     <th scope="col" class="py-3 px-6">
                         <span class="sr-only">{{__("Accept")}}</span>
@@ -34,27 +37,27 @@
                 <tbody x-ref="tbody">
                 @foreach ($leaves as $leave)
                     <tr class="bg-white">
-                        <td class="cursor-pointer border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                         </td>
-                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            @if($leave->employee->department)
-                                {{$leave->employee->department->name}}
-                            @else
-                                -
-                            @endif
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $leave->from)->format(config('app.date_format')) }}
                         </td>
-                        <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
-                            @if($leave->employee->department)
-                                @if($leave->employee->id == $leave->employee->department->manager->id)
-                                    -
-                                @else
-                                    {{$leave->employee->department->manager->first_name}} {{$leave->employee->department->manager->last_name}}
-                                @endif
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $leave->to)->format(config('app.date_format')) }}
+                        </td>
+                        <td class="py-4 px-6 cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                            @if($leave->leave_status == 0)
+                                {{__("Pending")}}
+                            @elseif($leave->leave_status == 1)
+                                <div class="text-green-500">
+                                    {{__("Accepted")}}
+                                </div>
                             @else
-                                -
+                                <div class="text-red-500">
+                                    {{__("Rejected")}}
+                                </div>
                             @endif
-
                         </td>
                         @if(($leave->processing_officer->name == "employee" && $leave->employee->department->manager_id == $employee->id) || ($leave->processing_officer->name == "human_resource" && $employee->hasRole('human_resource')) || ($leave->processing_officer->name == "sg" && $employee->hasRole(['sg', 'head'])))
                             <td class="py-4 px-6 text-right border-b">

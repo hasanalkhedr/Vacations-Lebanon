@@ -89,11 +89,13 @@ class OvertimeController extends Controller
     }
 
     public function destroy(Overtime $overtime) {
-//        $overtimeService = new OvertimeService();
-//        $employee = $overtime->employee;
-//        $minutes = $overtimeService->getOvertimeMinutes($overtime);
-//        $employee->overtime_minutes -= $minutes;
-//        $employee->save();
+        $overtimeService = new OvertimeService();
+        if($overtime->overtime_status == self::ACCEPTED_STATUS) {
+            $employee = $overtime->employee;
+            $minutes = $overtimeService->getOvertimeMinutes($overtime);
+            $employee->overtime_minutes -= $minutes;
+            $employee->save();
+        }
         $overtime->delete();
         return redirect()->route('overtimes.submitted');
     }
