@@ -178,7 +178,7 @@
                                                         <label for="from" class="mb-2 text-sm font-medium blue-color">
                                                             {{ __('Start Date') }}
                                                         </label>
-                                                        <input type="text" name="from" id="fromDateEdit"
+                                                        <input type="text" name="from" id="fromDateEdit-{{$holiday->id}}"
                                                             placeholder={{ __('Please select date range') }} data-input
                                                             value="{{ $holiday->from }}">
                                                         @error('from')
@@ -189,7 +189,7 @@
                                                         <label for="to" class="mb-2 text-sm font-medium blue-color">
                                                             {{ __('End Date') }}
                                                         </label>
-                                                        <input type="text" name="to" id="toDateEdit"
+                                                        <input type="text" name="to" id="toDateEdit-{{$holiday->id}}"
                                                             placeholder={{ __('Please select date range') }} data-input
                                                             value="{{ $holiday->to }}">
                                                         @error('to')

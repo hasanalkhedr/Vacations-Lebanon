@@ -125,16 +125,14 @@
                 </label>
             </div>
         @endif
-        @unless((auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false) || auth()->user()->id != $leave->employee->department->manager_id)
-            @if($leave->leave_status == 0 && auth()->user()->hasRole($leave->processing_officer->name))
-                <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" data-modal-toggle="acceptModal">
-                    {{__("Accept")}}
-                </button>
-                <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" data-modal-toggle="rejectModal">
-                    {{__("Reject")}}
-                </button>
-            @endif
-        @endunless
+        @if(($leave->leave_status == 0) && ($leave->processing_officer->name == "employee" && $leave->employee->department->manager_id == auth()->user()->id) || ($leave->processing_officer->name == "human_resource" && auth()->user()->hasRole('human_resource')) || ($leave->processing_officer->name == "sg" && auth()->user()->hasRole(['sg', 'head'])))
+            <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" data-modal-toggle="acceptModal">
+                {{__("Accept")}}
+            </button>
+            <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" data-modal-toggle="rejectModal">
+                {{__("Reject")}}
+            </button>
+        @endif
     </div>
 
 

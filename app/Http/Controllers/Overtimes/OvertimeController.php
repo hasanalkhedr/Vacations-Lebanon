@@ -35,11 +35,12 @@ class OvertimeController extends Controller
 
     public function store(Request $request) {
         if($request->has('date')) {
+            $processing_officers = [];
+            $overtime_service = new OvertimeService();
             for ($i = 0; $i < count($request->date); $i++) {
                 if ($request->date[$i] == NULL || $request->from[$i] == NULL || $request->to[$i] == NULL) {
                     continue;
                 }
-                $overtime_service = new OvertimeService();
                 $overtime = Overtime::create([
                     'employee_id' => auth()->user()->id,
                     'date' => $request->date[$i],
@@ -69,8 +70,8 @@ class OvertimeController extends Controller
                     $overtime->processing_officer_role = $role->id;
                 }
                 $overtime->save();
-                $overtime_service->sendEmailToInvolvedEmployees($overtime, $processing_officers);
             }
+            $overtime_service->sendEmailToInvolvedEmployees(null, $processing_officers);
         }
         return back();
     }

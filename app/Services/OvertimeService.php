@@ -16,17 +16,24 @@ class OvertimeService
     const REJECTED_STATUS = 2;
 
     public function sendEmailToInvolvedEmployees($overtime, $processing_officers = NULL) {
-        if($overtime->overtime_status == self::ACCEPTED_STATUS){
-            $employee = Employee::where('id', $overtime->employee_id)->first();
-            dispatch(new SendOvertimeRequestAcceptedEmailJob($employee));
-        }
-        elseif($overtime->overtime_status == self::REJECTED_STATUS){
-            $employee = Employee::where('id', $overtime->employee_id)->first();
-            dispatch(new SendOvertimeRequestRejectedEmailJob($employee));
-        }
-        else {
+        if($overtime == null) {
             foreach ($processing_officers as $processing_officer) {
                 dispatch(new SendOvertimeRequestIncomingEmailJob($processing_officer));
+            }
+        }
+        else {
+            if($overtime->overtime_status == self::ACCEPTED_STATUS){
+                $employee = Employee::where('id', $overtime->employee_id)->first();
+                dispatch(new SendOvertimeRequestAcceptedEmailJob($employee));
+            }
+            elseif($overtime->overtime_status == self::REJECTED_STATUS){
+                $employee = Employee::where('id', $overtime->employee_id)->first();
+                dispatch(new SendOvertimeRequestRejectedEmailJob($employee));
+            }
+            else {
+                foreach ($processing_officers as $processing_officer) {
+                    dispatch(new SendOvertimeRequestIncomingEmailJob($processing_officer));
+                }
             }
         }
     }

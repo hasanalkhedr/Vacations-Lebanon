@@ -34,7 +34,7 @@
                 <tbody x-ref="tbody">
                 @foreach ($leaves as $leave)
                     <tr class="bg-white">
-                        <td class="border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
+                        <td class="cursor-pointer border-b py-4 px-6 font-bold text-gray-900 whitespace-nowrap" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
                             {{ $leave->employee->first_name }} {{ $leave->employee->last_name }}
                         </td>
                         <td class="py-4 px-6 border-b cursor-pointer" onclick="window.location.href = '{{ url(route('leaves.show', ['leave' => $leave->id])) }}'">
