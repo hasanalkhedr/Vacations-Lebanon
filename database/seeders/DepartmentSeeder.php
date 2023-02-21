@@ -15,19 +15,21 @@ class DepartmentSeeder extends Seeder
     public function run()
     {
         $department_names = [
-            'Department 1',
-            'Department 2',
-            'Department 3',
-            'Department 4',
-            'Department 5',
-            'Department 6',
-            'Department 7',
-            "Department 8",
-            'Department 9',
-            'Department 10',
-            'Department 11',
-            'Department 12',
-            'Department 13',
+            'Agence Compatable',
+            'Audio',
+            'Bekaa',
+            'Bureau du Livre',
+            'Campus France',
+            'Centre de Langes',
+            'Communication',
+            "Culturel",
+            'Deir El Qamar',
+            'Direction',
+            'Jounieh',
+            'Linguistique',
+            'Secrétariat Général',
+            'Sud',
+            'Tripoli',
         ];
         foreach ($department_names as $name) {
             Department::create([
