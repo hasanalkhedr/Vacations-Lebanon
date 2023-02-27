@@ -18,21 +18,29 @@ class OvertimeService
     public function sendEmailToInvolvedEmployees($overtime, $processing_officers = NULL) {
         if($overtime == null) {
             foreach ($processing_officers as $processing_officer) {
-                dispatch(new SendOvertimeRequestIncomingEmailJob($processing_officer));
+                if ($processing_officer->can_receive_emails) {
+                    dispatch(new SendOvertimeRequestIncomingEmailJob($processing_officer));
+                }
             }
         }
         else {
-            if($overtime->overtime_status == self::ACCEPTED_STATUS){
+            if($overtime->overtime_status == self::ACCEPTED_STATUS) {
                 $employee = Employee::where('id', $overtime->employee_id)->first();
-                dispatch(new SendOvertimeRequestAcceptedEmailJob($employee));
+                if ($employee->can_receive_emails) {
+                    dispatch(new SendOvertimeRequestAcceptedEmailJob($employee));
+                }
             }
-            elseif($overtime->overtime_status == self::REJECTED_STATUS){
+            elseif($overtime->overtime_status == self::REJECTED_STATUS) {
                 $employee = Employee::where('id', $overtime->employee_id)->first();
-                dispatch(new SendOvertimeRequestRejectedEmailJob($employee));
+                if ($employee->can_receive_emails) {
+                    dispatch(new SendOvertimeRequestRejectedEmailJob($employee));
+                }
             }
             else {
                 foreach ($processing_officers as $processing_officer) {
-                    dispatch(new SendOvertimeRequestIncomingEmailJob($processing_officer));
+                    if ($processing_officer->can_receive_emails) {
+                        dispatch(new SendOvertimeRequestIncomingEmailJob($processing_officer));
+                    }
                 }
             }
         }

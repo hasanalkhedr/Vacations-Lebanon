@@ -15,11 +15,11 @@ class EmployeeService
     {
         $loggedInUser = auth()->user();
         if ($loggedInUser->hasRole('human_resource') || $loggedInUser->hasRole(['human_resource', 'sg', 'head'])) {
-            return Employee::search(request(['search']))->paginate(10);
+            return Employee::search(request(['search']))->whereNot('id', $loggedInUser->id)->paginate(10);
         } else {
             return Employee::whereHas('department', function ($q) use ($loggedInUser) {
                 $q->where('manager_id', $loggedInUser->id);
-            })->search(request(['search']))->paginate(10);
+            })->search(request(['search']))->whereNot('id', $loggedInUser->id)->paginate(10);
         }
     }
 
