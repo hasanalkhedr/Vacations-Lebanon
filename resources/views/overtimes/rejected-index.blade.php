@@ -69,7 +69,10 @@
                 @endunless
             </tbody>
         </table>
+    </div>
 
+    <div class="mt-6 p-4">
+        {{ $overtimes->links() }}
     </div>
 
     <script type="text/javascript">

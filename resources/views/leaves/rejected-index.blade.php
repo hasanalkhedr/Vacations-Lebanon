@@ -63,7 +63,10 @@
                 @endunless
                 </tbody>
         </table>
+    </div>
 
+    <div class="mt-6 p-4">
+        {{ $leaves->links() }}
     </div>
 
     <script type="text/javascript">
