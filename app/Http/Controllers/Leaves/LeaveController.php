@@ -168,6 +168,8 @@ class LeaveController extends Controller
                                 ->whereNot('processing_officer_role', Role::findByName('employee')->id)
                                 ->whereNot('leave_status', self::REJECTED_STATUS);})
                                 ->whereNot('employee_id', $employee->id)
+                                ->search(request(['search']))
+                                ->latest()
                                 ->paginate(10);
         }
 
@@ -176,12 +178,14 @@ class LeaveController extends Controller
                             ->orWhere(function ($query) {
                              $query->where('leave_status', self::PENDING_STATUS)->where('processing_officer_role', Role::findByName('sg')->id);})
                             ->whereNot('employee_id', $employee->id)
+                            ->search(request(['search']))
+                            ->latest()
                             ->paginate(10);
         }
 
         if($employee->hasRole(['sg', 'head'])) {
             $leaves = Leave::whereNot('employee_id', $employee->id)
-                        ->where('leave_status', self::ACCEPTED_STATUS)->paginate(10);
+                        ->where('leave_status', self::ACCEPTED_STATUS)->search(request(['search']))->latest()->paginate(10);
 
         }
 
@@ -196,7 +200,7 @@ class LeaveController extends Controller
         if($helper->checkIfNormalEmployee($employee)) {
             return back();
         }
-        $leaves = Leave::where('leave_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->paginate(10);
+        $leaves = Leave::where('leave_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->search(request(['search']))->latest()->paginate(10);
         return view('leaves.rejected-index', [
             'leaves' => $leaves
         ]);

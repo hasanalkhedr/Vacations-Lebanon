@@ -16,15 +16,18 @@ class SendLeaveRequestIncomingEmailReplacementJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $employee;
+    protected $substitute_employee, $from, $to, $employee;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($employee)
+    public function __construct($substitute_employee, $from, $to, $employee)
     {
+        $this->substitute_employee= $substitute_employee;
+        $this->from= $from;
+        $this->to= $to;
         $this->employee= $employee;
     }
 
@@ -35,7 +38,7 @@ class SendLeaveRequestIncomingEmailReplacementJob implements ShouldQueue
      */
     public function handle()
     {
-        $email = new SendLeaveRequestIncomingEmailReplacement();
-        Mail::to($this->employee)->send($email);
+        $email = new SendLeaveRequestIncomingEmailReplacement($this->from, $this->to, $this->employee);
+        Mail::to($this->substitute_employee)->send($email);
     }
 }

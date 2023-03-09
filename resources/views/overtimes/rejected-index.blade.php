@@ -8,6 +8,7 @@
             {{ __('Rejected Overtime Requests') }}
         </div>
     </nav>
+    @include('partials.searches._search-rejected-overtimes')
     <div class="rounded-lg p-4 overflow-x-auto relative shadow-md sm:rounded-lg">
         <table x-data="data()"
             class="rounded-lg border-collapse border border-slate-200 w-full text-sm text-left text-gray-500"

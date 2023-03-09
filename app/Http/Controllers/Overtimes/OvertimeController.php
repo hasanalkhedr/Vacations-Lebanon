@@ -147,6 +147,8 @@ class OvertimeController extends Controller
                         ->whereNot('processing_officer_role', Role::findByName('employee')->id)
                         ->whereNot('overtime_status', self::REJECTED_STATUS);})
                         ->whereNot('employee_id', $employee->id)
+                        ->search(request(['search']))
+                        ->latest()
                         ->paginate(10);
         }
 
@@ -155,6 +157,8 @@ class OvertimeController extends Controller
                 ->orWhere(function ($query) {
                     $query->where('overtime_status', self::PENDING_STATUS)->where('processing_officer_role', Role::findByName('sg')->id);})
                 ->whereNot('employee_id', $employee->id)
+                ->search(request(['search']))
+                ->latest()
                 ->paginate(10);
         }
 
@@ -162,6 +166,8 @@ class OvertimeController extends Controller
             $overtimes = Overtime::whereNot('employee_id', $employee->id)
                 ->where('overtime_status', self::ACCEPTED_STATUS)
                 ->whereNot('employee_id', $employee->id)
+                ->search(request(['search']))
+                ->latest()
                 ->paginate(10);
 
         }
@@ -177,7 +183,7 @@ class OvertimeController extends Controller
         if($helper->checkIfNormalEmployee($employee)) {
             return back();
         }
-        $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->paginate(10);
+        $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->search(request(['search']))->latest()->paginate(10);
         return view('overtimes.rejected-index', [
             'overtimes' => $overtimes
         ]);

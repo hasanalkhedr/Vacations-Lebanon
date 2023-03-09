@@ -34,9 +34,6 @@ class SendLeaveRequestIncomingEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('Employee: '. $this->employee);
-        Log::info('Email: '. $this->employee->email);
-
         $email = new SendLeaveRequestIncomingEmail();
         Mail::to($this->employee)->send($email);
     }

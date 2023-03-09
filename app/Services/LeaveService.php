@@ -60,7 +60,7 @@ class LeaveService
                     }
                 }
                 if($substitute_employee && $substitute_employee->can_receive_emails) {
-                    dispatch(new SendLeaveRequestIncomingEmailReplacementJob($substitute_employee));
+                    dispatch(new SendLeaveRequestIncomingEmailReplacementJob($substitute_employee, $leave->from, $leave->to, $leave->employee));
                 }
             }
         }
