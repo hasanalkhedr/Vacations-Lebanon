@@ -28,4 +28,12 @@ class UpdateEmployeePasswordRequest extends FormRequest
             'password' => ['required', 'confirmed', 'min:6'],
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'password.min' => __("The minimum length is 6 characters."),
+            'password.confirmed' => __("The password confirmation does not match."),
+        ];
+    }
 }

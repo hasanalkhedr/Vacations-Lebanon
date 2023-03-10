@@ -43,7 +43,7 @@ class LeaveService
                     dispatch(new SendLeaveRequestAcceptedEmailJob($employee));
                 }
                 if($substitute_employee && $substitute_employee->can_receive_emails) {
-                    dispatch(new SendLeaveRequestAcceptedEmailReplacementJob($substitute_employee));
+                    dispatch(new SendLeaveRequestAcceptedEmailReplacementJob($substitute_employee, $leave->from, $leave->to, $leave->employee));
                 }
             } elseif ($leave->leave_status == self::REJECTED_STATUS) {
                 $employee = Employee::where('id', $leave->employee_id)->first();

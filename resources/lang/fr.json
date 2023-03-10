@@ -240,5 +240,7 @@
     "Receive Emails": "Recevoir des e-mails",
     "IFL director": "Directrice de l'IFL",
     "head": "Directrice de l'IFL",
-    "Overtime Minutes": "Minutes supplémentaires"
+    "Overtime Minutes": "Minutes supplémentaires",
+    "The minimum length is 6 characters.": "La longueur minimale est de 6 caractères.",
+    "The password confirmation does not match.": "La confirmation du mot de passe ne correspond pas."
 }

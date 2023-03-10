@@ -39,6 +39,6 @@ class SendLeaveRequestAcceptedEmailReplacementJob implements ShouldQueue
     public function handle()
     {
         $email = new SendLeaveRequestAcceptedEmailReplacement($this->from, $this->to, $this->employee);
-        Mail::to($this->employee->email)->send($email);
+        Mail::to($this->substitute_employee->email)->send($email);
     }
 }
