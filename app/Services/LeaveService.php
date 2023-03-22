@@ -134,8 +134,7 @@ class LeaveService
 
     public function updateNbOfDaysOff($leave)
     {
-        $recovery = LeaveType::where('name', 'recovery')->first();
-        if($leave->leave_type_id == $recovery->id) {
+        if($this->isLeaveNonDeductible($leave)) {
             return;
         }
         $employee = $leave->employee;
@@ -152,6 +151,20 @@ class LeaveService
         }
 
         $employee->save();
+    }
+
+    public function isLeaveNonDeductible($leave) {
+        $leave_type_id = $leave->leave_type_id;
+        $leave_types_no_deduction_array = [];
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'recovery')->first()->id;
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'assignment')->first()->id;
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'training')->first()->id;
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'sick leave')->first()->id;
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'bereavement leave')->first()->id;
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'maternity leave')->first()->id;
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'paternity leave')->first()->id;
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'marriage leave')->first()->id;
+        return in_array($leave_type_id, $leave_types_no_deduction_array);
     }
 
     public function getDisabledDates($employee)
