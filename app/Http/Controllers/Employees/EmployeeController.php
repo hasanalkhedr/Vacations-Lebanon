@@ -181,6 +181,7 @@ class EmployeeController
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
+            'weekdays_off' => stringToIntArray($request->weekdays_off),
 //            'phone_number' => $validated['phone_number'],
         ]);
         $employee->phone_number = $request->phone_number;

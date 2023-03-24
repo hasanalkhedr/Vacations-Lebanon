@@ -412,6 +412,42 @@
                             </div>
                         </div>
 
+                        <div class="relative z-0 mb-6 w-full group">
+                            <p class="mb-2 text-sm font-medium blue-color">{{__("Weekdays off")}}</p>
+                            <div class="weekday-selector">
+                                <div class="weekday-checkboxes">
+                                    <div class="weekday-container text-gray-900 text-sm">
+                                        <input type="checkbox" id="weekday-mon" name="weekdays_off[]" value=1 {{ in_array(1, $employee->weekdays_off) ? 'checked' : ''}}>
+                                        <label for="weekday-mon">{{__("Mon")}}</label>
+                                    </div>
+                                    <div class="weekday-container text-gray-900 text-sm">
+                                        <input type="checkbox" id="weekday-tue" name="weekdays_off[]" value=2 {{ in_array(2, $employee->weekdays_off) ? 'checked' : ''}}>
+                                        <label for="weekday-tue">{{__("Tue")}}</label>
+                                    </div>
+                                    <div class="weekday-container text-gray-900 text-sm">
+                                        <input type="checkbox" id="weekday-wed" name="weekdays_off[]" value=3 {{ in_array(3, $employee->weekdays_off) ? 'checked' : ''}}>
+                                        <label for="weekday-wed">{{__("Wed")}}</label>
+                                    </div>
+                                    <div class="weekday-container text-gray-900 text-sm">
+                                        <input type="checkbox" id="weekday-thu" name="weekdays_off[]" value=4 {{ in_array(4, $employee->weekdays_off) ? 'checked' : ''}}>
+                                        <label for="weekday-thu">{{__("Thu")}}</label>
+                                    </div>
+                                    <div class="weekday-container text-gray-900 text-sm">
+                                        <input type="checkbox" id="weekday-fri" name="weekdays_off[]" value=5 {{ in_array(5, $employee->weekdays_off) ? 'checked' : ''}}>
+                                        <label for="weekday-fri">{{__("Fri")}}</label>
+                                    </div>
+                                    <div class="weekday-container text-gray-900 text-sm">
+                                        <input type="checkbox" id="weekday-sat" name="weekdays_off[]" value=6 {{ in_array(6, $employee->weekdays_off) ? 'checked' : ''}}>
+                                        <label for="weekday-sat">{{__("Sat")}}</label>
+                                    </div>
+                                    <div class="weekday-container text-gray-900 text-sm">
+                                        <input type="checkbox" id="weekday-sun" name="weekdays_off[]" value=7 {{ in_array(7, $employee->weekdays_off) ? 'checked' : ''}}>
+                                        <label for="weekday-sun">{{__("Sun")}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div>
                             <div class="relative z-0 mb-4 w-full group flex flex-col">
                                 <label for="profile_photo" class="mb-2 text-sm font-medium blue-color">
