@@ -45,7 +45,7 @@
             html += "<td class='py-4 border-b'><input type='time' class='from border-none' id='overtimeFrom' name='from[]'></td>";
             html += "<td class='py-4 border-b'><input type='time' class='to border-none' name='to[]'></td>";
             html += "<td class='py-4 border-b'><input type='text' class='focus:ring-0 border-none' name='hours[]' readonly></td>";
-            html += "<td class='py-4 border-b'><textarea type='text' name='objective[]'></textarea></td>";
+            html += "<td class='py-4 border-b'><textarea name='objective[]'></textarea></td>";
             html += "<td class='py-4 border-b font-semibold text-red-500'><button type='button' onclick='deleteRow(this);'>{{__("Delete")}}</button></td>"
             html += "</tr>";
 
@@ -85,8 +85,15 @@
             const offset = day.getTimezoneOffset()
             day = new Date(day.getTime() - (offset*60*1000))
             let string_day = day.toISOString().split('T')[0]
-            if(day.getDay() == 0 || {!! json_encode($holiday_dates) !!}.includes(string_day))
+            if({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(day.getDay()) || {!! json_encode($holiday_dates) !!}.includes(string_day)) {
                 multiplyHours = true;
+            }
+            let from = $row.find("input[name^='from']");
+            let to = $row.find("input[name^='to']");
+            if($row.find("input[name^='hours']").val() != '' && from.val() != '' && to.val() != '') {
+                let val = calculateOvertimeHours(from, to);
+                $row.find("input[name^='hours']").val(val);
+            }
         })
 
         $('.table').on('change', '.from', function () {
@@ -94,56 +101,42 @@
             let from = $row.find("input[name^='from']");
             let to = $row.find("input[name^='to']");
             if(to.val() != '') {
-                from = from.val().split(':');
-                to = to.val().split(':');
-                let startDate = new Date(0, 0, 0, from[0], from[1], 0);
-                let endDate = new Date(0, 0, 0, to[0], to[1], 0);
-                let diff = endDate.getTime() - startDate.getTime();
-                let hours = Math.floor(diff / 1000 / 60 / 60);
-                diff -= hours * 1000 * 60 * 60;
-                let minutes = Math.floor(diff / 1000 / 60);
-
-                // If using time pickers with 24 hours format, add the below line get exact hours
-                if (hours < 0)
-                    hours = hours + 24;
-                if(multiplyHours) {
-                    let total_minutes = Math.ceil((hours*60 + minutes) * MULTIPLIER);
-                    hours = Math.floor(total_minutes/60);
-                    minutes = total_minutes % 60;
-                }
-                let val = (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
+                let val = calculateOvertimeHours(from, to);
                 $row.find("input[name^='hours']").val(val);
             }
         })
 
         $('.table').on('change', '.to', function () {
             let $row = $(this).closest("tr");
-            let date = $row.find("input[name^='date']");
             let from = $row.find("input[name^='from']");
             let to = $row.find("input[name^='to']");
             if(from.val() != '') {
-                from = from.val().split(':');
-                to = to.val().split(':');
-                let startDate = new Date(0, 0, 0, from[0], from[1], 0);
-                let endDate = new Date(0, 0, 0, to[0], to[1], 0);
-                let diff = endDate.getTime() - startDate.getTime();
-                let hours = Math.floor(diff / 1000 / 60 / 60);
-                diff -= hours * 1000 * 60 * 60;
-                let minutes = Math.floor(diff / 1000 / 60);
-
-                // If using time pickers with 24 hours format, add the below line get exact hours
-                if (hours < 0)
-                    hours = hours + 24;
-                if(multiplyHours) {
-                    let total_minutes = Math.ceil((hours*60 + minutes) * MULTIPLIER);
-                    hours = Math.floor(total_minutes/60);
-                    minutes = total_minutes % 60;
-                }
-                let val = (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
-
+                let val = calculateOvertimeHours(from, to);
                 $row.find("input[name^='hours']").val(val);
             }
         })
+
+        function calculateOvertimeHours(fromTime, toTime) {
+            let from = fromTime.val().split(':');
+            let to = toTime.val().split(':');
+            let startDate = new Date(0, 0, 0, from[0], from[1], 0);
+            let endDate = new Date(0, 0, 0, to[0], to[1], 0);
+            let diff = endDate.getTime() - startDate.getTime();
+            let hours = Math.floor(diff / 1000 / 60 / 60);
+            diff -= hours * 1000 * 60 * 60;
+            let minutes = Math.floor(diff / 1000 / 60);
+
+            // If using time pickers with 24 hours format, add the below line get exact hours
+            if (hours < 0)
+                hours = hours + 24;
+            if(multiplyHours) {
+                let total_minutes = Math.ceil((hours*60 + minutes) * MULTIPLIER);
+                hours = Math.floor(total_minutes/60);
+                minutes = total_minutes % 60;
+            }
+            return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
+        }
+
     </script>
 
 

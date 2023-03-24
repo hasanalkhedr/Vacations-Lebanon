@@ -230,7 +230,7 @@ class OvertimeController extends Controller
 
     public function createReport() {
         if(auth()->user()->hasRole(['human_resource', 'sg', 'head'])) {
-            $employees = Employee::role('employee')->where('is_supervisor', false)->orderBy('first_name')->get();
+            $employees = Employee::whereCanSubmitRequests(true)->orderBy('first_name')->get()->except(auth()->id());
             return view('overtimes.create-report', [
                 'employees' => $employees
             ]);

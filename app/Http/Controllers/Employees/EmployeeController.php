@@ -53,6 +53,7 @@ class EmployeeController
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'weekdays_off' => stringToIntArray($request->weekdays_off),
 //            'phone_number' => $validated['phone_number'],
         ]);
         $employee->phone_number = $request->phone_number;

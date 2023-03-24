@@ -28,7 +28,8 @@ class Employee extends Authenticatable
         'confessionnels',
         'overtime_minutes',
         'department_id',
-        'profile_photo'
+        'weekdays_off',
+        'profile_photo',
     ];
 
     /**
@@ -46,7 +47,7 @@ class Employee extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        //
+        'weekdays_off' => 'array'
     ];
 
     protected $attributes = [

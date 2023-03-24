@@ -234,7 +234,7 @@ class LeaveService
         $disabled_dates = unserialize($leave->disabled_dates);
         foreach ($period as $date) {
             $date = $date->toDateString();
-            if (!$helper->isWeekend($date) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && !$this->isConfessionnel($date)) {
+            if (!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && !$this->isConfessionnel($date)) {
                 $nb_of_days_off = $nb_of_days_off + 1;
             }
         }
@@ -252,7 +252,7 @@ class LeaveService
         $disabled_dates = unserialize($leave->disabled_dates);
         foreach ($period as $date) {
             $date = $date->toDateString();
-            if (!$helper->isWeekend($date) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && $this->isConfessionnel($date)) {
+            if (!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && $this->isConfessionnel($date)) {
                 $nb_of_days_off_confessionnels = $nb_of_days_off_confessionnels + 1;
             }
         }

@@ -375,7 +375,7 @@
                 function (date) {
                     let date_temp = new Date(date.getTime());
                     let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                    return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                 }],
 
             locale: {
@@ -395,7 +395,7 @@
                 function (date) {
                     let date_temp = new Date(date.getTime());
                     let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                    return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                    return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                 }],
             locale: {
                 firstDayOfWeek: 1
@@ -441,7 +441,7 @@
                         function (date) {
                             let date_temp = new Date(date.getTime());
                             let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
+                            return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
                         }],
                     locale: {
                         firstDayOfWeek: 1
@@ -455,7 +455,7 @@
                         function (date) {
                             let date_temp = new Date(date.getTime());
                             let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
+                            return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
                         }],
                     locale: {
                         firstDayOfWeek: 1
@@ -472,7 +472,7 @@
                         function (date) {
                             let date_temp = new Date(date.getTime());
                             let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                            return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                         }],
                     locale: {
                         firstDayOfWeek: 1
@@ -486,7 +486,7 @@
                         function (date) {
                             let date_temp = new Date(date.getTime());
                             let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                            return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                         }],
                     locale: {
                         firstDayOfWeek: 1
@@ -511,7 +511,7 @@
                     function (date) {
                         let date_temp = new Date(date.getTime());
                         let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                        return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                        return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                     }],
 
                 locale: {
@@ -530,7 +530,7 @@
                     function (date) {
                         let date_temp = new Date(date.getTime());
                         let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                        return (date.getDay() === 0 || date.getDay() === 6 || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                        return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
                     }],
                 locale: {
                     firstDayOfWeek: 1

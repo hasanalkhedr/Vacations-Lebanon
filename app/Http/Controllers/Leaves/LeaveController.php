@@ -60,7 +60,7 @@ class LeaveController extends Controller
                 'normal_accepted_days' => $normal_accepted_days,
                 'confessionnel_accepted_days' => $confessionnel_accepted_days,
                 'overtimeTotalTime' => $overtimeTotalTime,
-                'overtimeDays' => $overtimeDays
+                'overtimeDays' => $overtimeDays,
             ]);
         }
         else {
@@ -284,14 +284,13 @@ class LeaveController extends Controller
         $start_of_month = Carbon::parse($month)->startOfMonth();
         $end_of_month = Carbon::parse($month)->endOfMonth();
         $period = CarbonPeriod::create($start_of_month, $end_of_month);
-        $weekends = [];
+//        $weekends = [];
         $holidays = [];
-        $leave_service = new LeaveService();
         foreach($period as $date)
         {
-            if($helper->isWeekend($date)) {
-                $weekends[] = $date->format('Y-m-d');
-            }
+//            if($helper->isWeekend($date)) {
+//                $weekends[] = $date->format('Y-m-d');
+//            }
             if($helper->isHoliday($date->format('Y-m-d'))) {
                 $holidays[] = $date->format('Y-m-d');
             }
@@ -318,7 +317,7 @@ class LeaveController extends Controller
             if($disabled_dates){
                 foreach ($period as $date) {
                     $date = $date->toDateString();
-                    if(!$helper->isWeekend($date) && !in_array($date, $disabled_dates) ){
+                    if(!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates) ){
                         $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
                     }
                 }
@@ -335,7 +334,7 @@ class LeaveController extends Controller
             'dates' => $dates,
             'employees' => $employees,
             'leaveId_dates_pairs' => $leaveId_dates_pairs,
-            'weekends' => $weekends,
+//            'weekends' => $weekends,
             'holidays' => $holidays,
         ]);
     }
@@ -373,7 +372,7 @@ class LeaveController extends Controller
 
     public function createReport() {
         if(auth()->user()->hasRole(['human_resource', 'sg', 'head'])) {
-            $employees = Employee::role('employee')->where('is_supervisor', false)->orderBy('first_name')->get();
+            $employees = Employee::whereCanSubmitRequests(true)->orderBy('first_name')->get()->except(auth()->id());
             return view('leaves.create-report', [
                 'employees' => $employees
             ]);

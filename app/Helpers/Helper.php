@@ -44,9 +44,9 @@ class Helper
         return (in_array($date, $holidays));
     }
 
-    public function isWeekend($date)
+    public function isWeekend($date, $employee)
     {
-        return (date('N', strtotime($date)) == 7 || date('N', strtotime($date)) == 6);
+        return in_array(date('N', strtotime($date)), $employee->weekdays_off);
     }
 
     public function getRoleIds() {

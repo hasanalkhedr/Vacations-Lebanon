@@ -39,7 +39,7 @@
                             </div>
                         </td>
                         @foreach($dates as $date)
-                            @if(in_array($date->format('Y-m-d'), $weekends))
+                            @if(in_array($date->format('N'), $employee->weekdays_off))
                                 <td class="border border-b py-1 2xl:px-4 xl:px-3 text-gray-900 bg-gray-500 whitespace-nowrap">
                                 </td>
                             @elseif(in_array($date->format('Y-m-d'), $holidays))
