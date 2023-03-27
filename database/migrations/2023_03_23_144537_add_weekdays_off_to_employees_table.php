@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->json('weekdays_off')->nullable()->after('department_id')->default('[6,7]');
+            $table->string('weekdays_off')->nullable()->after('department_id')->default('[6,7]');
         });
     }
 
