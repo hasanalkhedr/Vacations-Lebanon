@@ -125,7 +125,7 @@
                 </label>
             </div>
         @endif
-        @if(($leave->leave_status == 0) && ($leave->processing_officer->name == "employee" && $leave->employee->department->manager_id == auth()->user()->id) || ($leave->processing_officer->name == "human_resource" && auth()->user()->hasRole('human_resource')) || ($leave->processing_officer->name == "sg" && auth()->user()->hasRole(['sg', 'head'])))
+        @if(($leave->leave_status == 0) && (($leave->processing_officer->name == "employee" && $leave->employee->department->manager_id == auth()->user()->id) || ($leave->processing_officer->name == "human_resource" && auth()->user()->hasRole('human_resource')) || ($leave->processing_officer->name == "sg" && auth()->user()->hasRole(['sg', 'head']))))
             <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" data-modal-toggle="acceptModal">
                 {{__("Accept")}}
             </button>
