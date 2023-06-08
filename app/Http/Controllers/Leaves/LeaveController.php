@@ -308,7 +308,7 @@ class LeaveController extends Controller
                 $department = Department::where('id', $request->department_id)->first();
             }
             $leaves = Leave::whereIn('employee_id', $department->employees->pluck('id')->toarray())->whereNot('leave_status', self::REJECTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
-            $employees = Employee::where('department_id', $department->id)->where('is_supervisor', false)->get();
+            $employees = Employee::where('department_id', $department->id)->get();
         }
         $leaveId_dates_pairs = [];
         foreach ($leaves as $leave) {
