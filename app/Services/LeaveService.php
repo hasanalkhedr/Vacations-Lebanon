@@ -27,39 +27,38 @@ class LeaveService
     public function sendEmailToInvolvedEmployees($leave, $processing_officers = NULL, $substitute_employee = NULL, $delete = false)
     {
         if ($delete) {
-            if($substitute_employee && $substitute_employee->can_receive_emails) {
+            if ($substitute_employee && $substitute_employee->can_receive_emails) {
                 dispatch(new SendLeaveRequestCanceledEmailJob($substitute_employee));
             }
             foreach ($processing_officers as $processing_officer) {
-                if($processing_officer->can_receive_emails) {
+                if ($processing_officer->can_receive_emails) {
                     dispatch(new SendLeaveRequestCanceledEmailJob($processing_officer));
                 }
             }
-        }
-        else {
+        } else {
             if ($leave->leave_status == self::ACCEPTED_STATUS) {
                 $employee = Employee::where('id', $leave->employee_id)->first();
-                if($employee->can_receive_emails) {
+                if ($employee->can_receive_emails) {
                     dispatch(new SendLeaveRequestAcceptedEmailJob($employee));
                 }
-                if($substitute_employee && $substitute_employee->can_receive_emails) {
+                if ($substitute_employee && $substitute_employee->can_receive_emails) {
                     dispatch(new SendLeaveRequestAcceptedEmailReplacementJob($substitute_employee, $leave->from, $leave->to, $leave->employee));
                 }
             } elseif ($leave->leave_status == self::REJECTED_STATUS) {
                 $employee = Employee::where('id', $leave->employee_id)->first();
-                if($employee->can_receive_emails) {
+                if ($employee->can_receive_emails) {
                     dispatch(new SendLeaveRequestRejectedEmailJob($employee));
                 }
-                if($substitute_employee && $substitute_employee->can_receive_emails) {
+                if ($substitute_employee && $substitute_employee->can_receive_emails) {
                     dispatch(new SendLeaveRequestRejectedEmailReplacementJob($substitute_employee));
                 }
             } else {
                 foreach ($processing_officers as $processing_officer) {
-                    if($processing_officer->can_receive_emails) {
+                    if ($processing_officer->can_receive_emails) {
                         dispatch(new SendLeaveRequestIncomingEmailJob($processing_officer));
                     }
                 }
-                if($substitute_employee && $substitute_employee->can_receive_emails) {
+                if ($substitute_employee && $substitute_employee->can_receive_emails) {
                     dispatch(new SendLeaveRequestIncomingEmailReplacementJob($substitute_employee, $leave->from, $leave->to, $leave->employee));
                 }
             }
@@ -79,8 +78,7 @@ class LeaveService
                     $this->acceptLeave($leave);
                     $processing_officers = NULL;
                     break;
-                }
-                else {
+                } else {
                     $role = Role::findByName('sg');
                     $leave->processing_officer_role = $role->id;
                     $head = Employee::role('head')->get();
@@ -105,13 +103,11 @@ class LeaveService
                 break;
         }
         $leave->save();
-        if($leave->leave_status == self::ACCEPTED_STATUS){
+        if ($leave->leave_status == self::ACCEPTED_STATUS) {
             $this->sendEmailToInvolvedEmployees($leave, $processing_officers, $leave->substitute_employee);
-        }
-        else{
+        } else {
             $this->sendEmailToInvolvedEmployees($leave, $processing_officers);
         }
-
     }
 
     public function rejectLeaveRequest($request, $leave)
@@ -134,19 +130,20 @@ class LeaveService
 
     public function updateNbOfDaysOff($leave)
     {
-        if($this->isLeaveNonDeductible($leave)) {
+        if ($this->isLeaveNonDeductible($leave)) {
             return;
         }
         $employee = $leave->employee;
         if ($leave->use_confessionnels) {
-            if(($employee->confessionnels - 1) === 0)
+            if (($employee->confessionnels - 1) < 0)
                 return;
             $employee->confessionnels = $employee->confessionnels - 1;
-        }
-        else{
+        } else {
             $nb_of_days_off = $this->findNbofDaysOff($leave);
-            if($leave->mix_of_leaves) {
+            if ($leave->mix_of_leaves) {
                 $nb_of_days_off_confessionnels = $this->findNbofDaysOffConfessionnels($leave);
+                if (($employee->confessionnels - $nb_of_days_off_confessionnels) < 0)
+                    return;
                 $employee->confessionnels = $employee->confessionnels - $nb_of_days_off_confessionnels;
             }
             $employee->nb_of_days = $employee->nb_of_days - $nb_of_days_off;
@@ -155,7 +152,8 @@ class LeaveService
         $employee->save();
     }
 
-    public function isLeaveNonDeductible($leave) {
+    public function isLeaveNonDeductible($leave)
+    {
         $leave_type_id = $leave->leave_type_id;
         $leave_types_no_deduction_array = [];
         $leave_types_no_deduction_array[] = LeaveType::where('name', 'recovery')->first()->id;
@@ -195,7 +193,8 @@ class LeaveService
         return $confessionnel_dates;
     }
 
-    public function isConfessionnel($date) {
+    public function isConfessionnel($date)
+    {
         $confessionnels = $this->getConfessionnelDates();
         return (in_array($date, $confessionnels));
     }
@@ -215,13 +214,14 @@ class LeaveService
         }
         $confessionnel_dates = [];
         foreach ($confessionnels as $confessionnel) {
-            if(!in_array($confessionnel->date, $mix_confessionnels))
+            if (!in_array($confessionnel->date, $mix_confessionnels))
                 $confessionnel_dates[] = $confessionnel->date;
         }
         return $confessionnel_dates;
     }
 
-    public function subtractOvertimeMinutes(Leave $leave) {
+    public function subtractOvertimeMinutes(Leave $leave)
+    {
         $days = $this->findNbofDaysOff($leave);
         $minutes = $days * self::DAY_TO_MINUTES;
         $employee = $leave->employee;
@@ -229,7 +229,8 @@ class LeaveService
         $employee->save();
     }
 
-    public function findNbofDaysOff($leave) {
+    public function findNbofDaysOff($leave)
+    {
         $helper = new Helper();
         $period = CarbonPeriod::create($leave->from, $leave->to);
         $nb_of_days_off = 0;
@@ -247,7 +248,8 @@ class LeaveService
         return $nb_of_days_off;
     }
 
-    public function findNbofDaysOffConfessionnels($leave) {
+    public function findNbofDaysOffConfessionnels($leave)
+    {
         $helper = new Helper();
         $period = CarbonPeriod::create($leave->from, $leave->to);
         $nb_of_days_off_confessionnels = 0;
@@ -265,14 +267,17 @@ class LeaveService
         return $nb_of_days_off_confessionnels;
     }
 
-    public function fetchLeaves($employee_id, $from_date, $to_date) {
+    public function fetchLeaves($employee_id, $from_date, $to_date)
+    {
         $leaves = Leave::where('employee_id', $employee_id)->where('leave_status', self::ACCEPTED_STATUS)
-                        ->where(function($query) use($from_date, $to_date) {
-                            $query->where(function($query) use($from_date, $to_date) {
-                                        $query->whereDate('from', '>=', $from_date)->whereDate('from', '<=', $to_date);})
-                                    ->orWhere(function($query) use($from_date, $to_date) {
-                                        $query->whereDate('to', '>=', $from_date)->whereDate('to', '<=', $to_date);});
-                        })->paginate(20);
+            ->where(function ($query) use ($from_date, $to_date) {
+                $query->where(function ($query) use ($from_date, $to_date) {
+                    $query->whereDate('from', '>=', $from_date)->whereDate('from', '<=', $to_date);
+                })
+                    ->orWhere(function ($query) use ($from_date, $to_date) {
+                        $query->whereDate('to', '>=', $from_date)->whereDate('to', '<=', $to_date);
+                    });
+            })->paginate(20);
         $leave_types = LeaveType::all();
         foreach ($leave_types as $leave_type) {
             $data[$leave_type->name] = $this->filterLeaves($leaves, $leave_type);
@@ -281,21 +286,24 @@ class LeaveService
         return $data;
     }
 
-    public function filterLeaves($leaves, $leave_type) {
-        ${"$leave_type->name"}  = $leaves->filter(function($value, $key) use ($leave_type) {
-            if($value['leave_type_id'] == LeaveType::where('name', $leave_type->name)->first()->id)
+    public function filterLeaves($leaves, $leave_type)
+    {
+        ${"$leave_type->name"}  = $leaves->filter(function ($value, $key) use ($leave_type) {
+            if ($value['leave_type_id'] == LeaveType::where('name', $leave_type->name)->first()->id)
                 return true;
         });
         return ${"$leave_type->name"};
     }
 
-    public function fetchRecoveryLeaves(Employee $employee) {
+    public function fetchRecoveryLeaves(Employee $employee)
+    {
         $recovery_leave_type = LeaveType::where('name', 'recovery')->first();
         $leaves = Leave::where('employee_id', $employee->id)->where('leave_type_id', $recovery_leave_type->id)->whereNot('leave_status', self::REJECTED_STATUS)->get();
         return $leaves;
     }
 
-    public function getRecoveryLeaveDays(Employee $employee) {
+    public function getRecoveryLeaveDays(Employee $employee)
+    {
         $leaves = $this->fetchRecoveryLeaves($employee);
         $days = 0;
         foreach ($leaves as $leave) {
@@ -304,9 +312,10 @@ class LeaveService
         return $days;
     }
 
-    public function getProcessingOfficersForLeaveDestroy(Leave $leave) {
-        $processing_officers=[];
-        if($leave->employee->hasRole('employee') && $leave->employee->is_supervisor == false) {
+    public function getProcessingOfficersForLeaveDestroy(Leave $leave)
+    {
+        $processing_officers = [];
+        if ($leave->employee->hasRole('employee') && $leave->employee->is_supervisor == false) {
             $supervisor = $leave->employee->department->manager;
             $processing_officers[] = $supervisor;
             $hrs = Employee::role('human_resource')->get();
@@ -318,8 +327,7 @@ class LeaveService
             foreach ($officers as $officer) {
                 $processing_officers[] = $officer;
             }
-        }
-        elseif($leave->employee->hasRole('employee') && $leave->employee->is_supervisor) {
+        } elseif ($leave->employee->hasRole('employee') && $leave->employee->is_supervisor) {
             $hrs = Employee::role('human_resource')->get();
             foreach ($hrs as $hr) {
                 $processing_officers[] = $hr;
@@ -329,8 +337,7 @@ class LeaveService
             foreach ($officers as $officer) {
                 $processing_officers[] = $officer;
             }
-        }
-        else {
+        } else {
             $head = Employee::role('head')->get();
             $officers = Employee::role('sg')->get()->concat($head)->all();
             foreach ($officers as $officer) {
@@ -340,10 +347,11 @@ class LeaveService
         return $processing_officers;
     }
 
-    public function recoverDays(Leave $leave) {
+    public function recoverDays(Leave $leave)
+    {
         $employee = $leave->employee;
         $recovery = LeaveType::where('name', 'recovery')->first();
-        if($leave->leave_type_id == $recovery->id) {
+        if ($leave->leave_type_id == $recovery->id) {
             $days = $this->findNbofDaysOff($leave);
             $minutes = $days * self::DAY_TO_MINUTES;
             $employee->overtime_minutes += $minutes;
@@ -353,7 +361,7 @@ class LeaveService
             $employee->confessionnels = $employee->confessionnels - 1;
         }
         $nb_of_days_off = $this->findNbofDaysOff($leave);
-        if($leave->mix_of_leaves) {
+        if ($leave->mix_of_leaves) {
             $nb_of_days_off_confessionnels = $this->findNbofDaysOffConfessionnels($leave);
             $employee->confessionnels = $employee->confessionnels + $nb_of_days_off_confessionnels;
         }
@@ -361,7 +369,8 @@ class LeaveService
         $employee->save();
     }
 
-    public function recoverMinutes(Leave $leave) {
+    public function recoverMinutes(Leave $leave)
+    {
         $employee = $leave->employee;
         $days = $this->findNbofDaysOff($leave);
         $minutes = $days * self::DAY_TO_MINUTES;
