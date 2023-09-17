@@ -139,6 +139,8 @@ class LeaveService
         }
         $employee = $leave->employee;
         if ($leave->use_confessionnels) {
+            if(($employee->confessionnels - 1) === 0)
+                return;
             $employee->confessionnels = $employee->confessionnels - 1;
         }
         else{
