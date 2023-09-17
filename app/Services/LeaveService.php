@@ -267,8 +267,8 @@ class LeaveService
         return $nb_of_days_off_confessionnels;
     }
 
-    public function fetchLeaves($employee_id, $from_date, $to_date) {
-        $leaves = Leave::where('employee_id', $employee_id)->where('leave_status', self::ACCEPTED_STATUS)
+    public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date) {
+        $leaves = Leave::where('employee_id', $employee_id)->where('leave_status', self::ACCEPTED_STATUS)->whereIn('leave_type_id', $filtered_leave_types_ids)
                         ->where(function($query) use($from_date, $to_date) {
                             $query->where(function($query) use($from_date, $to_date) {
                                         $query->whereDate('from', '>=', $from_date)->whereDate('from', '<=', $to_date);})

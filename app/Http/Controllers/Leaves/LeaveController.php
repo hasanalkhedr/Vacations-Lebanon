@@ -373,8 +373,10 @@ class LeaveController extends Controller
     public function createReport() {
         if(auth()->user()->hasRole(['human_resource', 'sg', 'head'])) {
             $employees = Employee::whereCanSubmitRequests(true)->orderBy('first_name')->get()->except(auth()->id());
+            $leaveTypes = LeaveType::get();
             return view('leaves.create-report', [
-                'employees' => $employees
+                'employees' => $employees,
+                'leaveTypes' => $leaveTypes,
             ]);
         }
         else {
@@ -383,12 +385,13 @@ class LeaveController extends Controller
     }
 
     public function generateReport(Request $request) {
+        $filtered_leave_types = $request->leave_types ?? [];
         $employee_id = $request->employee_id;
         $employee = Employee::whereId($employee_id)->first();
         $from_date = Carbon::createFromFormat('d/m/Y', $request->from_date)->format('Y-m-d');
         $to_date = Carbon::createFromFormat('d/m/Y', $request->to_date)->format('Y-m-d');
         $leave_service = new LeaveService();
-        $data = $leave_service->fetchLeaves($employee_id, $from_date, $to_date);
+        $data = $leave_service->fetchLeaves($employee_id, $filtered_leave_types, $from_date, $to_date);
         $leaves = $data['leaves'];
         unset($data['leaves']);
 
