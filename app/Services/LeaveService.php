@@ -230,24 +230,46 @@ class LeaveService
         $employee->save();
     }
 
-    public function findNbofDaysOff($leave)
+    public function findNbofDaysOff($leave, $fromDate = null, $toDate = null)
     {
         $helper = new Helper();
-        $period = CarbonPeriod::create($leave->from, $leave->to);
+
+        $leaveFromDate = $leave->from;
+        $leaveToDate = $leave->to;
+
+        // Check if provided dates are within the leave's date range
+        if ($fromDate !== null && $fromDate > $leaveToDate) {
+            return 0;
+        }
+
+        if ($toDate !== null && $toDate < $leaveFromDate) {
+            return 0;
+        }
+
+        // Create a date range based on the provided or leave's start and end dates
+        $startDate = ($fromDate !== null && $fromDate >= $leaveFromDate) ? $fromDate : $leaveFromDate;
+        $endDate = ($toDate !== null && $toDate <= $leaveToDate) ? $toDate : $leaveToDate;
+
+        $period = CarbonPeriod::create($startDate, $endDate);
         $nb_of_days_off = 0;
         $disabled_dates = unserialize($leave->disabled_dates);
+
         foreach ($period as $date) {
             $date = $date->toDateString();
             if (!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && !$this->isConfessionnel($date)) {
                 $nb_of_days_off = $nb_of_days_off + 1;
             }
         }
+
         $leave_duration_name = $leave->leave_duration->name;
+
         if ($leave_duration_name == "Half Day AM" || $leave_duration_name == "Half Day PM") {
             $nb_of_days_off = $nb_of_days_off / 2;
         }
+
         return $nb_of_days_off;
     }
+
 
     public function findNbofDaysOffConfessionnels($leave)
     {
@@ -289,7 +311,7 @@ class LeaveService
 
         foreach ($leave_types as $leave_type) {
             $filteredLeaves = $this->filterLeaves($leaves, $leave_type);
-            $totalDaysOff = $this->calculateTotalDaysOff($filteredLeaves);
+            $totalDaysOff = $this->calculateTotalDaysOff($filteredLeaves, $from_date, $to_date);
 
             $data[$leave_type->name] = [
                 'items' => $filteredLeaves,
@@ -307,12 +329,12 @@ class LeaveService
         });
     }
 
-    public function calculateTotalDaysOff($leaves)
+    public function calculateTotalDaysOff($leaves, $from_date, $to_date)
     {
         $totalDaysOff = 0;
 
         foreach ($leaves as $leave) {
-            $totalDaysOff += $this->findNbofDaysOff($leave);
+            $totalDaysOff += $this->findNbofDaysOff($leave, $from_date, $to_date);
         }
 
         return $totalDaysOff;
