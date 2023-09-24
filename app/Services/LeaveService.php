@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use DateTime;
 use App\Helpers\Helper;
 use App\Jobs\LeaveJobs\SendLeaveRequestAcceptedEmailJob;
 use App\Jobs\LeaveJobs\SendLeaveRequestAcceptedEmailReplacementJob;
@@ -269,7 +270,9 @@ class LeaveService
 
     public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date)
     {
-        $leaves = Leave::where('employee_id', $employee_id)->where('leave_status', self::ACCEPTED_STATUS)->whereIn('leave_type_id', $filtered_leave_types_ids)
+        $leaves = Leave::where('employee_id', $employee_id)
+            ->where('leave_status', self::ACCEPTED_STATUS)
+            ->whereIn('leave_type_id', $filtered_leave_types_ids)
             ->where(function ($query) use ($from_date, $to_date) {
                 $query->where(function ($query) use ($from_date, $to_date) {
                     $query->whereDate('from', '>=', $from_date)->whereDate('from', '<=', $to_date);
@@ -278,21 +281,41 @@ class LeaveService
                         $query->whereDate('to', '>=', $from_date)->whereDate('to', '<=', $to_date);
                     });
             })->paginate(20);
+
         $leave_types = LeaveType::all();
+        $data = [
+            'leaves' => $leaves,
+        ];
+
         foreach ($leave_types as $leave_type) {
-            $data[$leave_type->name] = $this->filterLeaves($leaves, $leave_type);
+            $filteredLeaves = $this->filterLeaves($leaves, $leave_type);
+            $totalDaysOff = $this->calculateTotalDaysOff($filteredLeaves);
+
+            $data[$leave_type->name] = [
+                'items' => $filteredLeaves,
+                'number_of_days_off' => $totalDaysOff,
+            ];
         }
-        $data['leaves'] = $leaves;
+
         return $data;
     }
 
     public function filterLeaves($leaves, $leave_type)
     {
-        ${"$leave_type->name"}  = $leaves->filter(function ($value, $key) use ($leave_type) {
-            if ($value['leave_type_id'] == LeaveType::where('name', $leave_type->name)->first()->id)
-                return true;
+        return $leaves->filter(function ($value, $key) use ($leave_type) {
+            return $value['leave_type_id'] == LeaveType::where('name', $leave_type->name)->first()->id;
         });
-        return ${"$leave_type->name"};
+    }
+
+    public function calculateTotalDaysOff($leaves)
+    {
+        $totalDaysOff = 0;
+
+        foreach ($leaves as $leave) {
+            $totalDaysOff += $this->findNbofDaysOff($leave);
+        }
+
+        return $totalDaysOff;
     }
 
     public function fetchRecoveryLeaves(Employee $employee)
