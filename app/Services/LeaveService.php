@@ -165,6 +165,7 @@ class LeaveService
         $leave_types_no_deduction_array[] = LeaveType::where('name', 'maternity leave')->first()->id;
         $leave_types_no_deduction_array[] = LeaveType::where('name', 'paternity leave')->first()->id;
         $leave_types_no_deduction_array[] = LeaveType::where('name', 'marriage leave')->first()->id;
+        $leave_types_no_deduction_array[] = LeaveType::where('name', 'remote work')->first()->id;
         return in_array($leave_type_id, $leave_types_no_deduction_array);
     }
 
