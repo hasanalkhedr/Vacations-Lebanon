@@ -24,5 +24,6 @@ class LeaveTypesSeeder extends Seeder
         LeaveType::create(['name' => 'maternity leave']);
         LeaveType::create(['name' => 'paternity leave']);
         LeaveType::create(['name' => 'marriage leave']);
+        LeaveType::create(['name' => 'remote work']);
     }
 }

@@ -317,7 +317,7 @@
                         }
                     }
                 }
-                else {
+                else if(selected_leave_type != "{{__("remote work")}}".toLowerCase() || selected_leave_type != "remote work".toLowerCase()) {
                     if (selected_leave_duration == "{{__("One or More Full Days")}}".toLowerCase() || selected_leave_type == "One or More Full Days".toLowerCase()) {
                         if (dateDifference > {{  auth()->user()->nb_of_days }}) {
                             let text = "{{__("You chose a range of")}} " + dateDifference + " {{__("days but you only have")}} " + {{  auth()->user()->nb_of_days }} + " {{__("leave days left")}}";
