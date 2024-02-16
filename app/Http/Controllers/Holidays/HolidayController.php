@@ -17,7 +17,8 @@ class HolidayController extends Controller
         return view('holidays.create');
     }
 
-    public function store(StoreHolidayRequest $request) {
+    public function store(StoreHolidayRequest $request)
+    {
         $validated = $request->validated();
         $holiday = Holiday::create([
             'name' => $validated['name'],
@@ -27,17 +28,22 @@ class HolidayController extends Controller
         return redirect()->route('holidays.index');
     }
 
-    public function index() {
-        $holidays = Holiday::search(request(['search']))->paginate(10);
+    public function index()
+    {
+        $holidays = Holiday::search(request(['search']))
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         $helper = new Helper();
         $holidayDates = $helper->getHolidays();
+
         return view('holidays.index', [
             'holidays' => $holidays,
             'holiday_dates' => $holidayDates
         ]);
     }
 
-    public function show(Holiday $holiday) {
+    public function show(Holiday $holiday)
+    {
         return view('holidays.show', [
             'holiday' => $holiday,
         ]);

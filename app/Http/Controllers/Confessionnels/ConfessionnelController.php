@@ -19,7 +19,8 @@ class ConfessionnelController extends Controller
         return view('confessionnels.create');
     }
 
-    public function store(StoreConfessionnelRequest $request) {
+    public function store(StoreConfessionnelRequest $request)
+    {
         $validated = $request->validated();
         $confessionnel = Confessionnel::create([
             'name' => $validated['name'],
@@ -28,8 +29,13 @@ class ConfessionnelController extends Controller
         return redirect()->route('confessionnels.index');
     }
 
-    public function index() {
-        $confessionnels = Confessionnel::search(request(['search']))->paginate(10);
+
+
+    public function index()
+    {
+        $confessionnels = Confessionnel::search(request(['search']))
+            ->orderBy('date', 'desc')
+            ->paginate(10);
         $helper = new Helper();
         $confessionnelDates = $helper->getConfessionnels();
         return view('confessionnels.index', [
@@ -38,7 +44,8 @@ class ConfessionnelController extends Controller
         ]);
     }
 
-    public function show(Confessionnel $confessionnel) {
+    public function show(Confessionnel $confessionnel)
+    {
         return view('confessionnels.show', [
             'confessionnel' => $confessionnel,
         ]);
