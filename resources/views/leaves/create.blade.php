@@ -433,68 +433,76 @@
 
         $("#mix_of_leaves").change(function() {
             if (this.checked) {
-                flatpickr("#fromDate", {}).clear();
-                flatpickr("#toDate", {}).clear();
-                $("#fromDate").flatpickr({
-                    dateFormat: "d/m/Y",
-                    disable: [
-                        function (date) {
-                            let date_temp = new Date(date.getTime());
-                            let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
-                        }],
-                    locale: {
-                        firstDayOfWeek: 1
-                    },
-                    allowInput:true,
-                });
-
-                $("#toDate").flatpickr({
-                    dateFormat: "d/m/Y",
-                    disable: [
-                        function (date) {
-                            let date_temp = new Date(date.getTime());
-                            let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
-                        }],
-                    locale: {
-                        firstDayOfWeek: 1
-                    },
-                    allowInput:true,
-                });
+                mixConfessionnelsAndRegularDays();
             }
             else {
-                flatpickr("#fromDate", {}).clear();
-                flatpickr("#toDate", {}).clear();
-                $("#fromDate").flatpickr({
-                    dateFormat: "d/m/Y",
-                    disable: [
-                        function (date) {
-                            let date_temp = new Date(date.getTime());
-                            let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
-                        }],
-                    locale: {
-                        firstDayOfWeek: 1
-                    },
-                    allowInput:true,
-                });
-
-                $("#toDate").flatpickr({
-                    dateFormat: "d/m/Y",
-                    disable: [
-                        function (date) {
-                            let date_temp = new Date(date.getTime());
-                            let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
-                            return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
-                        }],
-                    locale: {
-                        firstDayOfWeek: 1
-                    },
-                    allowInput:true,
-                });
+                separateConfessionnelsAndRegularDays();
             }
         })
+
+        function mixConfessionnelsAndRegularDays() {
+            flatpickr("#fromDate", {}).clear();
+            flatpickr("#toDate", {}).clear();
+            $("#fromDate").flatpickr({
+                dateFormat: "d/m/Y",
+                disable: [
+                    function (date) {
+                        let date_temp = new Date(date.getTime());
+                        let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                        return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
+                    }],
+                locale: {
+                    firstDayOfWeek: 1
+                },
+                allowInput:true,
+            });
+
+            $("#toDate").flatpickr({
+                dateFormat: "d/m/Y",
+                disable: [
+                    function (date) {
+                        let date_temp = new Date(date.getTime());
+                        let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                        return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date));
+                    }],
+                locale: {
+                    firstDayOfWeek: 1
+                },
+                allowInput:true,
+            });
+        }
+
+        function separateConfessionnelsAndRegularDays() {
+            flatpickr("#fromDate", {}).clear();
+            flatpickr("#toDate", {}).clear();
+            $("#fromDate").flatpickr({
+                dateFormat: "d/m/Y",
+                disable: [
+                    function (date) {
+                        let date_temp = new Date(date.getTime());
+                        let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                        return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                    }],
+                locale: {
+                    firstDayOfWeek: 1
+                },
+                allowInput:true,
+            });
+
+            $("#toDate").flatpickr({
+                dateFormat: "d/m/Y",
+                disable: [
+                    function (date) {
+                        let date_temp = new Date(date.getTime());
+                        let disabled_date = new Date(Date.parse(new Date(date_temp.setDate(date_temp.getDate() + 1)))).toISOString().split('T')[0];
+                        return ({!! json_encode(phpToJsWeekdayArray(auth()->user()->weekdays_off)) !!}.includes(date.getDay()) || {!! json_encode($disabled_dates) !!}.includes(disabled_date) || {!! json_encode($holiday_dates) !!}.includes(disabled_date) || {!! json_encode($confessionnel_dates) !!}.includes(disabled_date));
+                    }],
+                locale: {
+                    firstDayOfWeek: 1
+                },
+                allowInput:true,
+            });
+        }
 
         function resetConfessionnelsCheckbox() {
             flatpickr("#fromDate", {}).clear();
@@ -542,7 +550,6 @@
 
     <script>
         $("#leave_type").change(function () {
-            console.log($('#attachment_file_span')[0])
             selected_leave_type = this.options[this.selectedIndex].text.toLowerCase();
             if(selected_leave_type == "{{__("sick leave")}}".toLowerCase() || selected_leave_type == "sick leave".toLowerCase()) {
                 $('#attachment_file_span')[0].classList.remove('hidden')
@@ -552,13 +559,19 @@
                 $('#attachment_file_span')[0].classList.add('hidden')
                 document.getElementById("attachment_path").required = false;
             }
-            if(selected_leave_type == "{{__("recovery")}}".toLowerCase() || selected_leave_type == "recovery".toLowerCase()) {
+            if(selected_leave_type == "{{__("recovery")}}".toLowerCase() || selected_leave_type == "recovery".toLowerCase() || selected_leave_type == "{{__("sick leave")}}".toLowerCase() || selected_leave_type == "sick leave".toLowerCase()) {
                 selectedRecovery();
             }
             else {
                 $("#confessionnels_mix_div").removeClass("hidden");
                 $('#confessionnels')[0].checked = false;
                 resetConfessionnelsCheckbox();
+            }
+            if(selected_leave_type == "{{__("sick leave")}}".toLowerCase() || selected_leave_type == "sick leave".toLowerCase()) {
+                mixConfessionnelsAndRegularDays();
+            }
+            else {
+                separateConfessionnelsAndRegularDays();
             }
         })
     </script>
