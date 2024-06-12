@@ -2,7 +2,7 @@
     @section('title', __('Calendar'))
     <div class="w-full bg-white flex justify-between items-center blue-color">
         <div class="p-4 text-lg">
-            {{ $month_name }}
+            {{ $month_name }} {{ $year }}
         </div>
         <div class="px-6 py-3 text-xl font-bold text-black">
             <a href="{{ url(route('leaves.getCalendarForm')) }}">
