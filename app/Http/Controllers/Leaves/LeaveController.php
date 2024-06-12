@@ -285,64 +285,70 @@ class LeaveController extends Controller
     }
 
     public function generateCalendar(Request $request)
-    {
-        $helper = new Helper();
-        $year = now()->format('Y');
-        $month = Carbon::createFromDate($year, $request->month);
-        $month_name = Carbon::parse($month)->monthName;
-        $start_of_month = Carbon::parse($month)->startOfMonth();
-        $end_of_month = Carbon::parse($month)->endOfMonth();
-        $period = CarbonPeriod::create($start_of_month, $end_of_month);
-        //        $weekends = [];
-        $holidays = [];
-        foreach ($period as $date) {
-            //            if($helper->isWeekend($date)) {
-            //                $weekends[] = $date->format('Y-m-d');
-            //            }
-            if ($helper->isHoliday($date->format('Y-m-d'))) {
-                $holidays[] = $date->format('Y-m-d');
-            }
-            $dates[] = $date;
+{
+    $helper = new Helper();
+    $year = $request->year;
+    $month = Carbon::createFromDate($year, $request->month, 1);
+    $month_name = Carbon::parse($month)->monthName;
+    $start_of_month = Carbon::parse($month)->startOfMonth();
+    $end_of_month = Carbon::parse($month)->endOfMonth();
+    $period = CarbonPeriod::create($start_of_month, $end_of_month);
+
+    $holidays = [];
+    foreach ($period as $date) {
+        if ($helper->isHoliday($date->format('Y-m-d'))) {
+            $holidays[] = $date->format('Y-m-d');
         }
-        if ($request->department_id == 'all') {
-            $leaves = Leave::whereNot('leave_status', self::REJECTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
-            $employees = Employee::all();
+        $dates[] = $date;
+    }
+
+    if ($request->department_id == 'all') {
+        $leaves = Leave::whereNot('leave_status', self::REJECTED_STATUS)
+            ->whereDate('from', '<=', $end_of_month)
+            ->whereDate('to', '>=', $start_of_month)
+            ->get();
+        $employees = Employee::all();
+    } else {
+        if (!auth()->user()->hasRole(['human_resource', 'sg', 'head'])) {
+            $department = Department::where('id', auth()->user()->department_id)->first();
         } else {
-            if (!auth()->user()->hasRole(['human_resource', 'sg', 'head'])) {
-                $department = Department::where('id', auth()->user()->department_id)->first();
-            } else {
-                $department = Department::where('id', $request->department_id)->first();
-            }
-            $leaves = Leave::whereIn('employee_id', $department->employees->pluck('id')->toarray())->whereNot('leave_status', self::REJECTED_STATUS)->whereDate('from', '<=', $end_of_month)->whereDate('to', '>=', $start_of_month)->get();
-            $employees = Employee::where('department_id', $department->id)->get();
+            $department = Department::where('id', $request->department_id)->first();
         }
-        $leaveId_dates_pairs = [];
-        foreach ($leaves as $leave) {
-            $period = CarbonPeriod::create($leave->from, $leave->to);
-            $disabled_dates = unserialize($leave->disabled_dates);
-            if ($disabled_dates) {
-                foreach ($period as $date) {
-                    $date = $date->toDateString();
-                    if (!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates)) {
-                        $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
-                    }
-                }
-            } else {
-                foreach ($period as $date) {
-                    $date = $date->toDateString();
+        $leaves = Leave::whereIn('employee_id', $department->employees->pluck('id')->toArray())
+            ->whereNot('leave_status', self::REJECTED_STATUS)
+            ->whereDate('from', '<=', $end_of_month)
+            ->whereDate('to', '>=', $start_of_month)
+            ->get();
+        $employees = Employee::where('department_id', $department->id)->get();
+    }
+
+    $leaveId_dates_pairs = [];
+    foreach ($leaves as $leave) {
+        $period = CarbonPeriod::create($leave->from, $leave->to);
+        $disabled_dates = unserialize($leave->disabled_dates);
+        if ($disabled_dates) {
+            foreach ($period as $date) {
+                $date = $date->toDateString();
+                if (!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates)) {
                     $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
                 }
             }
+        } else {
+            foreach ($period as $date) {
+                $date = $date->toDateString();
+                $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
+            }
         }
-        return view('leaves.calendar', [
-            'month_name' => $month_name,
-            'dates' => $dates,
-            'employees' => $employees,
-            'leaveId_dates_pairs' => $leaveId_dates_pairs,
-            //            'weekends' => $weekends,
-            'holidays' => $holidays,
-        ]);
     }
+
+    return view('leaves.calendar', [
+        'month_name' => $month_name,
+        'dates' => $dates,
+        'employees' => $employees,
+        'leaveId_dates_pairs' => $leaveId_dates_pairs,
+        'holidays' => $holidays,
+    ]);
+}
 
     public function downloadAttachment(Leave $leave)
     {
