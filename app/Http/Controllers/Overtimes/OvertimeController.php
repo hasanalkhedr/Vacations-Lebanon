@@ -209,7 +209,7 @@ class OvertimeController extends Controller
         if($helper->checkIfNormalEmployee($user)) {
             return back();
         }
-        if(!$user->hasRole($overtime->processing_officer->name)) {
+        if(!$user->hasRole($overtime->processing_officer->name) && !$employee->hasRole('head')) {
             return back();
         }
         $overtime_service = new OvertimeService();
@@ -220,7 +220,7 @@ class OvertimeController extends Controller
     public function reject(Request $request, Overtime $overtime) {
         $user = auth()->user();
         $helper = new Helper();
-        if($helper->checkIfNormalEmployee($user) || !$user->hasRole($overtime->processing_officer->name)) {
+        if(($helper->checkIfNormalEmployee($user) || !$user->hasRole($overtime->processing_officer->name)) && !$employee->hasRole('head')) {
             return back();
         }
         $overtime_service = new OvertimeService();

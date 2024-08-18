@@ -233,7 +233,7 @@ class LeaveController extends Controller
         if ($helper->checkIfNormalEmployee($employee)) {
             return back();
         }
-        if (!$employee->hasRole($leave->processing_officer->name)) {
+        if (!$employee->hasRole($leave->processing_officer->name) && !$employee->hasRole('head')) {
             return back();
         }
         $leave_service = new LeaveService();
@@ -245,7 +245,7 @@ class LeaveController extends Controller
     {
         $employee = auth()->user();
         $helper = new Helper();
-        if ($helper->checkIfNormalEmployee($employee) || !$employee->hasRole($leave->processing_officer->name)) {
+        if (($helper->checkIfNormalEmployee($employee) || !$employee->hasRole($leave->processing_officer->name)) && !$employee->hasRole('head')) {
             return back();
         }
         $leave_service = new LeaveService();
