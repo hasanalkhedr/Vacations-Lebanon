@@ -11,18 +11,21 @@ use Spatie\Permission\Models\Role;
 
 class DepartmentController extends Controller
 {
-    public function create() {
+    public function create()
+    {
         return view('departments.create');
     }
 
-    public function store(StoreDepartmentRequest $request) {
+    public function store(StoreDepartmentRequest $request)
+    {
         $validate = $request->validated();
         $department = Department::create($validate);
         $department->save();
         return redirect()->route('departments.index');
     }
 
-    public function index() {
+    public function index()
+    {
         return view('departments.index', [
             'departments' => Department::search(request(['search']))->paginate(10)
         ]);
@@ -33,7 +36,7 @@ class DepartmentController extends Controller
         return view('departments.show', [
             'department' => $department,
             'employees' => $department->employees,
-            'manager' => $department->manager
+            'manager' => $department->manager ?? null // Handle null manager
         ]);
     }
 
@@ -46,19 +49,30 @@ class DepartmentController extends Controller
     public function update(UpdateDepartmentRequest $request, Department $department)
     {
         $validated = $request->validated();
+
+        // Handle the case where the old manager might not exist
         $old_supervisor = Employee::where('id', $department->manager_id)->first();
-        $isOldSupervisorInOtherDepartments = Department::whereManagerId($old_supervisor->id)->count() > 1;
-        if(!$isOldSupervisorInOtherDepartments) {
-            $old_supervisor->is_supervisor = false;
-            $old_supervisor->save();
+        if ($old_supervisor) {
+            $isOldSupervisorInOtherDepartments = Department::whereManagerId($old_supervisor->id)->count() > 1;
+            if (!$isOldSupervisorInOtherDepartments) {
+                $old_supervisor->is_supervisor = false;
+                $old_supervisor->save();
+            }
         }
+
+        // Update the department
         $department->update($validated);
+
+        // Handle the case where the new manager might not exist
         $new_supervisor = Employee::where('id', $department->manager_id)->first();
-        $new_supervisor->is_supervisor = true;
-        $new_supervisor->save();
+        if ($new_supervisor) {
+            $new_supervisor->is_supervisor = true;
+            $new_supervisor->save();
+        }
 
         return back();
     }
+
 
     public function destroy(Department $department)
     {
