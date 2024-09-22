@@ -255,9 +255,11 @@ class LeaveService
         $nb_of_days_off = 0;
         $disabled_dates = unserialize($leave->disabled_dates);
 
+        $employee = $leave->employee;
+
         foreach ($period as $date) {
             $date = $date->toDateString();
-            if (!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && !($this->isConfessionnel($date) && $leave->leave_type->name !== 'sick leave')) {
+            if (!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates) && !$helper->isHoliday($date) && (!($this->isConfessionnel($date) && $leave->leave_type->name !== 'sick leave') || ($this->isConfessionnel($date) && !$employee->confessionnels))) {
                 $nb_of_days_off = $nb_of_days_off + 1;
             }
         }

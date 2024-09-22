@@ -42,7 +42,16 @@ class LeaveController extends Controller
             $leave_service = new LeaveService();
             $disabledDates = $leave_service->getDisabledDates($employee);
             $holidayDates = $helper->getHolidays();
-            $confessionnelDates = $leave_service->getConfessionnels();
+
+            // if employee has no confessionnels, set confessionnelDates to empty array so he can choose a normal leave
+            if (!$employee->confessionnels) {
+                $confessionnelDates = [];
+                $showConfessionnelButtons = false;
+            } else {
+                $confessionnelDates = $leave_service->getConfessionnels();
+                $showConfessionnelButtons = true;
+            }
+
             $overtimeService = new OvertimeService();
             $overtimeDays = $overtimeService->overtimeToLeaveDays($employee);
             $overtimeTotalTime = $overtimeService->fetchOvertimes($employee->id)['total_time'];
@@ -62,6 +71,7 @@ class LeaveController extends Controller
                 'confessionnel_accepted_days' => $confessionnel_accepted_days,
                 'overtimeTotalTime' => $overtimeTotalTime,
                 'overtimeDays' => $overtimeDays,
+                'showConfessionnelButtons' => $showConfessionnelButtons
             ]);
         } else {
             return back();

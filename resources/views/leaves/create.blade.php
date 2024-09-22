@@ -112,27 +112,29 @@
                     </select>
                 </div>
 
-                <div class="grid md:grid-cols-2 md:gap-6" id="confessionnels_mix_div">
-                    <div class="relative z-0 mb-6 w-full group">
-                        <p class="mb-2 text-sm font-medium blue-color">{{ __('Use Confessionnels Only') }}</p>
-                        <div class="mt-2 flex flex-row">
-                            <input type="checkbox" name="confessionnels" id="confessionnels">
+                @if ($showConfessionnelButtons)
+                    <div class="grid md:grid-cols-2 md:gap-6" id="confessionnels_mix_div">
+                        <div class="relative z-0 mb-6 w-full group">
+                            <p class="mb-2 text-sm font-medium blue-color">{{ __('Use Confessionnels Only') }}</p>
+                            <div class="mt-2 flex flex-row">
+                                <input type="checkbox" name="confessionnels" id="confessionnels">
+                            </div>
+                            @error('confessionnels')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @error('confessionnels')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
 
-                    <div class="relative z-0 mb-6 w-full group" id="mix_of_leaves_div">
-                        <p class="mb-2 text-sm font-medium blue-color">{{ __('Include Both') }}</p>
-                        <div class="mt-2 flex flex-row">
-                            <input type="checkbox" name="mix_of_leaves" id="mix_of_leaves">
+                        <div class="relative z-0 mb-6 w-full group" id="mix_of_leaves_div">
+                            <p class="mb-2 text-sm font-medium blue-color">{{ __('Include Both') }}</p>
+                            <div class="mt-2 flex flex-row">
+                                <input type="checkbox" name="mix_of_leaves" id="mix_of_leaves">
+                            </div>
+                            @error('mix_of_leaves')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @error('mix_of_leaves')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
                     </div>
-                </div>
+                @endif
 
                 <div class="grid md:grid-cols-2 md:gap-6">
                     <div class="relative z-0 w-full group flex flex-col">
@@ -248,7 +250,7 @@
                 let newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString()
                     .split('T')[0];
                 if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate
-                .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
+                    .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
                     dateDifference = dateDifference - 1;
                 }
                 tempDate.setDate(tempDate.getDate() + 1);
@@ -304,7 +306,7 @@
                         .split('T')[0];
                     if ($('#mix_of_leaves')[0].checked) {
                         if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate
-                        .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate) || {!! json_encode($confessionnel_dates) !!}
+                            .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate) || {!! json_encode($confessionnel_dates) !!}
                             .includes(newTempDate)) {
                             dateDifference = dateDifference - 1;
                         }
@@ -313,7 +315,7 @@
                         }
                     } else {
                         if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate
-                        .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
+                            .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
                             dateDifference = dateDifference - 1;
                         }
                     }
