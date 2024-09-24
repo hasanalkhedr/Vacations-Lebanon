@@ -151,10 +151,10 @@ class LeaveController extends Controller
                 ->search(request(['search']))->paginate(10);
         }
         if ($employee->hasRole("human_resource")) {
-            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->where('to', '>=', now())->search(request(['search']))->paginate(10);
         }
         if ($employee->hasRole(['sg', 'head'])) {
-            $leaves = Leave::where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+            $leaves = Leave::where('leave_status', self::PENDING_STATUS)->where('to', '>=', now())->search(request(['search']))->paginate(10);
         }
         return view('leaves.index', [
             'leaves' => $leaves,
@@ -243,7 +243,7 @@ class LeaveController extends Controller
         if ($helper->checkIfNormalEmployee($employee)) {
             return back();
         }
-        if (!$employee->hasRole($leave->processing_officer->name) && !$employee->hasRole('head')) {
+        if ((!$employee->hasRole($leave->processing_officer->name) && !$employee->hasRole('head') && !$employee->hasRole('sg'))) {
             return back();
         }
         $leave_service = new LeaveService();
@@ -255,7 +255,7 @@ class LeaveController extends Controller
     {
         $employee = auth()->user();
         $helper = new Helper();
-        if (($helper->checkIfNormalEmployee($employee) || !$employee->hasRole($leave->processing_officer->name)) && !$employee->hasRole('head')) {
+        if (($helper->checkIfNormalEmployee($employee) || !$employee->hasRole($leave->processing_officer->name)) && !$employee->hasRole('head') && !$employee->hasRole('head')) {
             return back();
         }
         $leave_service = new LeaveService();
