@@ -151,10 +151,10 @@ class LeaveController extends Controller
                 ->search(request(['search']))->paginate(10);
         }
         if ($employee->hasRole("human_resource")) {
-            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->where('to', '>=', now())->search(request(['search']))->paginate(10);
+            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
         if ($employee->hasRole(['sg', 'head'])) {
-            $leaves = Leave::where('leave_status', self::PENDING_STATUS)->where('to', '>=', now())->search(request(['search']))->paginate(10);
+            $leaves = Leave::where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
         }
         return view('leaves.index', [
             'leaves' => $leaves,
