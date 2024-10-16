@@ -228,7 +228,6 @@
                 </div>
             </form>
         </div>
-
     </div>
 
     <script type="text/javascript">
@@ -255,7 +254,7 @@
                 }
                 tempDate.setDate(tempDate.getDate() + 1);
             }
-            if ($('#confessionnels')[0].checked) {
+            if ($('#confessionnels')[0]?.checked) {
                 if (dateDifference > {{ auth()->user()->confessionnels }}) {
                     let text = "{{ __('You chose a range of') }} " + dateDifference +
                         " {{ __('days but you only have') }} " + {{ auth()->user()->confessionnels }} +
@@ -279,7 +278,7 @@
             $('#createButton').attr('disabled', false);
             $('#createButton').removeClass('disabled-button')
             $("#error").text("");
-            if ($('#confessionnels')[0].checked) {
+            if ($('#confessionnels')[0]?.checked) {
                 if ({{ auth()->user()->confessionnels }} === 0) {
                     let text = "{{ __("You don't have any confessionnel days left") }}";
                     disableButtonAndShowError(text);
@@ -304,7 +303,7 @@
                 while (tempDate <= newToDate) {
                     let newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString()
                         .split('T')[0];
-                    if ($('#mix_of_leaves')[0].checked) {
+                    if ($('#mix_of_leaves')[0]?.checked) {
                         if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate
                             .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate) || {!! json_encode($confessionnel_dates) !!}
                             .includes(newTempDate)) {
@@ -396,6 +395,7 @@
         }
 
         function selectedRecovery() {
+            console.log("_______________here")
             resetConfessionnelsCheckbox();
             $("#confessionnels_mix_div").addClass("hidden");
         }
@@ -452,7 +452,7 @@
                 $("#fromDateLabel").html("Date");
                 $("#toDateDiv").addClass("invisible");
                 $("#mix_of_leaves_div").addClass("invisible");
-                $('#mix_of_leaves')[0].checked = false;
+                if ($('#mix_of_leaves')[0]) $('#mix_of_leaves')[0].checked = false;
                 $("#fromDate").attr("placeholder", "{{ __('Please select date') }}");
                 $("#fromDate").flatpickr({
                     dateFormat: "d/m/Y",
@@ -566,7 +566,7 @@
             $("#fromDateLabel").html("{{ __('Start Date') }} <span class='text-red-500'>*</span>");
             $("#toDateDiv").removeClass("invisible");
             $("#mix_of_leaves_div").removeClass("invisible");
-            $('#mix_of_leaves')[0].checked = false;
+            if ($('#mix_of_leaves')[0]) $('#mix_of_leaves')[0].checked = false;
             let fromDate = $('#fromDate').val();
             $("#toDate").val(fromDate);
             $("#fromDate").flatpickr({
