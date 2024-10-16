@@ -231,6 +231,51 @@
     </div>
 
     <script type="text/javascript">
+        function checkBalanceBeforeSubmit() {
+            $('#createButton').attr('disabled', false);
+            $('#createButton').removeClass('disabled-button');
+            $("#error").text("");
+
+            let leaveType = $('#leave_type').val();
+            let leaveDuration = $('#leave_duration_id').val();
+            let fromDate = $('#fromDate').val();
+            let toDate = $('#toDate').val();
+
+            // Fetch the remaining balance and pending days for the employee
+            let remainingDays = {{ $employee->nb_of_days }};
+            let pendingDays = {{ $normal_pending_days }};
+            let totalPending = parseInt(pendingDays);
+
+            // Calculate the date difference to check the number of requested leave days
+            let newFromDate = new Date(changeDateFormat(fromDate));
+            let newToDate = new Date(changeDateFormat(toDate));
+            let dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000 * 3600 * 24)) + 1;
+
+            if (remainingDays - totalPending < dateDifference) {
+                let errorText =
+                    "{{ __('You have insufficient balance to submit this request. You may have already booked more days than available in your balance.') }}";
+                disableButtonAndShowError(errorText);
+                return false;
+            }
+
+            return true;
+        }
+
+        // Modify the existing submission function
+        $('form').submit(function(event) {
+            if (!checkBalanceBeforeSubmit()) {
+                event.preventDefault(); // Stop form submission if the balance is insufficient
+            }
+        });
+
+        // Reuse this existing function to display the error
+        function disableButtonAndShowError(text) {
+            $('#createButton').attr('disabled', true);
+            $('#createButton').addClass('disabled-button');
+            $('#error').css("color", "red");
+            $("#error").text(text);
+        }
+
         $('#confessionnels').change(function() {
             $('#createButton').attr('disabled', false)
             $('#createButton').removeClass('disabled-button')
