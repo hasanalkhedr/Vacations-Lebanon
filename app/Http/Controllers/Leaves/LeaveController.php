@@ -299,67 +299,104 @@ class LeaveController extends Controller
         $helper = new Helper();
         $year = $request->year;
         $month = Carbon::createFromDate($year, $request->month, 1);
-        $month_name = Carbon::parse($month)->monthName;
-        $start_of_month = Carbon::parse($month)->startOfMonth();
-        $end_of_month = Carbon::parse($month)->endOfMonth();
+        $month_name = $month->monthName;
+        $start_of_month = $month->copy()->startOfMonth();
+        $end_of_month = $month->copy()->endOfMonth();
         $period = CarbonPeriod::create($start_of_month, $end_of_month);
 
+        // Initialize arrays
         $holidays = [];
+        $dates = [];
+
+        // Generate list of dates and holidays in the month
         foreach ($period as $date) {
-            if ($helper->isHoliday($date->format('Y-m-d'))) {
-                $holidays[] = $date->format('Y-m-d');
+            $formattedDate = $date->format('Y-m-d');
+            if ($helper->isHoliday($formattedDate)) {
+                $holidays[] = $formattedDate;
             }
             $dates[] = $date;
         }
 
+        // Determine which employees and leaves to fetch
         if ($request->department_id == 'all') {
-            $leaves = Leave::whereNot('leave_status', self::REJECTED_STATUS)
+            // Fetch all employees, including soft-deleted ones
+            $employees = Employee::withTrashed()->get();
+            $employeeIds = $employees->pluck('id')->toArray();
+
+            // Fetch leaves for all employees excluding rejected leaves
+            $leaves = Leave::with(['employee' => function ($query) {
+                $query->withTrashed();
+            }])
+                ->whereIn('employee_id', $employeeIds)
+                ->where('leave_status', '!=', self::REJECTED_STATUS)
                 ->whereDate('from', '<=', $end_of_month)
                 ->whereDate('to', '>=', $start_of_month)
                 ->get();
-            $employees = Employee::all();
         } else {
+            // Determine the department based on user roles
             if (!auth()->user()->hasRole(['human_resource', 'sg', 'head'])) {
-                $department = Department::where('id', auth()->user()->department_id)->first();
+                // If not privileged, use the user's own department
+                $department = Department::find(auth()->user()->department_id);
             } else {
-                $department = Department::where('id', $request->department_id)->first();
+                // If privileged, use the requested department ID
+                $department = Department::find($request->department_id);
             }
-            $leaves = Leave::whereIn('employee_id', $department->employees->pluck('id')->toArray())
-                ->whereNot('leave_status', self::REJECTED_STATUS)
+
+            // Fetch employees from the selected department, including soft-deleted ones
+            $employees = Employee::withTrashed()
+                ->where('department_id', $department->id)
+                ->get();
+            $employeeIds = $employees->pluck('id')->toArray();
+
+            // Fetch leaves for the employees in the selected department, excluding rejected ones
+            $leaves = Leave::with(['employee' => function ($query) {
+                $query->withTrashed();
+            }])
+                ->whereIn('employee_id', $employeeIds)
+                ->where('leave_status', '!=', self::REJECTED_STATUS)
                 ->whereDate('from', '<=', $end_of_month)
                 ->whereDate('to', '>=', $start_of_month)
                 ->get();
-            $employees = Employee::where('department_id', $department->id)->get();
         }
 
+        // Process leaves to generate leave-date pairs
         $leaveId_dates_pairs = [];
         foreach ($leaves as $leave) {
-            $period = CarbonPeriod::create($leave->from, $leave->to);
+            $leavePeriod = CarbonPeriod::create($leave->from, $leave->to);
             $disabled_dates = unserialize($leave->disabled_dates);
+
+            // Ensure we have the employee data, even if soft-deleted
+            $employee = $leave->employee;
+
             if ($disabled_dates) {
-                foreach ($period as $date) {
-                    $date = $date->toDateString();
-                    if (!$helper->isWeekend($date, $leave->employee) && !in_array($date, $disabled_dates)) {
-                        $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
+                foreach ($leavePeriod as $date) {
+                    $dateStr = $date->toDateString();
+                    if (
+                        !$helper->isWeekend($dateStr, $employee) &&
+                        !in_array($dateStr, $disabled_dates)
+                    ) {
+                        $leaveId_dates_pairs[$leave->employee_id . '&' . $dateStr] = $leave;
                     }
                 }
             } else {
-                foreach ($period as $date) {
-                    $date = $date->toDateString();
-                    $leaveId_dates_pairs[$leave->employee_id . '&' . $date] = $leave;
+                foreach ($leavePeriod as $date) {
+                    $dateStr = $date->toDateString();
+                    $leaveId_dates_pairs[$leave->employee_id . '&' . $dateStr] = $leave;
                 }
             }
         }
 
+        // Return the view with the necessary data
         return view('leaves.calendar', [
-            'month_name' => $month_name,
-            'year' => $year,
-            'dates' => $dates,
-            'employees' => $employees,
-            'leaveId_dates_pairs' => $leaveId_dates_pairs,
-            'holidays' => $holidays,
+            'month_name'           => $month_name,
+            'year'                 => $year,
+            'dates'                => $dates,
+            'employees'            => $employees,
+            'leaveId_dates_pairs'  => $leaveId_dates_pairs,
+            'holidays'             => $holidays,
         ]);
     }
+
 
     public function downloadAttachment(Leave $leave)
     {
