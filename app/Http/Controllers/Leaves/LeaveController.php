@@ -348,7 +348,7 @@ class LeaveController extends Controller
                 ->get();
             $employeeIds = $employees->pluck('id')->toArray();
 
-            // Fetch leaves for the employees in the selected department, excluding rejected ones
+            // Fetch leaves for the employees in the selected department, excluding rejected leaves
             $leaves = Leave::with(['employee' => function ($query) {
                 $query->withTrashed();
             }])
@@ -361,6 +361,8 @@ class LeaveController extends Controller
 
         // Process leaves to generate leave-date pairs
         $leaveId_dates_pairs = [];
+        $employeeLeaveCounts = []; // Initialize an array to keep track of leave counts per employee
+
         foreach ($leaves as $leave) {
             $leavePeriod = CarbonPeriod::create($leave->from, $leave->to);
             $disabled_dates = unserialize($leave->disabled_dates);
@@ -376,15 +378,39 @@ class LeaveController extends Controller
                         !in_array($dateStr, $disabled_dates)
                     ) {
                         $leaveId_dates_pairs[$leave->employee_id . '&' . $dateStr] = $leave;
+
+                        // Increment leave count for the employee
+                        if (isset($employeeLeaveCounts[$leave->employee_id])) {
+                            $employeeLeaveCounts[$leave->employee_id]++;
+                        } else {
+                            $employeeLeaveCounts[$leave->employee_id] = 1;
+                        }
                     }
                 }
             } else {
                 foreach ($leavePeriod as $date) {
                     $dateStr = $date->toDateString();
                     $leaveId_dates_pairs[$leave->employee_id . '&' . $dateStr] = $leave;
+
+                    // Increment leave count for the employee
+                    if (isset($employeeLeaveCounts[$leave->employee_id])) {
+                        $employeeLeaveCounts[$leave->employee_id]++;
+                    } else {
+                        $employeeLeaveCounts[$leave->employee_id] = 1;
+                    }
                 }
             }
         }
+
+        // Filter out soft-deleted employees who have zero leaves in the selected date range
+        $employees = $employees->filter(function ($employee) use ($employeeLeaveCounts) {
+            if ($employee->trashed()) {
+                // If the employee is soft-deleted, include them only if they have leaves
+                return isset($employeeLeaveCounts[$employee->id]);
+            }
+            // If the employee is active, include them
+            return true;
+        })->values(); // Re-index the collection
 
         // Return the view with the necessary data
         return view('leaves.calendar', [
