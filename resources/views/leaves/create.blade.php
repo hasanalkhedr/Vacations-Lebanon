@@ -241,9 +241,15 @@
             let fromDate = $('#fromDate').val();
             let toDate = $('#toDate').val();
 
+            // Check if the leave type is "recovery" by comparing it with a known recovery leave type ID
+            if (leaveType == "{{ $leave_types->firstWhere('name', 'recovery')->id }}") {
+                return true; // Skip balance and pendingDays check if the leave type is "recovery"
+            }
+
+
             // Fetch the remaining balance and pending days for the employee
             let remainingDays = {{ $employee->nb_of_days }};
-            let pendingDays = {{ $normal_pending_days }};
+            let pendingDays = {{ $normal_pending_days_without_recovery }};
             let totalPending = parseInt(pendingDays);
 
             // Calculate the date difference to check the number of requested leave days
@@ -251,6 +257,7 @@
             let newToDate = new Date(changeDateFormat(toDate));
             let dateDifference = ((newToDate.getTime() - newFromDate.getTime()) / (1000 * 3600 * 24)) + 1;
 
+            // Perform the balance check
             if (remainingDays - totalPending < dateDifference) {
                 let errorText =
                     "{{ __('You have insufficient balance to submit this request. You may have already booked more days than available in your balance.') }}";
@@ -294,13 +301,15 @@
                 let newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString()
                     .split('T')[0];
                 if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate
-                    .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
+                    .getDay() === 6 ||
+                    {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
                     dateDifference = dateDifference - 1;
                 }
                 tempDate.setDate(tempDate.getDate() + 1);
             }
             if ($('#confessionnels')[0]?.checked) {
-                if (dateDifference > {{ auth()->user()->confessionnels }}) {
+                if (dateDifference >
+                    {{ auth()->user()->confessionnels }}) {
                     let text = "{{ __('You chose a range of') }} " + dateDifference +
                         " {{ __('days but you only have') }} " + {{ auth()->user()->confessionnels }} +
                         " {{ __('confessionnel days left') }}";
@@ -349,9 +358,10 @@
                     let newTempDate = new Date(Date.parse(new Date(tempDate.setDate(tempDate.getDate())))).toISOString()
                         .split('T')[0];
                     if ($('#mix_of_leaves')[0]?.checked) {
-                        if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate
-                            .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate) || {!! json_encode($confessionnel_dates) !!}
-                            .includes(newTempDate)) {
+                        if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) ||
+                            tempDate.getDay() === 0 || tempDate.getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(
+                                newTempDate) ||
+                            {!! json_encode($confessionnel_dates) !!}.includes(newTempDate)) {
                             dateDifference = dateDifference - 1;
                         }
                         if ({!! json_encode($confessionnel_dates) !!}.includes(newTempDate)) {
@@ -359,7 +369,8 @@
                         }
                     } else {
                         if ({!! json_encode($disabled_dates) !!}.includes(newTempDate) || tempDate.getDay() === 0 || tempDate
-                            .getDay() === 6 || {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
+                            .getDay() === 6 ||
+                            {!! json_encode($holiday_dates) !!}.includes(newTempDate)) {
                             dateDifference = dateDifference - 1;
                         }
                     }
@@ -368,11 +379,12 @@
                 selected_leave_type = $("#leave_type")[0].options[$("#leave_type")[0].selectedIndex].text.toLowerCase();
                 selected_leave_duration = $("#leave_duration_id")[0].options[$("#leave_duration_id")[0].selectedIndex].text
                     .toLowerCase();
-                if (selected_leave_type == "{{ __('recovery') }}".toLowerCase() || selected_leave_type == "recovery"
-                    .toLowerCase()) {
+                if (selected_leave_type == "{{ __('recovery') }}".toLowerCase() ||
+                    selected_leave_type == "recovery".toLowerCase()) {
                     if (selected_leave_duration == "{{ __('One or More Full Days') }}".toLowerCase() ||
                         selected_leave_type == "One or More Full Days".toLowerCase()) {
-                        if (dateDifference > {{ (int) $overtimeDays }}) {
+                        if (dateDifference >
+                            {{ (int) $overtimeDays }}) {
                             let text = "{{ __('You chose a range of') }} " + dateDifference +
                                 " {{ __('days but you only have') }} " + {{ $overtimeDays }} +
                                 " {{ __('leave days left') }}";
@@ -440,7 +452,6 @@
         }
 
         function selectedRecovery() {
-            console.log("_______________here")
             resetConfessionnelsCheckbox();
             $("#confessionnels_mix_div").addClass("hidden");
         }

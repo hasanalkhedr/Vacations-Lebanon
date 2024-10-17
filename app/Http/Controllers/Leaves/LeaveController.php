@@ -31,10 +31,25 @@ class LeaveController extends Controller
         if ($employee->can_submit_requests) {
             $employee_service = new EmployeeService();
             $helper = new Helper();
+
+            // Get the normal pending days including all leave types
             $normal_pending_days = $employee_service->getNormalNbofDaysPending($employee);
             $confessionnel_pending_days = $employee_service->getConfessionnelNbofDaysPending($employee);
             $normal_accepted_days = $employee_service->getNormalNbofDaysAccepted($employee);
             $confessionnel_accepted_days = $employee_service->getConfessionnelNbofDaysAccepted($employee);
+
+            // Exclude recovery leaves from pending days
+            $recoveryLeaveTypeId = LeaveType::where('name', 'recovery')->first()->id;
+            $normal_pending_days_without_recovery = Leave::where('employee_id', $employee->id)
+                ->where('leave_type_id', '!=', $recoveryLeaveTypeId)  // Exclude recovery leave
+                ->where('leave_status', self::PENDING_STATUS)
+                ->get()
+                ->sum(function ($leave) {
+                    $leaveFromDate = Carbon::createFromFormat('Y-m-d', $leave->from);
+                    $leaveToDate = Carbon::createFromFormat('Y-m-d', $leave->to);
+                    return $leaveFromDate->diffInDays($leaveToDate) + 1;  // Include both start and end dates
+                });
+
             $leave_durations = LeaveDuration::all();
             $leave_types = LeaveType::all();
             $today = now();
@@ -43,7 +58,7 @@ class LeaveController extends Controller
             $disabledDates = $leave_service->getDisabledDates($employee);
             $holidayDates = $helper->getHolidays();
 
-            // if employee has no confessionnels, set confessionnelDates to empty array so he can choose a normal leave
+            // If employee has no confessionnels, set confessionnelDates to empty array so he can choose a normal leave
             if (!$employee->confessionnels) {
                 $confessionnelDates = [];
                 $showConfessionnelButtons = false;
@@ -55,6 +70,7 @@ class LeaveController extends Controller
             $overtimeService = new OvertimeService();
             $overtimeDays = $overtimeService->overtimeToLeaveDays($employee);
             $overtimeTotalTime = $overtimeService->fetchOvertimes($employee->id)['total_time'];
+
             return view('leaves.create', [
                 'employee' => $employee,
                 'leave_durations' => $leave_durations,
@@ -66,6 +82,7 @@ class LeaveController extends Controller
                 'holiday_dates' => $holidayDates,
                 'confessionnel_dates' => $confessionnelDates,
                 'normal_pending_days' => $normal_pending_days,
+                'normal_pending_days_without_recovery' => $normal_pending_days_without_recovery,  // Excluding recovery
                 'confessionnel_pending_days' => $confessionnel_pending_days,
                 'normal_accepted_days' => $normal_accepted_days,
                 'confessionnel_accepted_days' => $confessionnel_accepted_days,
@@ -77,6 +94,7 @@ class LeaveController extends Controller
             return back();
         }
     }
+
 
     public function store(StoreLeaveRequest $request)
     {
