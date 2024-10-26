@@ -26,6 +26,9 @@ Route::get('/', function () {
 });
 
 Route::prefix('vacations')->group(function () {
+    // Authentication Routes for vacations
+    Auth::routes();
+
     Route::get('/', function () {
         return redirect()->route('login');
     });
@@ -122,10 +125,9 @@ Route::prefix('vacations')->group(function () {
     Route::group(['middleware' => 'role_custom:employee|human_resource|sg|head', 'controller' => \App\Http\Controllers\HolidaysAndConfessionnels\HolidaysAndConfessionnels::class, 'prefix' => 'holidays-and-confessionnels', 'as' => 'holidays-and-confessionnels.'], function () {
         Route::get('/index', 'index')->name('index');
     });
-    Auth::routes();
 
-
-    Route::any('{url}', function () {
-        return back();
-    })->where('url', '.*');
+    // It's better to use Route::fallback() for proper 404 handling
+    Route::fallback(function () {
+        abort(404);
+    });
 });
