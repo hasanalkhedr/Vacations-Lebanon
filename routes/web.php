@@ -21,10 +21,9 @@ use \App\Http\Controllers\Confessionnels\ConfessionnelController;
 |
 */
 
-Route::get('/', function () {
+Route::get('/vacations', function () {
     return redirect()->route('login');
 });
-Route::post('/logout', [EmployeeController::class, 'logout'])->name('logout');
 
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
     Route::post('/authenticate', 'authenticate')->name('authenticate');
