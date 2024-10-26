@@ -21,10 +21,6 @@ use \App\Http\Controllers\Confessionnels\ConfessionnelController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::prefix('vacations')->group(function () {
     // Authentication Routes for vacations
     Auth::routes();
