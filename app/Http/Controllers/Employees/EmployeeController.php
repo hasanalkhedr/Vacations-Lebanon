@@ -98,10 +98,9 @@ class EmployeeController
     public function logout(Request $request) {
         auth()->logout();
         $request->session()->invalidate();
-        $request->session()->regenerateToken(); // Ensure the token is refreshed after logout
+        $request->session()->regenerateToken(); // Add this to prevent 302 loops
 
-        // Redirect to a specific URL instead of a named route
-        return redirect('/vacations/login');
+        return redirect('/login'); // or specify 'vacations/login' if that's the desired page
     }
 
     public function index() {
