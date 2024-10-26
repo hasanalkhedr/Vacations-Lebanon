@@ -21,11 +21,15 @@ use \App\Http\Controllers\Confessionnels\ConfessionnelController;
 |
 */
 
-Route::get('/vacations', function () {
+Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Disable the default logout route
+Auth::routes(['logout' => false]);
+
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
+    Route::post('/logout', 'logout')->name('logout');
     Route::post('/authenticate', 'authenticate')->name('authenticate');
     Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:employee|human_resource|sg|head'], function () {
         Route::get('/index', 'index')->name('index');
@@ -118,8 +122,6 @@ Route::group(['middleware' => 'role_custom:human_resource', 'controller' => Noti
 Route::group(['middleware' => 'role_custom:employee|human_resource|sg|head', 'controller' => \App\Http\Controllers\HolidaysAndConfessionnels\HolidaysAndConfessionnels::class, 'prefix' => 'holidays-and-confessionnels', 'as' => 'holidays-and-confessionnels.'], function () {
     Route::get('/index', 'index')->name('index');
 });
-Auth::routes();
-
 
 Route::any('{url}', function () {
     return back();
