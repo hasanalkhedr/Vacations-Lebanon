@@ -21,11 +21,11 @@ use \App\Http\Controllers\Confessionnels\ConfessionnelController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/login', function () {
+Route::get('/', function () {
     return redirect()->route('login');
 });
 Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], function () {
