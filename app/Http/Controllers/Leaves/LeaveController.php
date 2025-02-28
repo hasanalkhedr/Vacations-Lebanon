@@ -130,7 +130,7 @@ class LeaveController extends Controller
             $head = Employee::role('head')->get();
             $processing_officers = Employee::role('sg')->get()->concat($head)->all();
             $leave->processing_officer_role = $role->id;
-        } else if ($leave->employee->department->manager->hasRole('sg') || $leave->employee->is_supervisor || in_array($leave->employee->department->id, [2, 7, 14])) {
+        } else if ($leave->employee->department->manager->hasRole('sg') || $leave->employee->is_supervisor || in_array($leave->employee->department->id, [2, 7])) {
             $role = Role::findByName('human_resource');
             $processing_officers = Employee::role('human_resource')->get();
             $leave->processing_officer_role = $role->id;
