@@ -56,7 +56,7 @@
                 <div class="lg:mt-2">
                     <aside class="hidden w-full lg:inline blue-bg" style="margin-top: 1%;" id="aside-default">
                         <ul class="content-between space-y-2">
-                            @unless(auth()->user()->hasExactRoles('employee'))
+                            @unless (auth()->user()->hasExactRoles('employee'))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('departments.index') }}">
@@ -65,7 +65,7 @@
 
                                 </li>
                             @endunless
-                            @unless(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                            @unless (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('employees.index') }}">
@@ -81,7 +81,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @unless(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                            @unless (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <button type="button"
                                         class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
@@ -126,7 +126,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @unless(auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
+                            @unless (auth()->user()->hasExactRoles('employee') && auth()->user()->is_supervisor == false)
                                 <li>
                                     <button type="button"
                                         class="flex items-center mx-2 p-2 w-full text-base font-normal text-white rounded-lg transition duration-75 group hover:bg-blue-500"
@@ -178,7 +178,7 @@
                                 </li>
                             @endif
                             @if (auth()->user()->is_supervisor ||
-                                auth()->user()->hasRole(['human_resource', 'sg', 'head']))
+                                    auth()->user()->hasRole(['human_resource', 'sg', 'head']))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
                                         href="{{ route('leaves.getCalendarForm') }}">
@@ -233,7 +233,7 @@
                             @endif
                             <li>
                                 <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
-                                   href="{{ route('holidays-and-confessionnels.index') }}">
+                                    href="{{ route('holidays-and-confessionnels.index') }}">
                                     <span class="mx-2 font-medium">{{ __('Holidays And Confessionnels') }}</span>
                                 </a>
                             </li>
@@ -249,16 +249,16 @@
                             {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
                         </div>
                         <div class="px-2 text-md italic text-black">
-                            {{(implode(' | ', auth()->user()->getRoleNamesCustom())) }}
+                            {{ implode(' | ', auth()->user()->getRoleNamesCustom()) }}
                         </div>
                     </div>
                     <div class="flex mx-2">
-                         <div class="flex justify-center items-center">
+                        <div class="flex justify-center items-center">
                             <livewire:megaphone></livewire:megaphone>
                         </div>
 
                         <div class="py-3 text-xl font-bold text-black">
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('employees.logout') }}">
                                 @csrf
                                 <button type="submit">
                                     <i class="fa-solid fa-right-from-bracket"></i> {{ __('Logout') }}
