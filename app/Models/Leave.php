@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Leave extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -53,14 +54,14 @@ class Leave extends Model
     protected function from(): Attribute
     {
         return Attribute::make(
-            set: fn ($value) => Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d'),
+            set: fn($value) => Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d'),
         );
     }
 
     protected function to(): Attribute
     {
         return Attribute::make(
-            set: fn ($value) => Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d')
+            set: fn($value) => Carbon::createFromFormat(config('app.date_format'), $value)->format('Y-m-d')
         );
     }
 
@@ -68,29 +69,34 @@ class Leave extends Model
     {
         if ($filters['search'] ?? false) {
             $query->whereHas('employee', function ($q) {
-                    $q->where('first_name', 'like', '%' . request('search') . '%')
-                        ->orwhere('last_name', 'like', '%' . request('search') . '%');
-                });;
+                $q->where('first_name', 'like', '%' . request('search') . '%')
+                    ->orwhere('last_name', 'like', '%' . request('search') . '%');
+            });;
         };
     }
 
-    public function employee() {
+    public function employee()
+    {
         return $this->belongsTo(Employee::class);
     }
 
-    public function leave_type() {
+    public function leave_type()
+    {
         return $this->belongsTo(LeaveType::class);
     }
 
-    public function leave_duration() {
+    public function leave_duration()
+    {
         return $this->belongsTo(LeaveDuration::class);
     }
 
-    public function substitute_employee() {
+    public function substitute_employee()
+    {
         return $this->belongsTo(Employee::class);
     }
 
-    public function processing_officer() {
+    public function processing_officer()
+    {
         return $this->belongsTo(Role::class, 'processing_officer_role');
     }
 
