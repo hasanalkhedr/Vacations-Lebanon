@@ -293,7 +293,7 @@ class LeaveService
         return $nb_of_days_off_confessionnels;
     }
 
-    public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date)
+/*    public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date)
     {
         $leaves = Leave::where('employee_id', $employee_id)
             ->where('leave_status', self::ACCEPTED_STATUS)
@@ -330,6 +330,34 @@ class LeaveService
         return $leaves->filter(function ($value, $key) use ($leave_type) {
             return $value['leave_type_id'] == LeaveType::where('name', $leave_type->name)->first()->id;
         });
+    }*/
+public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date) {
+        // Base query
+        $query = Leave::where('employee_id', $employee_id)
+                    ->where('leave_status', self::ACCEPTED_STATUS)
+->whereIn('leave_type_id', $filtered_leave_types_ids)
+                    ->where(function($query) use($from_date, $to_date) {
+                        $query->where(function($query) use($from_date, $to_date) {
+                            $query->whereDate('from', '>=', $from_date)
+                                  ->whereDate('from', '<=', $to_date);
+                        })->orWhere(function($query) use($from_date, $to_date) {
+                            $query->whereDate('to', '>=', $from_date)
+                                  ->whereDate('to', '<=', $to_date);
+                        });
+                    });
+
+        // Get counts by leave type
+        $counts = LeaveType::withCount(['leaves' => function($q) use ($query) {
+            $q->mergeConstraintsFrom($query);
+        }])->get()->pluck('leaves_count', 'name')->toArray();
+
+        // Get paginated results
+        $paginatedLeaves = $query->paginate(15);
+
+        return [
+            'leaves' => $paginatedLeaves,
+            'counts' => $counts
+        ];
     }
 
     public function calculateTotalDaysOff($leaves, $from_date, $to_date)
@@ -408,13 +436,15 @@ class LeaveService
         if ($leave->use_confessionnels) {
             $employee->confessionnels = $employee->confessionnels - 1;
         }
-        $nb_of_days_off = $this->findNbofDaysOff($leave);
+if(!$this->isLeaveNonDeductible($leave)) {  
+      $nb_of_days_off = $this->findNbofDaysOff($leave);
         if ($leave->mix_of_leaves) {
             $nb_of_days_off_confessionnels = $this->findNbofDaysOffConfessionnels($leave);
             $employee->confessionnels = $employee->confessionnels + $nb_of_days_off_confessionnels;
         }
         $employee->nb_of_days = $employee->nb_of_days + $nb_of_days_off;
-        $employee->save();
+} 
+       $employee->save();
     }
 
     public function recoverMinutes(Leave $leave)

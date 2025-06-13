@@ -4,7 +4,7 @@
         <div class="text-lg blue-color">
             {{__("Users")}}
         </div>
-        @hasanyrole('human_resource|sg|head')
+        @hasanyrole('human_resource')
         <div>
             <button class="hover:bg-blue-700 text-white py-2 px-4 rounded-full blue-bg"
                     data-modal-toggle="createModal">
@@ -63,7 +63,7 @@
                         <td class="py-4 px-6 border-b">
                             {{(implode(' | ', $employee->getRoleNamesCustom())) }}
                         </td>
-                        @hasanyrole('human_resource|sg|head')
+                        @hasanyrole('human_resource')
                             <td class="py-4 px-6 text-right border-b">
                                 <button class="font-medium hover:underline blue-color" type="button"
                                         data-modal-toggle="editProfileModal-{{$employee->id}}">

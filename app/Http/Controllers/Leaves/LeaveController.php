@@ -130,16 +130,18 @@ class LeaveController extends Controller
             $head = Employee::role('head')->get();
             $processing_officers = Employee::role('sg')->get()->concat($head)->all();
             $leave->processing_officer_role = $role->id;
-        } else if ($leave->employee->department->manager->hasRole('sg') || $leave->employee->is_supervisor || in_array($leave->employee->department->id, [2, 7])) {
+
+        } else if ($leave->employee->department->manager->hasRole('sg') || $leave->employee->is_supervisor/* || in_array($leave->employee->department->id, [2, 7])*/) {
             $role = Role::findByName('human_resource');
             $processing_officers = Employee::role('human_resource')->get();
             $leave->processing_officer_role = $role->id;
+
         } else {
             $role = Role::findByName('employee');
             $processing_officers = collect([auth()->user()->department->manager]);
             $leave->processing_officer_role = $role->id;
-        }
 
+        }
         $recoveryLeave = LeaveType::where('name', 'recovery')->first();
 
         if ($leave->leave_type_id == $recoveryLeave->id) {
@@ -488,7 +490,7 @@ class LeaveController extends Controller
         }
     }
 
-    public function generateReport(Request $request)
+/*    public function generateReport(Request $request)
     {
         $filtered_leave_types = $request->leave_types ?? [];
         $employee_id = $request->employee_id;
@@ -504,6 +506,32 @@ class LeaveController extends Controller
             'leaves' => $leaves,
             'employee' => $employee,
             'data' => $data
+        ]);
+    }
+*/
+public function generateReport(Request $request) {
+$filtered_leave_types = $request->leave_types ?? LeaveType::all('id')->toArray();// [1,2,3,4,5,6,7,8,9];       
+ $employee_id = $request->employee_id;
+        $employee = Employee::whereId($employee_id)->first();
+
+        // Add validation for dates
+        $request->validate([
+            'from_date' => 'required|date_format:d/m/Y',
+            'to_date' => 'required|date_format:d/m/Y|after_or_equal:from_date',
+        ]);
+
+        $from_date = Carbon::createFromFormat('d/m/Y', $request->from_date)->format('Y-m-d');
+        $to_date = Carbon::createFromFormat('d/m/Y', $request->to_date)->format('Y-m-d');
+
+        $leave_service = new LeaveService();
+        $data = $leave_service->fetchLeaves($employee_id, $filtered_leave_types, $from_date, $to_date);
+
+        // Pass all request parameters to the view for pagination
+        return view('leaves.view-report', [
+            'leaves' => $data['leaves'],
+            'employee' => $employee,
+            'data' => $data['counts'],
+            'request' => $request->all() // Pass all request parameters
         ]);
     }
 }

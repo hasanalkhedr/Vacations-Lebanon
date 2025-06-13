@@ -37,7 +37,7 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
         Route::get('/editpassword/{employee}', 'editPassword')->name('editPassword');
         Route::put('/updatepassword/{employee}', 'updatePassword')->name('updatePassword');
     });
-    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource|sg|head'], function () {
+    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource'], function () {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
         Route::get('/editprofile/{employee}', 'editProfile')->name('editProfile');
@@ -68,7 +68,7 @@ Route::group(['middleware' => 'role_custom:employee|human_resource|sg|head', 'co
     Route::post('/accept/{leave}', 'accept')->name('accept');
     Route::post('/reject/{leave}', 'reject')->name('reject');
     Route::get('/createReport', 'createReport')->name('createReport');
-    Route::post('/generateReport', 'generateReport')->name('generateReport');
+    Route::get('/generateReport', 'generateReport')->name('generateReport');
     Route::get('/{leave}/show', 'show')->name('show');
     Route::group(['prefix' => '/calendar'], function () {
         Route::get('/get-form', 'getCalendarForm')->name('getCalendarForm');
