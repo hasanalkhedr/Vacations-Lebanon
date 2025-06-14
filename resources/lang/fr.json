@@ -253,5 +253,28 @@
     "The minimum length is 6 characters.": "La longueur minimale est de 6 caractères.",
     "The password confirmation does not match.": "La confirmation du mot de passe ne correspond pas.",
     "Weekdays off": "Jours fériés",
-    "You have insufficient balance to submit this request. You may have already booked more days than available in your balance.": "Votre solde est insuffisant pour soumettre cette demande. Vous avez peut-être déjà réservé plus de jours que ce qui est disponible dans votre solde."
+    "You have insufficient balance to submit this request. You may have already booked more days than available in your balance.": "Votre solde est insuffisant pour soumettre cette demande. Vous avez peut-être déjà réservé plus de jours que ce qui est disponible dans votre solde.",
+
+    "Previous Year": "Année précédente",
+    "Current Year": "Année en cours",
+    "Leave Balaance Management": "Gestion du solde des congés",
+    "Add new year leaves balance": "Ajouter le solde des congé du Nouvel An",
+    "Delete previous year leave balance": "Supprimer le solde de congés de l'année précédente",
+    "Cannot update leave balances: annual leaves for this year already added": "Impossible de mettre à jour les soldes de congés : les congés annuels de cette année ont déjà été ajoutés",
+    "You cannot add annual leaves at this time": "Vous ne pouvez pas ajouter de congés annuels pour le moment",
+    "Annual leave balance for these employees updated successfully": "Le solde des congés annuels de ces employés a été mis à jour avec succès",
+    "Previous year leaves": "Congés de l'année précédente",
+    "Total leaves balance": "Solde total des congé",
+    "Previous year leaves balance for these employees set to zero successfully": "Le solde des congé de l'année précédente pour ces employés a été remis à zéro avec succès",
+    "You cannot reset previous year leaves balance at this time": "Vous ne pouvez pas réinitialiser le solde des congé de l'année précédente pour le moment.",
+    "You already reset previous year leaves balance for this year": "Vous avez déjà réinitialisé le solde des congé de l'année précédente pour cette année",
+
+    "Leave Balance Configuration": "Configuration du solde de congés",
+    "Date to add new year leaves balance": "Date d'ajout du solde de congés de la nouvelle année",
+    "Change date": "Modifier la date",
+    "Month": "Mois",
+    "Select a day": "Sélectionner un jour",
+    "Day": "Jour",
+    "Date to reset previous year leaves balance": "Date de réinitialisation du solde de congés de l'année précédente",
+    "The selected day is invalid for the selected month.": "Le jour sélectionné n'est pas valide pour le mois sélectionné."
 }

@@ -44,6 +44,11 @@ Route::group(['controller' => EmployeeController::class, 'as' => 'employees.'], 
         Route::put('/updateprofile/{employee}', 'updateProfile')->name('updateProfile');
         Route::delete('/{employee}', 'destroy')->name('destroy');
     });
+    Route::group(['prefix' => 'employees', 'middleware' => 'role_custom:human_resource'], function () {
+        Route::get('/leave-manager', 'leaveManagement')->middleware('role_custom:human_resource')->name('leaveManager');
+        Route::post('/add-balance', 'addBalance')->name('add-balance');
+        Route::post('/delete-balance', 'deleteBalance')->name('delete-balance');
+    });
 });
 
 Route::group(['middleware' => 'role_custom:human_resource|sg|head', 'controller' => DepartmentController::class, 'prefix' => 'departments', 'as' => 'departments.'], function () {
@@ -76,6 +81,11 @@ Route::group(['middleware' => 'role_custom:employee|human_resource|sg|head', 'co
         Route::get('/get-calendar', 'getCalendar')->name('getCalendar');
     });
     Route::get('/index', 'index')->name('index');
+});
+
+Route::group(['middleware' => 'role_custom:human_resource', 'controller' => LeaveController::class, 'prefix' => 'leaves', 'as' => 'leaves.'], function () {
+    Route::put('/change-start-date','changeStartDate')->name('changeStartDate');
+    Route::put('/change-expire-date','changeExpireDate')->name('changeExpireDate');
 });
 
 Route::group(['middleware' => 'role_custom:employee|human_resource|sg|head', 'controller' => OvertimeController::class, 'prefix' => 'overtimes', 'as' => 'overtimes.'], function () {

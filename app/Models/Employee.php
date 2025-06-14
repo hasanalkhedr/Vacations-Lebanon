@@ -31,6 +31,7 @@ class Employee extends Authenticatable
         'department_id',
         'weekdays_off',
         'profile_photo',
+        'prev_leaves'
     ];
 
     /**

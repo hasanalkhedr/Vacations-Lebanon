@@ -12,7 +12,12 @@
             </div>
             <div class="text-lg">
                 <span class="font-bold blue-color">{{ __('Remaining Balances') }}:</span> {{ $employee->nb_of_days }}
-                {{ __('Remaining Leaves') }} | {{ $employee->confessionnels }} {{ __('Remaining Confessionnels') }}
+                {{ __('Remaining Leaves') }}
+                @if (now()->isBefore($expireDate))
+                    <span class="text-md text-gray-500">({{ $employee->prev_leaves }}
+                        {{ __('Previous Year') }}, {{$employee->nb_of_days - $employee->prev_leaves}} {{__('Current Year')}})</span>
+                @endif
+                | {{ $employee->confessionnels }} {{ __('Remaining Confessionnels') }}
             </div>
         </div>
 {{--        @unless ($leaves->isEmpty())

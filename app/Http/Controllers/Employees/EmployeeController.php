@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Models\LeaveConfig;
+use App\Services\LeaveService;
+use Illuminate\Support\Carbon;
 
 class EmployeeController
 {
@@ -99,15 +102,15 @@ class EmployeeController
         auth()->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken(); // Prevent 302 loops
-    
+
         if (!config('app.debug')) {
             // Redirect to external URL only in production (when APP_DEBUG is false)
             return redirect()->away('https://phare-ifl.com');
         }
-    
+
         // Redirect to local login page in development
         return redirect('/login');
-    }    
+    }
 
     public function index() {
         $user = auth()->user();
@@ -167,7 +170,8 @@ class EmployeeController
                 'normal_accepted_days' => $normal_accepted_days,
                 'confessionnel_accepted_days' => $confessionnel_accepted_days,
                 'overtimeTotalTime' => $overtimeTotalTime,
-                'overtimeDays' => $overtimeDays
+                'overtimeDays' => $overtimeDays,
+                'expireDate' => Carbon::create(null, LeaveConfig::find('expire_month')->value, LeaveConfig::find('expire_day')->value)
             ]);
         }
         return back();
@@ -261,6 +265,58 @@ class EmployeeController
     {
         $employee->delete();
         return redirect()->route('employees.index');
+    }
+    public function leaveManagement()
+    {
+        return view('employees.leave_manager')->with([
+            "employees" => Employee::where('can_submit_requests', true)->get(),
+            "message" => null]);
+    }
+
+    public function addBalance(Request $request)
+    {
+        $employees = Employee::where('can_submit_requests', true);
+        $startDate = Carbon::create(null, LeaveConfig::find('start_month')->value, LeaveConfig::find('start_day')->value);
+        if (now()->get('year') == LeaveConfig::find('year')->value + 1) {
+            if (now()->isAfter($startDate)) {
+                $leaveService = new LeaveService();
+                $leaveService->newYearLeaves();
+                $yearConfig = LeaveConfig::find('year');
+                $yearConfig->value = now()->get('year');
+                $yearConfig->save();
+                return view('employees.leave_manager')->with([
+                    "employees" => $employees->get(),
+                    "message" => __('Annual leave balance for these employees updated successfully')
+                ]);
+            } else {
+                return view('employees.leave_manager')->with(["employees" => $employees->get(), 'message' => __('You cannot add annual leaves at this time')]);
+            }
+        } else {
+            return view('employees.leave_manager')->with(["employees" => $employees->get(), 'message' => __('Cannot update leave balances: annual leaves for this year already added')]);
+        }
+    }
+
+    public function deleteBalance(Request $request)
+    {
+        $employees = Employee::where('can_submit_requests', true);
+        $expireDate = Carbon::create(null, LeaveConfig::find('expire_month')->value, LeaveConfig::find('expire_day')->value);
+        if (
+            now()->get('year') == LeaveConfig::find('year')->value
+            && Employee::where('can_submit_requests', true)->sum('prev_leaves') > 0
+        ) {
+            if (now()->isAfter($expireDate)) {
+                $leaveService = new LeaveService();
+                $leaveService->expirePrevLeaves();
+                return view('employees.leave_manager')->with([
+                    "employees" => $employees->get(),
+                    "message" => __('Previous year leaves balance for these employees set to zero successfully')
+                ]);
+            } else {
+                return view('employees.leave_manager')->with(["employees" => $employees->get(), 'message' => __('You cannot reset previous year leaves balance at this time')]);
+            }
+        } else {
+            return view('employees.leave_manager')->with(["employees" => $employees->get(), 'message' => __('You already reset previous year leaves balance for this year')]);
+        }
     }
 
 }

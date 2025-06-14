@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@yield('title') </title>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favico32.png') }}">
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
@@ -56,6 +58,14 @@
                 <div class="lg:mt-2">
                     <aside class="hidden w-full lg:inline blue-bg" style="margin-top: 1%;" id="aside-default">
                         <ul class="content-between space-y-2">
+                            @if(auth()->user()->hasRole('human_resource'))
+                                <li>
+                                    <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"
+                                        href="{{ route('employees.leaveManager') }}">
+                                        <span class="mx-2 font-medium">{{ __('Leave Balaance Management') }}</span>
+                                    </a>
+                                </li>
+                            @endif
                             @unless (auth()->user()->hasExactRoles('employee'))
                                 <li>
                                     <a class="flex items-center mx-2 px-2 py-2 text-white rounded-lg transition duration-75 group hover:bg-blue-500"

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use App\Services\LeaveService;
 use Illuminate\Http\Request;
+use App\Models\LeaveConfig;
 
 class LeaveController extends Controller
 {
@@ -88,7 +89,8 @@ class LeaveController extends Controller
                 'confessionnel_accepted_days' => $confessionnel_accepted_days,
                 'overtimeTotalTime' => $overtimeTotalTime,
                 'overtimeDays' => $overtimeDays,
-                'showConfessionnelButtons' => $showConfessionnelButtons
+                'showConfessionnelButtons' => $showConfessionnelButtons,
+                'expireDate' => Carbon::create(null, LeaveConfig::find('expire_month')->value, LeaveConfig::find('expire_day')->value)
             ]);
         } else {
             return back();
@@ -484,6 +486,7 @@ class LeaveController extends Controller
             return view('leaves.create-report', [
                 'employees' => $employees,
                 'leaveTypes' => $leaveTypes,
+                'expireDate' => Carbon::create(null, LeaveConfig::find('expire_month')->value, LeaveConfig::find('expire_day')->value)
             ]);
         } else {
             return back();
@@ -510,7 +513,7 @@ class LeaveController extends Controller
     }
 */
 public function generateReport(Request $request) {
-$filtered_leave_types = $request->leave_types ?? LeaveType::all('id')->toArray();// [1,2,3,4,5,6,7,8,9];       
+$filtered_leave_types = $request->leave_types ?? LeaveType::all('id')->toArray();// [1,2,3,4,5,6,7,8,9];
  $employee_id = $request->employee_id;
         $employee = Employee::whereId($employee_id)->first();
 
@@ -531,7 +534,63 @@ $filtered_leave_types = $request->leave_types ?? LeaveType::all('id')->toArray()
             'leaves' => $data['leaves'],
             'employee' => $employee,
             'data' => $data['counts'],
-            'request' => $request->all() // Pass all request parameters
+            'request' => $request->all(), // Pass all request parameters
+            'expireDate' => Carbon::create(null, LeaveConfig::find('expire_month')->value, LeaveConfig::find('expire_day')->value)
         ]);
+    }
+    public function changeStartDate(Request $request)
+    {
+        $validated = $request->validate([
+            'start_month' => 'required|integer|between:1,12',
+            'start_day' => [
+                'required',
+                'integer',
+                'between:1,31',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Check if the day exists for the selected month
+                    if (!checkdate($request->start_month, $value, 2000)) { // Using leap year
+                        $fail(__('The selected day is invalid for the selected month.'));
+                    }
+                },
+            ],
+        ]);
+
+        $start_day = LeaveConfig::find('start_day');
+        $start_month = LeaveConfig::find('start_month');
+
+        $start_day->value = $validated['start_day'];
+        $start_month->value = $validated['start_month'];
+
+        $start_day->save();
+        $start_month->save();
+        return redirect()->route('employees.leaveManager');
+    }
+    public function changeExpireDate(Request $request)
+    {
+       $validated = $request->validate([
+            'expire_month' => 'required|integer|between:1,12',
+            'expire_day' => [
+                'required',
+                'integer',
+                'between:1,31',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Check if the day exists for the selected month
+                    if (!checkdate($request->expire_month, $value, 2000)) { // Using leap year
+                        $fail(__('The selected day is invalid for the selected month.'));
+                    }
+                },
+            ],
+        ]);
+
+        $expire_day = LeaveConfig::find('expire_day');
+        $expire_month = LeaveConfig::find('expire_month');
+
+        $expire_day->value = $validated['expire_day'];
+        $expire_month->value = $validated['expire_month'];
+
+        $expire_day->save();
+        $expire_month->save();
+        return redirect()->route('employees.leaveManager');
+
     }
 }
