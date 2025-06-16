@@ -299,64 +299,75 @@ class LeaveService
         return $nb_of_days_off_confessionnels;
     }
 
-/*    public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date)
-    {
-        $leaves = Leave::where('employee_id', $employee_id)
-            ->where('leave_status', self::ACCEPTED_STATUS)
-            ->whereIn('leave_type_id', $filtered_leave_types_ids)
-            ->where(function ($query) use ($from_date, $to_date) {
-                $query->where(function ($query) use ($from_date, $to_date) {
-                    $query->whereDate('from', '>=', $from_date)->whereDate('from', '<=', $to_date);
-                })
-                    ->orWhere(function ($query) use ($from_date, $to_date) {
-                        $query->whereDate('to', '>=', $from_date)->whereDate('to', '<=', $to_date);
-                    });
-            })->paginate(20);
+    /*    public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date)
+        {
+            $leaves = Leave::where('employee_id', $employee_id)
+                ->where('leave_status', self::ACCEPTED_STATUS)
+                ->whereIn('leave_type_id', $filtered_leave_types_ids)
+                ->where(function ($query) use ($from_date, $to_date) {
+                    $query->where(function ($query) use ($from_date, $to_date) {
+                        $query->whereDate('from', '>=', $from_date)->whereDate('from', '<=', $to_date);
+                    })
+                        ->orWhere(function ($query) use ($from_date, $to_date) {
+                            $query->whereDate('to', '>=', $from_date)->whereDate('to', '<=', $to_date);
+                        });
+                })->paginate(20);
 
-        $leave_types = LeaveType::all();
-        $data = [
-            'leaves' => $leaves,
-        ];
-
-        foreach ($leave_types as $leave_type) {
-            $filteredLeaves = $this->filterLeaves($leaves, $leave_type);
-            $totalDaysOff = $this->calculateTotalDaysOff($filteredLeaves, $from_date, $to_date);
-
-            $data[$leave_type->name] = [
-                'items' => $filteredLeaves,
-                'number_of_days_off' => $totalDaysOff,
+            $leave_types = LeaveType::all();
+            $data = [
+                'leaves' => $leaves,
             ];
-        }
 
-        return $data;
-    }
+            foreach ($leave_types as $leave_type) {
+                $filteredLeaves = $this->filterLeaves($leaves, $leave_type);
+                $totalDaysOff = $this->calculateTotalDaysOff($filteredLeaves, $from_date, $to_date);
+
+                $data[$leave_type->name] = [
+                    'items' => $filteredLeaves,
+                    'number_of_days_off' => $totalDaysOff,
+                ];
+            }
+
+            return $data;
+        }*/
 
     public function filterLeaves($leaves, $leave_type)
     {
         return $leaves->filter(function ($value, $key) use ($leave_type) {
             return $value['leave_type_id'] == LeaveType::where('name', $leave_type->name)->first()->id;
         });
-    }*/
-public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date) {
+    }
+    public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date, $to_date)
+    {
         // Base query
         $query = Leave::where('employee_id', $employee_id)
-                    ->where('leave_status', self::ACCEPTED_STATUS)
-->whereIn('leave_type_id', $filtered_leave_types_ids)
-                    ->where(function($query) use($from_date, $to_date) {
-                        $query->where(function($query) use($from_date, $to_date) {
-                            $query->whereDate('from', '>=', $from_date)
-                                  ->whereDate('from', '<=', $to_date);
-                        })->orWhere(function($query) use($from_date, $to_date) {
-                            $query->whereDate('to', '>=', $from_date)
-                                  ->whereDate('to', '<=', $to_date);
-                        });
-                    });
+            ->where('leave_status', self::ACCEPTED_STATUS)
+            ->whereIn('leave_type_id', $filtered_leave_types_ids)
+            ->where(function ($query) use ($from_date, $to_date) {
+                $query->where(function ($query) use ($from_date, $to_date) {
+                    $query->whereDate('from', '>=', $from_date)
+                        ->whereDate('from', '<=', $to_date);
+                })->orWhere(function ($query) use ($from_date, $to_date) {
+                    $query->whereDate('to', '>=', $from_date)
+                        ->whereDate('to', '<=', $to_date);
+                });
+            });
 
         // Get counts by leave type
-        $counts = LeaveType::withCount(['leaves' => function($q) use ($query) {
-            $q->mergeConstraintsFrom($query);
-        }])->get()->pluck('leaves_count', 'name')->toArray();
-
+        // $counts = LeaveType::withCount(['leaves' => function($q) use ($query) {
+        //     $q->mergeConstraintsFrom($query);
+        // }])->get()->pluck('leaves_count', 'name')->toArray();
+        $leave_types = LeaveType::all();
+        $counts = [];
+        foreach ($leave_types as $leave_type) {
+            $filteredLeaves = $this->filterLeaves($query->get(), $leave_type);
+            $totalDaysOff = $this->calculateTotalDaysOff($filteredLeaves, $from_date, $to_date);
+            $counts[$leave_type->name] = $totalDaysOff;
+            // $data[$leave_type->name] = [
+            //     'items' => $filteredLeaves,
+            //     'number_of_days_off' => $totalDaysOff,
+            // ];
+        }
         // Get paginated results
         $paginatedLeaves = $query->paginate(15);
 
@@ -442,19 +453,19 @@ public function fetchLeaves($employee_id, $filtered_leave_types_ids, $from_date,
         if ($leave->use_confessionnels) {
             $employee->confessionnels = $employee->confessionnels - 1;
         }
-if(!$this->isLeaveNonDeductible($leave)) {
-      $nb_of_days_off = $this->findNbofDaysOff($leave);
-        if ($leave->mix_of_leaves) {
-            $nb_of_days_off_confessionnels = $this->findNbofDaysOffConfessionnels($leave);
-            $employee->confessionnels = $employee->confessionnels + $nb_of_days_off_confessionnels;
+        if (!$this->isLeaveNonDeductible($leave)) {
+            $nb_of_days_off = $this->findNbofDaysOff($leave);
+            if ($leave->mix_of_leaves) {
+                $nb_of_days_off_confessionnels = $this->findNbofDaysOffConfessionnels($leave);
+                $employee->confessionnels = $employee->confessionnels + $nb_of_days_off_confessionnels;
+            }
+            $employee->nb_of_days = $employee->nb_of_days + $nb_of_days_off;
+            $expireDate = Carbon::create(null, LeaveConfig::find('expire_month')->value, LeaveConfig::find('expire_day')->value);
+            if (now()->isBefore($expireDate)) {
+                $employee->prev_leaves = $employee->prev_leaves + $nb_of_days_off;
+            }
         }
-        $employee->nb_of_days = $employee->nb_of_days + $nb_of_days_off;
-        $expireDate = Carbon::create(null, LeaveConfig::find('expire_month')->value, LeaveConfig::find('expire_day')->value);
-        if (now()->isBefore($expireDate)) {
-            $employee->prev_leaves = $employee->prev_leaves + $nb_of_days_off;
-        }
-}
-       $employee->save();
+        $employee->save();
     }
 
     public function recoverMinutes(Leave $leave)
