@@ -163,20 +163,29 @@ class LeaveController extends Controller
             return back();
         }
         if ($employee->hasRole("employee") && $employee->is_supervisor) {
-            $leaves = Leave::where('processing_officer_role', Role::findByName('employee')->id)->where('leave_status', self::PENDING_STATUS)
+            $leaves = Leave::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->where('processing_officer_role', Role::findByName('employee')->id)->where('leave_status', self::PENDING_STATUS)
                 ->whereHas('employee', function ($q) use ($employee) {
                     $q->whereHas('department', function ($q) use ($employee) {
                         $q->where('manager_id', $employee->id);
                     });
                 })
                 ->whereNot('employee_id', $employee->id)
-                ->search(request(['search']))->paginate(10);
+                ->search(request(['search']))->orderBy('from', 'desc')->paginate(10);
         }
         if ($employee->hasRole("human_resource")) {
-            $leaves = Leave::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+            $leaves = Leave::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->orderBy('from', 'desc')->paginate(10);
         }
         if ($employee->hasRole(['sg', 'head'])) {
-            $leaves = Leave::where('leave_status', self::PENDING_STATUS)->search(request(['search']))->paginate(10);
+            $leaves = Leave::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->where('leave_status', self::PENDING_STATUS)->search(request(['search']))->orderBy('from', 'desc')->paginate(10);
         }
         return view('leaves.index', [
             'leaves' => $leaves,
@@ -193,35 +202,50 @@ class LeaveController extends Controller
         }
 
         if ($employee->hasExactRoles('employee') && $employee->is_supervisor) {
-            $leaves = Leave::where(function ($query) use ($employee) {
-                $query->whereHas('employee', function ($q) use ($employee) {
-                    $q->whereHas('department', function ($q) use ($employee) {
-                        $q->where('manager_id', $employee->id);
-                    });
+            $leaves = Leave::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
                 })
-                    ->whereNot('processing_officer_role', Role::findByName('employee')->id)
-                    ->whereNot('leave_status', self::REJECTED_STATUS);
-            })
+                ->where(function ($query) use ($employee) {
+                    $query->whereHas('employee', function ($q) use ($employee) {
+                        $q->whereHas('department', function ($q) use ($employee) {
+                            $q->where('manager_id', $employee->id);
+                        });
+                    })
+                        ->whereNot('processing_officer_role', Role::findByName('employee')->id)
+                        ->whereNot('leave_status', self::REJECTED_STATUS);
+                })
                 ->whereNot('employee_id', $employee->id)
                 ->search(request(['search']))
-                ->latest()
+                ->orderBy('from', 'desc')
                 ->paginate(10);
         }
 
         if ($employee->hasRole('human_resource')) {
-            $leaves = Leave::where('leave_status', self::ACCEPTED_STATUS)
+            $leaves = Leave::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })
+                ->where('leave_status', self::ACCEPTED_STATUS)
                 ->orWhere(function ($query) {
                     $query->where('leave_status', self::PENDING_STATUS)->where('processing_officer_role', Role::findByName('sg')->id);
                 })
                 ->whereNot('employee_id', $employee->id)
                 ->search(request(['search']))
-                ->latest()
+                ->orderBy('from', 'desc')
                 ->paginate(10);
         }
 
         if ($employee->hasRole(['sg', 'head'])) {
-            $leaves = Leave::whereNot('employee_id', $employee->id)
-                ->where('leave_status', self::ACCEPTED_STATUS)->search(request(['search']))->latest()->paginate(10);
+            $leaves = Leave::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })
+                ->whereNot('employee_id', $employee->id)
+                ->where('leave_status', self::ACCEPTED_STATUS)
+                ->search(request(['search']))
+                ->orderBy('from', 'desc')
+                ->paginate(10);
         }
 
         return view('leaves.accepted-index', [
@@ -236,7 +260,10 @@ class LeaveController extends Controller
         if ($helper->checkIfNormalEmployee($employee)) {
             return back();
         }
-        $leaves = Leave::where('leave_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->search(request(['search']))->latest()->paginate(10);
+        $leaves = Leave::with('employee')
+            ->whereHas('employee', function ($query) {
+                $query->whereNull('deleted_at'); // Only include non-deleted employees
+            })->where('leave_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->search(request(['search']))->orderBy('from', 'desc')->paginate(10);
         return view('leaves.rejected-index', [
             'leaves' => $leaves
         ]);
@@ -295,7 +322,7 @@ class LeaveController extends Controller
                 'leaves' => $leaves
             ]);
         } else {
-            return back();
+            return abort(403);
         }
     }
 
@@ -346,9 +373,11 @@ class LeaveController extends Controller
             $employeeIds = $employees->pluck('id')->toArray();
 
             // Fetch leaves for all employees excluding rejected leaves
-            $leaves = Leave::with(['employee' => function ($query) {
-                $query->withTrashed();
-            }])
+            $leaves = Leave::with([
+                'employee' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
                 ->whereIn('employee_id', $employeeIds)
                 ->where('leave_status', '!=', self::REJECTED_STATUS)
                 ->whereDate('from', '<=', $end_of_month)
@@ -371,9 +400,11 @@ class LeaveController extends Controller
             $employeeIds = $employees->pluck('id')->toArray();
 
             // Fetch leaves for the employees in the selected department, excluding rejected leaves
-            $leaves = Leave::with(['employee' => function ($query) {
-                $query->withTrashed();
-            }])
+            $leaves = Leave::with([
+                'employee' => function ($query) {
+                    $query->withTrashed();
+                }
+            ])
                 ->whereIn('employee_id', $employeeIds)
                 ->where('leave_status', '!=', self::REJECTED_STATUS)
                 ->whereDate('from', '<=', $end_of_month)
@@ -436,12 +467,12 @@ class LeaveController extends Controller
 
         // Return the view with the necessary data
         return view('leaves.calendar', [
-            'month_name'           => $month_name,
-            'year'                 => $year,
-            'dates'                => $dates,
-            'employees'            => $employees,
-            'leaveId_dates_pairs'  => $leaveId_dates_pairs,
-            'holidays'             => $holidays,
+            'month_name' => $month_name,
+            'year' => $year,
+            'dates' => $dates,
+            'employees' => $employees,
+            'leaveId_dates_pairs' => $leaveId_dates_pairs,
+            'holidays' => $holidays,
         ]);
     }
 
@@ -493,28 +524,29 @@ class LeaveController extends Controller
         }
     }
 
-/*    public function generateReport(Request $request)
-    {
-        $filtered_leave_types = $request->leave_types ?? [];
-        $employee_id = $request->employee_id;
-        $employee = Employee::whereId($employee_id)->first();
-        $from_date = Carbon::createFromFormat('d/m/Y', $request->from_date)->format('Y-m-d');
-        $to_date = Carbon::createFromFormat('d/m/Y', $request->to_date)->format('Y-m-d');
-        $leave_service = new LeaveService();
-        $data = $leave_service->fetchLeaves($employee_id, $filtered_leave_types, $from_date, $to_date);
-        $leaves = $data['leaves'];
-        unset($data['leaves']);
+    /*    public function generateReport(Request $request)
+        {
+            $filtered_leave_types = $request->leave_types ?? [];
+            $employee_id = $request->employee_id;
+            $employee = Employee::whereId($employee_id)->first();
+            $from_date = Carbon::createFromFormat('d/m/Y', $request->from_date)->format('Y-m-d');
+            $to_date = Carbon::createFromFormat('d/m/Y', $request->to_date)->format('Y-m-d');
+            $leave_service = new LeaveService();
+            $data = $leave_service->fetchLeaves($employee_id, $filtered_leave_types, $from_date, $to_date);
+            $leaves = $data['leaves'];
+            unset($data['leaves']);
 
-        return view('leaves.view-report', [
-            'leaves' => $leaves,
-            'employee' => $employee,
-            'data' => $data
-        ]);
-    }
-*/
-public function generateReport(Request $request) {
-$filtered_leave_types = $request->leave_types ?? LeaveType::all('id')->toArray();// [1,2,3,4,5,6,7,8,9];
- $employee_id = $request->employee_id;
+            return view('leaves.view-report', [
+                'leaves' => $leaves,
+                'employee' => $employee,
+                'data' => $data
+            ]);
+        }
+    */
+    public function generateReport(Request $request)
+    {
+        $filtered_leave_types = $request->leave_types ?? LeaveType::all('id')->toArray();// [1,2,3,4,5,6,7,8,9];
+        $employee_id = $request->employee_id;
         $employee = Employee::whereId($employee_id)->first();
 
         // Add validation for dates
@@ -567,7 +599,7 @@ $filtered_leave_types = $request->leave_types ?? LeaveType::all('id')->toArray()
     }
     public function changeExpireDate(Request $request)
     {
-       $validated = $request->validate([
+        $validated = $request->validate([
             'expire_month' => 'required|integer|between:1,12',
             'expire_day' => [
                 'required',

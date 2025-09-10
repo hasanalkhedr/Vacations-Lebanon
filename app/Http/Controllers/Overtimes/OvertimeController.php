@@ -107,23 +107,32 @@ class OvertimeController extends Controller
             return back();
         }
         if($employee->hasRole("employee") && $employee->is_supervisor){
-            $overtimes = Overtime::where('processing_officer_role', Role::findByName('employee')->id)->where('overtime_status', self::PENDING_STATUS)
+            $overtimes = Overtime::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->where('processing_officer_role', Role::findByName('employee')->id)->where('overtime_status', self::PENDING_STATUS)
                         ->whereHas('employee', function ($q) use ($employee) {
                         $q->whereHas('department', function ($q) use ($employee) {
                             $q->where('manager_id', $employee->id);
                         });
                     })
-                ->whereNot('employee_id', $employee->id)
+                ->whereNot('employee_id', $employee->id)->orderBy('date', 'desc')
                 ->search(request(['search']))->paginate(10);
         }
         if($employee->hasRole("human_resource")) {
-            $overtimes = Overtime::whereNot('processing_officer_role', Role::findByName('sg')->id)->where('overtime_status', self::PENDING_STATUS)
+            $overtimes = Overtime::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->whereNot('processing_officer_role', Role::findByName('sg')->id)->where('overtime_status', self::PENDING_STATUS)
                 ->whereNot('employee_id', $employee->id)
-                ->search(request(['search']))->paginate(10);
+                ->orderBy('date', 'desc')->search(request(['search']))->paginate(10);
         }
         if($employee->hasRole(['sg', 'head'])) {
-            $overtimes = Overtime::where('overtime_status', self::PENDING_STATUS)
-                ->whereNot('employee_id', $employee->id)
+            $overtimes = Overtime::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->where('overtime_status', self::PENDING_STATUS)
+                ->whereNot('employee_id', $employee->id)->orderBy('date', 'desc')
                 ->search(request(['search']))->paginate(10);
         }
         return view('overtimes.index', [
@@ -139,7 +148,10 @@ class OvertimeController extends Controller
             return back();
         }
         if($employee->hasExactRoles('employee') && $employee->is_supervisor) {
-            $overtimes = Overtime::where(function ($query) use ($employee) {
+            $overtimes = Overtime::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->where(function ($query) use ($employee) {
                     $query->whereHas('employee', function ($q) use ($employee) {
                         $q->whereHas('department', function ($q) use ($employee) {
                             $q->where('manager_id', $employee->id);
@@ -148,26 +160,32 @@ class OvertimeController extends Controller
                         ->whereNot('overtime_status', self::REJECTED_STATUS);})
                         ->whereNot('employee_id', $employee->id)
                         ->search(request(['search']))
-                        ->latest()
+                        ->orderBy('date', 'desc')
                         ->paginate(10);
         }
 
         if($employee->hasRole('human_resource')) {
-            $overtimes = Overtime::where('overtime_status', self::ACCEPTED_STATUS)
+            $overtimes = Overtime::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->where('overtime_status', self::ACCEPTED_STATUS)
                 ->orWhere(function ($query) {
                     $query->where('overtime_status', self::PENDING_STATUS)->where('processing_officer_role', Role::findByName('sg')->id);})
                 ->whereNot('employee_id', $employee->id)
                 ->search(request(['search']))
-                ->latest()
+                ->orderBy('date', 'desc')
                 ->paginate(10);
         }
 
         if($employee->hasRole(['sg', 'head'])) {
-            $overtimes = Overtime::whereNot('employee_id', $employee->id)
+            $overtimes = Overtime::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->whereNot('employee_id', $employee->id)
                 ->where('overtime_status', self::ACCEPTED_STATUS)
                 ->whereNot('employee_id', $employee->id)
                 ->search(request(['search']))
-                ->latest()
+                ->orderBy('date', 'desc')
                 ->paginate(10);
 
         }
@@ -183,7 +201,10 @@ class OvertimeController extends Controller
         if($helper->checkIfNormalEmployee($employee)) {
             return back();
         }
-        $overtimes = Overtime::where('overtime_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->search(request(['search']))->latest()->paginate(10);
+        $overtimes = Overtime::with('employee')
+                ->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Only include non-deleted employees
+                })->where('overtime_status', self::REJECTED_STATUS)->where('rejected_by', $employee->id)->whereNot('employee_id', $employee->id)->search(request(['search']))->orderBy('date', 'desc')->paginate(10);
         return view('overtimes.rejected-index', [
             'overtimes' => $overtimes
         ]);
