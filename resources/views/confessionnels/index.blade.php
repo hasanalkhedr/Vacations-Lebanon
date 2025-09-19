@@ -269,7 +269,7 @@
     </div>
 
     <div class="mt-6 p-4">
-        {{ $confessionnels->links() }}
+        {{ $confessionnels->appends(request()->query())->links() }}
     </div>
 
 

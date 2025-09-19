@@ -146,7 +146,7 @@
     </div>
 
     <div class="mt-6 p-4">
-        {{ $overtimes->links() }}
+        {{ $overtimes->appends(request()->query())->links() }}
     </div>
 
     <script type="text/javascript">

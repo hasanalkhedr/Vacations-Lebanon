@@ -67,7 +67,7 @@
     </div>
 
     <div class="mt-6 p-4">
-        {{ $leaves->links() }}
+        {{ $leaves->appends(request()->query())->links() }}
     </div>
 
     <script type="text/javascript">

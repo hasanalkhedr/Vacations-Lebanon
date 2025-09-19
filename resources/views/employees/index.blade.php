@@ -712,7 +712,7 @@
     </div>
 
     <div class="mt-6 p-4">
-        {{ $employees->links() }}
+        {{ $employees->appends(request()->query())->links() }}
     </div>
 
     <script type="text/javascript">

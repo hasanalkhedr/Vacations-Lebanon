@@ -312,7 +312,7 @@
     </div>
 
     <div class="mt-6 p-4">
-        {{ $holidays->links() }}
+        {{ $holidays->appends(request()->query())->links() }}
     </div>
 
 

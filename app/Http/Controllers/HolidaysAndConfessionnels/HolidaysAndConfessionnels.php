@@ -15,8 +15,8 @@ class HolidaysAndConfessionnels extends Controller
         $confessionnelsPage = $request->query('confessionnels_page', 1);
         $activeTab = $request->query('active_tab', 'holidays');
 
-        $holidays = Holiday::paginate(10, ['*'], 'holidays_page');
-        $confessionnels = Confessionnel::paginate(10, ['*'], 'confessionnels_page');
+        $holidays = Holiday::orderBy('from', 'desc')->paginate(10, ['*'], 'holidays_page');
+        $confessionnels = Confessionnel::orderBy('date', 'desc')->paginate(10, ['*'], 'confessionnels_page');
 
         $holidays->appends(['confessionnels_page' => $confessionnelsPage, 'active_tab' => $activeTab]);
 
